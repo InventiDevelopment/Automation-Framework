@@ -1,0 +1,300 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+h1, h2, h3, h4 {
+    margin: 1rem 0;
+}
+
+body {
+    max-width: 1500px;
+    min-width: 500px;
+    margin: auto;
+    padding: 0 10%;
+    font-size: 1.0rem;
+    font-family: Arial,serif;
+}
+
+#content {
+    display: flex;
+}
+
+main {
+    order: 1;
+    flex-basis: 100%;
+}
+
+#mainContent p {
+    text-align: justify;
+    line-height: 1.7rem;
+    padding: 1rem 0;
+}
+
+#mainContent .content.hidden {
+    display: none;
+}
+
+#mainContent .content {
+    display: block;
+}
+
+#mainContent img {
+    text-align: center;
+    display: block;
+    margin: 1rem auto;
+}
+
+#mainContent h1 {
+    padding: 0.7rem 0;
+    font-size: 3rem;
+    text-transform: uppercase;
+    margin-top: 0;
+}
+
+#mainContent .articleTitleWrapper {
+    width: fit-content;
+    border-radius: 5px;
+}
+
+aside {
+    order: 2;
+    padding-left: 3rem;
+    flex-basis: 40%;
+}
+
+footer {
+    border-top: 1px solid lightgray;
+    padding-top: 1rem;
+    margin-top: 2rem;
+    margin-bottom: 3rem;
+    color: darkgray;
+}
+
+menu {
+    width: 100%;
+    padding: 2rem 0;
+}
+
+menu ul li {
+    display: inline;
+    list-style: none;
+}
+
+menu ul li a {
+    font-size: 1.2rem;
+    text-decoration: none;
+    margin-right: 1.5rem;
+    color: darkgray;
+}
+
+menu ul li a:hover {
+    color: #63008b;
+    padding-bottom: 0.2rem;
+}
+
+menu ul li a.active {
+    color: #63008b;
+    border-bottom: 0.1rem solid #63008b;
+    padding-bottom: 0.2rem;
+}
+
+aside .sideInfo {
+    background: #f3f3f3;
+    border-radius: 10px;
+    padding: 1.2rem;
+    margin-bottom: 1.5rem;
+}
+
+aside h2 {
+    color: #63008b;
+    margin-bottom: 1.5rem;
+    margin-left: 1rem;
+    font-weight: normal;
+    margin-top: 0;
+}
+
+aside .sideInfo h3 {
+    margin-bottom: 0.8rem;
+    color: #6f6f6f;
+    font-size: 1rem;
+}
+
+aside .sideInfo p {
+    padding-bottom: 1rem;
+}
+
+aside .sideInfo a {
+    text-decoration: none;
+    color: #63008b;
+}
+
+aside .sideInfo a:hover {
+    text-decoration: underline;
+}
+
+aside .sideInfo span {
+    display: block;
+    text-align: right;
+}
+
+form#contact-form input {
+
+}
+
+form#contact-form span {
+    display: block;
+}
+
+form#contact-form input, form#contact-form textarea {
+    margin-top: 0.3rem;
+    margin-bottom: 0.7rem;
+    border: 2px solid lightgray;
+    padding: 0.5rem;
+    border-radius: 5px;
+    min-width: 250px;
+    display: block;
+}
+
+form#contact-form textarea {
+    width: 100%;
+    min-height: 150px;
+    font-family: Arial,serif;
+    box-sizing: border-box;
+    max-width: 650px;
+}
+
+button {
+    padding: 0.5rem 1.5rem;
+    border-radius: 5px;
+    border: 2px solid #63008b;
+    color: #63008b;
+    cursor: pointer;
+    background: white;
+}
+
+button:hover {
+    background: #63008b;
+    color: white;
+}
+
+div#popup {
+    background: white;
+    width: 400px;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    padding: 1rem;
+    border-radius: 5px;
+    box-shadow: #00000038 0 0 1rem;
+    border-top: 3px solid #63008b;
+    z-index: 2;
+}
+
+div#popup button {
+    margin-top: 1rem;
+}
+
+div#screen-overlay {
+    width: 100%;
+    height: 100%;
+    background: #00000024;
+    position: fixed;
+    top: 0;
+    z-index: 1;
+    left: 0;
+}
+
+div#screen-overlay:after {
+    content: "Loading";
+    text-transform: uppercase;
+    color: #000000ab;
+    font-weight: bold;
+    font-size: 3rem;
+    position: fixed;
+    top: 50%;
+    width: 100%;
+    text-align: center;
+}
+
+div.locationWrapper {
+    display: flex;
+    justify-content: space-between;
+}
+
+div.mapWrapper {
+    order: 2;
+}
+
+div.mapWrapper iframe {
+    padding-top: 1rem;
+    margin-left: 2rem;
+    border-radius: 5px;
+}
+
+div.addressWrapper {
+    order: 1;
+}
+
+div.scrollable {
+    max-height: 350px;
+    overflow-y: scroll;
+    padding: 1rem;
+    border: 3px solid lightgray;
+}
+
+footer div {
+    float: left;
+}
+
+div#scrollTop {
+    float: right;
+    cursor: pointer;
+}
+
+div#scrollTop:hover {
+    text-decoration: underline;
+}
+
+table {
+    border: none;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+table thead {
+    background: #a369bb;
+    color: white;
+}
+
+table th, td {
+    padding: 0.5rem;
+    border-right: 1px solid lightgray;
+}
+
+table th:last-child, td:last-child {
+    border: 0;
+}
+
+.toolTipImage {
+    position: relative;
+}
+
+.toolTipImage .toolTipText {
+    display: none;
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translate(-50%, 125%);
+    background: #000000c7;
+    border-radius: 5px;
+    padding: 0.5rem 2rem;
+    color: white;
+    box-shadow: #00000038 0 0 1rem;
+}
+
+.toolTipImage:hover .toolTipText {
+    display: block;
+}
