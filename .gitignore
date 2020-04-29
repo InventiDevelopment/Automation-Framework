@@ -1,7 +1,6 @@
 /*
 !/core-automation-framework/
-!/core-frontend/
-!/frontend-ap/
+!/sample-application/
 !pom.xml
 !.gitignore
 !README.md
