@@ -17,8 +17,8 @@ To launch tests from a particular module:
 mvn --projects SOME_MODULE_NAME clean test -DsuiteXmlFile="someSuite.xml" -DsomeParameterName="parameterValue"
 # Clear maven:
 mvn --projects SOME_MODULE_NAME clean test -Dtest=SomeTest -DsomeParameterName="parameterValue"
-# To launch maven test from automation-framework module:
-mvn --projects automation-framework clean test -Dtest=WebElementTests
+# To launch maven test from core-automation-framework module:
+mvn --projects core-automation-framework clean test -Dtest=WebElementTests
 ```
 
 ### Used Libraries
