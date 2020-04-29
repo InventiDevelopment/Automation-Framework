@@ -1,0 +1,9 @@
+/*
+!/core-automation-framework/
+!/core-frontend/
+!/frontend-ap/
+!pom.xml
+!.gitignore
+!README.md
+*.iml
+/*/target/

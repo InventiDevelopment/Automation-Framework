@@ -1,0 +1,11 @@
+generalSettings:
+  customTargetPath: "~/.m2/repository/webdriver"
+  wait:
+    waitsAutomatically: false
+    timeouts:
+      min: 5000
+      mid: 20000
+      max: 30000
+
+chrome:
+  arguments: []
