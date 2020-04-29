@@ -19,6 +19,8 @@ mvn --projects SOME_MODULE_NAME clean test -DsuiteXmlFile="someSuite.xml" -Dsome
 mvn --projects SOME_MODULE_NAME clean test -Dtest=SomeTest -DsomeParameterName="parameterValue"
 # To launch maven test from core-automation-framework module:
 mvn --projects core-automation-framework clean test -Dtest=WebElementTests
+# To launch core-automation-framewor unit tests suite:
+mvn --projects core-automation-framework clean test -DsuiteXmlFile="unitTests.xml"
 ```
 
 ### Used Libraries
@@ -28,3 +30,4 @@ mvn --projects core-automation-framework clean test -Dtest=WebElementTests
 - Lombok
 - Log4J
 - WebDriverManager
+- Selenium
