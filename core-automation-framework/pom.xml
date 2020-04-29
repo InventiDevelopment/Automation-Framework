@@ -20,6 +20,9 @@
                 <version>2.22.2</version>
                 <configuration>
                     <trimStackTrace>false</trimStackTrace>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>./src/test/resources/testsets/${suiteXmlFile}</suiteXmlFile>
+                    </suiteXmlFiles>
                 </configuration>
             </plugin>
             <plugin>
