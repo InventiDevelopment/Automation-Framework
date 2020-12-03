@@ -1,36 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite name="Unit Tests">
-    <test name="Core Components Tests">
-        <classes>
-            <class name="cz.inventi.sample.framework.tests.unit.DriverTests"/>
-            <class name="cz.inventi.sample.framework.tests.unit.LoggerTests"/>
-        </classes>
-    </test>
-    <test name="Wait Tests">
-        <classes>
-            <class name="cz.inventi.sample.framework.tests.unit.config.DoNotWaitAutomaticallyTest"/>
-            <class name="cz.inventi.sample.framework.tests.unit.config.WaitAutomaticallyTest"/>
-        </classes>
-    </test>
-    <test name="Config Tests">
-        <classes>
-            <class name="cz.inventi.sample.framework.tests.unit.config.CustomConfigTests"/>
-            <class name="cz.inventi.sample.framework.tests.unit.config.ConfigTests"/>
-        </classes>
-    </test>
-    <test name="Language Tests">
-        <classes>
-            <class name="cz.inventi.sample.framework.tests.unit.language.LanguageTest"/>
-        </classes>
-    </test>
-    <test name="WebObject Tests">
-        <classes>
-            <class name="cz.inventi.sample.framework.tests.unit.webobjects.WebObjectTest"/>
-            <class name="cz.inventi.sample.framework.tests.unit.webobjects.WebElementTests"/>
-            <class name="cz.inventi.sample.framework.tests.unit.webobjects.WebComponentTests"/>
-            <class name="cz.inventi.sample.framework.tests.unit.webobjects.WebComponentListTests"/>
-            <class name="cz.inventi.sample.framework.tests.unit.webobjects.WebPageTests"/>
-        </classes>
-    </test>
+    <suite-files>
+        <suite-file path="unitTestsNoWait.xml"/>
+        <suite-file path="unitTestsWithWait.xml"/>
+    </suite-files>
 </suite> <!-- Suite -->

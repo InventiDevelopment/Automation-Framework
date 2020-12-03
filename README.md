@@ -7,7 +7,7 @@
 Download resources and run following command in the project root folder:
 
 ```
-mvn clean install -DskipTests
+mvn clean install
 ```
 
 To launch tests from a particular module:
