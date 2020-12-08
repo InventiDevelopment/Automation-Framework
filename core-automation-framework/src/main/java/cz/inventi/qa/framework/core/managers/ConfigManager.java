@@ -43,7 +43,7 @@ public class ConfigManager {
             Log.debug("Loading YAML configuration files:\n- APP: '" + appConfigPath + "'\n- DRIVER: '" + driverConfigPath + "'\n");
             appConfigData = mapper.readValue(new File(appConfigPath), AppConfigData.class);
             driverConfigData = mapper.readValue(new File(driverConfigPath), DriverConfigData.class);
-            Log.debug("YAML app configuration files successfully loaded.");
+            Log.debug("YAML app configuration files successfully loaded");
             Log.debug("YAML APP config content:\n" + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(appConfigData));
             Log.debug("YAML DRIVER config content:\n" + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(driverConfigData));
         } catch (IOException e) {

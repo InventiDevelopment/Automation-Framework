@@ -21,5 +21,4 @@ public class BasePage<T extends WebPage> extends WebPage {
     public BasePage(WOProps props) {
         super(props);
     }
-
 }

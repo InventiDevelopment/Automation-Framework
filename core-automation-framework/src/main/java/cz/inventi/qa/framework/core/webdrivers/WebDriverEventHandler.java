@@ -71,16 +71,17 @@ public class WebDriverEventHandler implements WebDriverEventListener {
 
     @Override
     public void beforeFindBy(By by, WebElement element, WebDriver driver) {
-        Log.debug("Find element at '" + by.toString());
+
     }
 
     @Override
     public void afterFindBy(By by, WebElement element, WebDriver driver) {
+
     }
 
     @Override
     public void beforeClickOn(WebElement element, WebDriver driver) {
-        Log.debug("Click element '" + element);
+
     }
 
     @Override

@@ -6,7 +6,6 @@ import cz.inventi.qa.framework.core.objects.web.WOProps;
 import cz.inventi.qa.framework.core.objects.web.WebComponent;
 import cz.inventi.qa.framework.core.objects.web.WebElement;
 import cz.inventi.qa.framework.core.objects.web.WebObject;
-import cz.inventi.qa.framework.testweb.webobjects.BasePage;
 import cz.inventi.qa.inventiweb.frontend.core.data.enums.MenuLink;
 import lombok.Getter;
 
@@ -28,6 +27,7 @@ public class MainMenu <T extends WebObject> extends WebComponent<T> {
             if (link.getText().equals(menuLink.getText())) link.click();
         }
 
+        // TODO create and add all page return values
         switch (menuLink) {
             case EVENTS:
                 return null;

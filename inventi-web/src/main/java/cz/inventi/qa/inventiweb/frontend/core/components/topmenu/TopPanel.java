@@ -11,7 +11,7 @@ import lombok.Getter;
 @FindElement(xpath = "//div[@id='header']")
 public class TopPanel<T extends WebObject> extends WebComponent<T> {
     LanguageSwitcher<TopPanel<T>> languageSwitcher;
-   // MainMenu<TopPanel<T>> mainMenu;
+    MainMenu<TopPanel<T>> mainMenu;
 
     @FindElement(xpath = "//div[contains(@class, 'logo-image')]//img")
     private WebElement logoImg;
