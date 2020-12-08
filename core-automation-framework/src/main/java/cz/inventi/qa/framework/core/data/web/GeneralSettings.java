@@ -7,6 +7,8 @@ public class GeneralSettings extends WebDriverSetting {
 
     @JsonProperty
     private String customTargetPath;
+    @JsonProperty
+    private String windowSize;
 
     public Wait getWait() {
         return wait;
@@ -14,5 +16,9 @@ public class GeneralSettings extends WebDriverSetting {
 
     public String getCustomTargetPath() {
         return customTargetPath;
+    }
+
+    public String getWindowSize() {
+        return windowSize;
     }
 }

@@ -35,7 +35,7 @@ public class AppManager {
                 .filter(map -> map.getKey().toLowerCase().equals(environment.toLowerCase()))
                 .map(Map.Entry::getValue)
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("URL of application: '" + applicationName + "' with env: '" + environment + "' is not found in YAML. Please check config and definition of init class"));
+                .orElseThrow(() -> new RuntimeException("URL of application: '" + applicationName + "' with env: '" + environment + "' is not found in YAML. Please check config and definition of init class."));
 
         try {
             formatResourcesURL();

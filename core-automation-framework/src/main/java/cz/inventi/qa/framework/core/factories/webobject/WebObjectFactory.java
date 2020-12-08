@@ -90,7 +90,7 @@ public class WebObjectFactory {
             klassConstructor.setAccessible(true);
             return (T) klassConstructor.newInstance(constructorParams);
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException(e.getCause());
+            throw new RuntimeException("Could not reflectively initialize " + klass + ". Please check that all web components extend WebComponent<T> and have generic <T extends WebObject> type defined.\n" + e.getCause());
         }
     }
 

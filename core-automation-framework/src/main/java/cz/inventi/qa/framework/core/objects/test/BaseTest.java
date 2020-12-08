@@ -14,7 +14,6 @@ public abstract class BaseTest {
         if (configFilesAnnotation != null) {
             String appConfigPath = getCustomPackageConfigPath(configFilesAnnotation.appConfig(), this.getClass().getSuperclass().getClassLoader());
             String driverConfigPath = getCustomPackageConfigPath(configFilesAnnotation.driverConfig(), this.getClass().getSuperclass().getClassLoader());
-
             ConfigManager.setCustomAppConfigPath(appConfigPath);
             ConfigManager.setCustomDriverConfigPath(driverConfigPath);
         }

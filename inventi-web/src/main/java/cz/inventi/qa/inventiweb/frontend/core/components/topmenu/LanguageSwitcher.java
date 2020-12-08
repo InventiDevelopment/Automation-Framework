@@ -5,13 +5,14 @@ import cz.inventi.qa.framework.core.data.enums.Language;
 import cz.inventi.qa.framework.core.objects.web.WOProps;
 import cz.inventi.qa.framework.core.objects.web.WebComponent;
 import cz.inventi.qa.framework.core.objects.web.WebElement;
+import cz.inventi.qa.framework.core.objects.web.WebObject;
 import org.testng.Assert;
 
 @FindElement(xpath = "//nav[contains(@class, 'language-switcher')]")
-public class LanguageSwitcher extends WebComponent<LanguageSwitcher> {
+public class LanguageSwitcher <T extends WebObject> extends WebComponent<T> {
 
     @FindElement(xpath = "//li[not(contains(@class, 'is-active'))]")
-    private WebElement currentLanguageListItem;
+    WebElement currentLanguageListItem;
 
     public LanguageSwitcher(WOProps props) {
         super(props);

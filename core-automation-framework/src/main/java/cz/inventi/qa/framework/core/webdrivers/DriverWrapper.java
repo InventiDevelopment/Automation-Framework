@@ -1,15 +1,14 @@
 package cz.inventi.qa.framework.core.webdrivers;
 
+import cz.inventi.qa.framework.core.data.enums.WindowSize;
 import cz.inventi.qa.framework.core.data.web.GeneralSettings;
 import cz.inventi.qa.framework.core.managers.ConfigManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.beans.EventHandler;
 import java.util.logging.Level;
 
 public abstract class DriverWrapper {
@@ -47,8 +46,15 @@ public abstract class DriverWrapper {
     }
 
     public void setDriver (WebDriver driver) {
-        this.driver = new EventFiringWebDriver(driver)
-                .register(new WebDriverEventHandler());
+        this.driver = new EventFiringWebDriver(driver).register(new WebDriverEventHandler());
+        setWindowSize();
+    }
+
+    private void setWindowSize() {
+        String windowSize = ConfigManager.getDriverConfigData().getGeneralSettings().getWindowSize().toUpperCase();
+        if (windowSize.equals(WindowSize.MAXIMIZED.toString())) {
+            driver.manage().window().maximize();
+        }
     }
 
     private void checkCustomTargetPath() {
