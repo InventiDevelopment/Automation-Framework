@@ -228,5 +228,6 @@ public enum Language {
     ZH_SG,
     ZH_TW,
     ZU,
-    ZU_ZA;
+    ZU_ZA,
+    NONE;
 }

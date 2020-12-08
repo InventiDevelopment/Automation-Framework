@@ -14,21 +14,17 @@ import org.testng.annotations.Parameters;
 
 @Getter
 // TODO fix when no configuration files supplied
-// TODO fix when no language parameter set
 @ConfigFiles(driverConfig = "inventiDriverConfig.yml", appConfig = "inventiAppConfig.yml")
 public class RegressionTest extends BaseTest {
     protected HomePage homePage;
 
     @BeforeClass
-    @Parameters({"environment", "browser"})
+    @Parameters({"environment", "browser", "language"})
     public void init(@Optional("prod") String environment,
-                     @Optional("chrome") String browser) {
+                     @Optional("chrome") String browser,
+                     @Optional("EN") String language) {
 
-        homePage = FrameworkManager.initWebApp(browser, environment, HomePage.class);
-    }
-
-    public HomePage getHomePage() {
-        return homePage;
+        homePage = FrameworkManager.initWebApp(browser, environment, language, HomePage.class);
     }
 
     @AfterClass

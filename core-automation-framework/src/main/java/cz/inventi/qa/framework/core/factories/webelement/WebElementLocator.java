@@ -19,9 +19,30 @@ public class WebElementLocator implements ElementLocator {
     private GeneralSettings generalDriverSettings;
 
     public WebElementLocator(final WebDriver driver, final Field field) {
+        this(driver, field.getAnnotation(FindElement.class).xpath(), field.getAnnotation(FindElement.class).index());
+    }
+
+    public WebElementLocator(final WebDriver driver, final String xpathLocator, final int xpathIndex) {
         this.driver = driver;
         generalDriverSettings = ConfigManager.getDriverConfigData().getGeneralSettings();
-        elementAnnotation = field.getAnnotation(FindElement.class);
+        elementAnnotation = new FindElement()
+        {
+            @Override
+            public String xpath() {
+                return xpathLocator;
+            }
+
+            @Override
+            public int index() {
+                return xpathIndex;
+            }
+
+            public Class<? extends FindElement> annotationType()
+            {
+                return FindElement.class;
+            }
+        };
+
         xpath = PageBuilder.generateIndexedXpath(elementAnnotation.xpath(), elementAnnotation.index());
     }
 

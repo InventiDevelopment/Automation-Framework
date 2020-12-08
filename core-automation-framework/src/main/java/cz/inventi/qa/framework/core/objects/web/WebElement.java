@@ -1,7 +1,10 @@
 package cz.inventi.qa.framework.core.objects.web;
 
 import cz.inventi.qa.framework.core.data.web.Timeouts;
+import cz.inventi.qa.framework.core.factories.webelement.WebElementFactory;
+import cz.inventi.qa.framework.core.factories.webelement.WebElementFieldDecorator;
 import cz.inventi.qa.framework.core.factories.webelement.WebElementLocator;
+import cz.inventi.qa.framework.core.factories.webelement.WebElementLocatorFactory;
 import cz.inventi.qa.framework.core.managers.ConfigManager;
 import cz.inventi.qa.framework.core.managers.DriverManager;
 import org.openqa.selenium.*;
@@ -9,6 +12,8 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 
+import java.lang.reflect.Field;
+import java.sql.Driver;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -122,8 +127,8 @@ public class WebElement implements org.openqa.selenium.WebElement {
         return webElements;
     }
 
-    public WebElement findElement(String xpath) {
-        return (WebElement) selWebElement.findElement(By.xpath(xpath));
+    public WebElement findElement(String findElementXpath) {
+        return new WebElement(selWebElement.findElement(By.xpath(findElementXpath)), new WebElementLocator(DriverManager.getDriver(), getXpath() + findElementXpath, 0));
     }
 
     @Override

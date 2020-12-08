@@ -8,7 +8,7 @@ import cz.inventi.qa.framework.core.factories.webobject.WebObjectFactory;
 public class FrameworkManager {
 
     public static <T extends WebPage> T initWebApp (String browser, String environment, Class<T> startingWebPage) {
-        return initWebApp(browser, environment, Language.EN.toString(), startingWebPage);
+        return initWebApp(browser, environment, Language.NONE.toString(), startingWebPage);
     }
 
     public static <T extends WebPage> T initWebApp (String browser, String environment, String language, Class<T> startingWebPage) {

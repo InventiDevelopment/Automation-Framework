@@ -21,13 +21,17 @@ public class LanguageManager {
     private static Map<String, String> dictionary;
 
     public static void init () {
-        try {
-            Log.debug("Loading language YAML dictionary file: '" + LANGUAGE_FILE_PATH + "'");
-            languageData = mapper.readValue(new File(LANGUAGE_FILE_PATH), LanguageData.class);
-            dictionary = languageData.getDictionary();
-            Log.debug("YAML language dictionary successfully loaded.");
-        } catch (IOException e) {
-            Log.fail("Not possible to read from language YML files. Check that files are accessible on following locations:\n '" + LANGUAGE_FILE_PATH + "'", e);
+        if (!currentLanguage.equals(Language.NONE)) {
+            try {
+                Log.debug("Loading language YAML dictionary file: '" + LANGUAGE_FILE_PATH + "'");
+                languageData = mapper.readValue(new File(LANGUAGE_FILE_PATH), LanguageData.class);
+                dictionary = languageData.getDictionary();
+                Log.debug("YAML language dictionary successfully loaded.");
+            } catch (IOException e) {
+                Log.fail("Not possible to read from language YML files. Check that files are accessible on following locations:\n '" + LANGUAGE_FILE_PATH + "'", e);
+            }
+        } else {
+            Log.debug("No language parameter acquired, skipping translation file lookup.");
         }
     }
 
