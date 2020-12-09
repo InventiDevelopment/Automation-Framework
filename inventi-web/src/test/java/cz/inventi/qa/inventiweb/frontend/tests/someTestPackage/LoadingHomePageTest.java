@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 public class LoadingHomePageTest extends RegressionTest {
 
     @Test
-    public void homePageIsLoafing() {
+    public void homePageIsLoaded() {
         homePage.homePageIsDisplayed();
     }
 }

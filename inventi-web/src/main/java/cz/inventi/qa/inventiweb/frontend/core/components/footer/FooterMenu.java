@@ -15,7 +15,7 @@ public class FooterMenu<T extends WebObject> extends WebComponent<T> {
         super(props);
     }
 
-    public FooterMenu footerMenuIsDisplay(){
+    public FooterMenu<T> footerMenuIsDisplayed(){
         footerMenu.isDisplayed();
         return this;
     }

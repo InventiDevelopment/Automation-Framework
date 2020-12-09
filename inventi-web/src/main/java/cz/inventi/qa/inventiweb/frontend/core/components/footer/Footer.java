@@ -12,7 +12,7 @@ public class Footer <T extends WebObject> extends WebComponent<T> {
     }
 
     public Footer<T> footerMenuIsDisplay(){
-        footerMenu.footerMenuIsDisplay();
+        footerMenu.footerMenuIsDisplayed();
         return this;
     }
 

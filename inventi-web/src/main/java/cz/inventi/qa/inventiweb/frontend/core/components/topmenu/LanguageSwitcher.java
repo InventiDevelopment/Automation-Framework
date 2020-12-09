@@ -2,14 +2,12 @@ package cz.inventi.qa.inventiweb.frontend.core.components.topmenu;
 
 import cz.inventi.qa.framework.core.annotations.FindElement;
 import cz.inventi.qa.framework.core.data.enums.Language;
-import cz.inventi.qa.framework.core.factories.webobject.WebObjectFactory;
 import cz.inventi.qa.framework.core.managers.LanguageManager;
 import cz.inventi.qa.framework.core.objects.web.WOProps;
 import cz.inventi.qa.framework.core.objects.web.WebComponent;
 import cz.inventi.qa.framework.core.objects.web.WebElement;
 import cz.inventi.qa.framework.core.objects.web.WebObject;
 import cz.inventi.qa.inventiweb.frontend.core.data.enums.Keyword;
-import cz.inventi.qa.inventiweb.frontend.core.webobjects.HomePage;
 import lombok.Getter;
 import org.testng.Assert;
 
@@ -20,8 +18,7 @@ import java.util.List;
 public class LanguageSwitcher<T extends WebObject> extends WebComponent<T> {
 
     @FindElement(xpath = "//li[contains(@class, 'is-active')]/a[contains(@class, 'language-switcher__item')]/abbr")
-    private WebElement currentLanguageListItem;
-
+    private WebElement currentLanguageWrapper;
     @FindElement(xpath = "//li[not(contains(@class, 'is-active'))]")
     private List<WebElement> inactiveLanguagesListItems;
 
@@ -39,20 +36,17 @@ public class LanguageSwitcher<T extends WebObject> extends WebComponent<T> {
     }
 
     public Language getCurrentLanguage() {
-        String languageName = currentLanguageListItem
+        String languageName = currentLanguageWrapper
                 .getAttribute("title")
                 .toLowerCase();
 
-        // TODO remove hard-coded values and use Keyword class and dictionary values comparison instead
-        LanguageManager.getTranslation(Keyword.CZECH);
-        switch (languageName) {
-            case "český":
-                return Language.CS_CZ;
-            case "english":
-                return Language.EN;
-            default:
-                throw new RuntimeException("Cannot detect page language.");
+        if (languageName.equals(LanguageManager.getTranslation(Keyword.CZECH).toLowerCase())) {
+            return Language.CS_CZ;
         }
+        if (languageName.equals(LanguageManager.getTranslation(Keyword.ENGLISH).toLowerCase())) {
+            return Language.EN;
+        }
+        throw new RuntimeException("Cannot detect page language from value '" + languageName + "'.");
     }
 
     public LanguageSwitcher<T> assertCurrentLanguageIs(Language language) {
