@@ -2,10 +2,12 @@ package cz.inventi.qa.inventiweb.frontend.core.components.topmenu;
 
 import cz.inventi.qa.framework.core.annotations.FindElement;
 import cz.inventi.qa.framework.core.data.enums.Language;
+import cz.inventi.qa.framework.core.factories.webobject.WebObjectFactory;
 import cz.inventi.qa.framework.core.objects.web.WOProps;
 import cz.inventi.qa.framework.core.objects.web.WebComponent;
 import cz.inventi.qa.framework.core.objects.web.WebElement;
 import cz.inventi.qa.framework.core.objects.web.WebObject;
+import cz.inventi.qa.inventiweb.frontend.core.webobjects.HomePage;
 import lombok.Getter;
 import org.testng.Assert;
 
@@ -15,8 +17,9 @@ import java.util.List;
 @FindElement(xpath = "//div[contains(@class, 'menu__misc')]//nav[contains(@class, 'language-switcher')]")
 public class LanguageSwitcher <T extends WebObject> extends WebComponent<T> {
 
-    @FindElement(xpath = "//li[contains(@class, 'is-active')]")
+    @FindElement(xpath = "//li[contains(@class, 'is-active')]/a[contains(@class, 'language-switcher__item')]/abbr")
     WebElement currentLanguageListItem;
+
     @FindElement(xpath = "//li[not(contains(@class, 'is-active'))]")
     List<WebElement> inactiveLanguagesListItems;
 
@@ -35,7 +38,6 @@ public class LanguageSwitcher <T extends WebObject> extends WebComponent<T> {
 
     public Language getCurrentLanguage() {
         String languageName = currentLanguageListItem
-                                .findElement("//a[contains(@class, 'language-switcher__item')]//abbr")
                                 .getAttribute("title")
                                 .toLowerCase();
 

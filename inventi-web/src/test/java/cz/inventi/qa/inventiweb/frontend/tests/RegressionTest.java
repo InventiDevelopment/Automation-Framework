@@ -25,8 +25,8 @@ public class RegressionTest extends BaseTest {
         homePage = FrameworkManager.initWebApp(browser, environment, language, HomePage.class);
     }
 
-    @AfterClass
+    /*@AfterClass
     public void quit() {
         DriverManager.cleanDriver();
-    }
+    }*/
 }

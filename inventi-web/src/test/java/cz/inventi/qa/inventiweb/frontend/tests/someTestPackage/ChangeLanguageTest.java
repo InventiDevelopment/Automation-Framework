@@ -11,9 +11,9 @@ public class ChangeLanguageTest extends RegressionTest {
         homePage
             .getTopPanel()
             .getLanguageSwitcher()
-            .switchLanguageTo(Language.EN)
-                .assertCurrentLanguageIs(Language.EN)
             .switchLanguageTo(Language.CS_CZ)
-                .assertCurrentLanguageIs(Language.CS_CZ);
+                .assertCurrentLanguageIs(Language.CS_CZ)
+            .switchLanguageTo(Language.EN)
+                .assertCurrentLanguageIs(Language.EN);
     }
 }
