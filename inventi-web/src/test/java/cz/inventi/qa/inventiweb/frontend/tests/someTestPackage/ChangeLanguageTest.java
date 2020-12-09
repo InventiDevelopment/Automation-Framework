@@ -5,15 +5,15 @@ import cz.inventi.qa.inventiweb.frontend.tests.RegressionTest;
 import org.testng.annotations.Test;
 
 public class ChangeLanguageTest extends RegressionTest {
+    private Language CZ = Language.CS_CZ;
+    private Language EN = Language.EN;
 
     @Test
     public void changeLanguage() {
         homePage
-            .getTopPanel()
-            .getLanguageSwitcher()
-            .switchLanguageTo(Language.CS_CZ)
-                .assertCurrentLanguageIs(Language.CS_CZ)
-            .switchLanguageTo(Language.EN)
-                .assertCurrentLanguageIs(Language.EN);
+                .switchLanguageTo(CZ)
+                .assertCurrentLanguageIs(CZ)
+                .switchLanguageTo(EN)
+                .assertCurrentLanguageIs(EN);
     }
 }

@@ -15,13 +15,13 @@ import java.util.List;
 
 @Getter
 @FindElement(xpath = "//div[contains(@class, 'menu__misc')]//nav[contains(@class, 'language-switcher')]")
-public class LanguageSwitcher <T extends WebObject> extends WebComponent<T> {
+public class LanguageSwitcher<T extends WebObject> extends WebComponent<T> {
 
     @FindElement(xpath = "//li[contains(@class, 'is-active')]/a[contains(@class, 'language-switcher__item')]/abbr")
-    WebElement currentLanguageListItem;
+    private WebElement currentLanguageListItem;
 
     @FindElement(xpath = "//li[not(contains(@class, 'is-active'))]")
-    List<WebElement> inactiveLanguagesListItems;
+    private List<WebElement> inactiveLanguagesListItems;
 
     public LanguageSwitcher(WOProps props) {
         super(props);
@@ -38,8 +38,8 @@ public class LanguageSwitcher <T extends WebObject> extends WebComponent<T> {
 
     public Language getCurrentLanguage() {
         String languageName = currentLanguageListItem
-                                .getAttribute("title")
-                                .toLowerCase();
+                .getAttribute("title")
+                .toLowerCase();
 
         // TODO remove hard-coded values and use Keyword class and dictionary values comparison instead
         switch (languageName) {
