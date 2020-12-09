@@ -3,10 +3,12 @@ package cz.inventi.qa.inventiweb.frontend.core.components.topmenu;
 import cz.inventi.qa.framework.core.annotations.FindElement;
 import cz.inventi.qa.framework.core.data.enums.Language;
 import cz.inventi.qa.framework.core.factories.webobject.WebObjectFactory;
+import cz.inventi.qa.framework.core.managers.LanguageManager;
 import cz.inventi.qa.framework.core.objects.web.WOProps;
 import cz.inventi.qa.framework.core.objects.web.WebComponent;
 import cz.inventi.qa.framework.core.objects.web.WebElement;
 import cz.inventi.qa.framework.core.objects.web.WebObject;
+import cz.inventi.qa.inventiweb.frontend.core.data.enums.Keyword;
 import cz.inventi.qa.inventiweb.frontend.core.webobjects.HomePage;
 import lombok.Getter;
 import org.testng.Assert;
@@ -42,6 +44,7 @@ public class LanguageSwitcher<T extends WebObject> extends WebComponent<T> {
                 .toLowerCase();
 
         // TODO remove hard-coded values and use Keyword class and dictionary values comparison instead
+        LanguageManager.getTranslation(Keyword.CZECH);
         switch (languageName) {
             case "český":
                 return Language.CS_CZ;
