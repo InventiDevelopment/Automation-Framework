@@ -23,10 +23,12 @@ public class WebComponentList<R extends WebComponent<?>> {
     private Object returnComponent;
     private List<R> componentsList;
     private String componentXpath;
+    private WOProps props;
 
-    public WebComponentList(Class<R> componentClass, Object returnComponent) {
-        this.returnComponent = returnComponent;
+    public <W extends WebPage> WebComponentList(Class<R> componentClass, WOProps<W> props) {
+        this.returnComponent = props.getReturnKlass();
         this.componentClass = componentClass;
+        this.props = props;
         componentXpath = componentClass.getDeclaredAnnotation(FindElement.class).xpath();
     }
 
@@ -64,9 +66,9 @@ public class WebComponentList<R extends WebComponent<?>> {
         return DriverManager.getDriver().findElements(By.xpath(componentXpath)).size();
     }
 
-    private WOProps getWOProps (int xpathIndex) {
+    private <W extends WebPage> WOProps<W> getWOProps (int xpathIndex) {
         FindElementHandler componentXpathWithIndex = new FindElementHandler(componentXpath, xpathIndex);
         String parentXpath = ((R) returnComponent).getXpath();
-        return new WOProps(PageBuilder.generateXpathWithParent(parentXpath, componentXpathWithIndex), returnComponent);
+        return new WOProps<W>(PageBuilder.generateXpathWithParent(parentXpath, componentXpathWithIndex), returnComponent, props);
     }
 }

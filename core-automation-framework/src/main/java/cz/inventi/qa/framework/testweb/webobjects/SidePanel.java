@@ -14,7 +14,7 @@ public class SidePanel<T extends WebObject> extends WebComponent<T> {
 
     public SidePanel(WOProps props) {
         super(props);
-        sideInfos = new WebComponentList(SideInfo.class, this);
+        sideInfos = new WebComponentList(SideInfo.class, props);
     }
 
 }

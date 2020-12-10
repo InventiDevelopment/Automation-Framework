@@ -1,14 +1,16 @@
 package cz.inventi.qa.framework.core.factories;
 
+import cz.inventi.qa.framework.core.objects.web.WOProps;
 import cz.inventi.qa.framework.core.objects.web.WebObject;
 import cz.inventi.qa.framework.core.annotations.FindElement;
 import cz.inventi.qa.framework.core.factories.webelement.WebElementFactory;
 import cz.inventi.qa.framework.core.factories.webobject.WebObjectFactory;
+import cz.inventi.qa.framework.core.objects.web.WebPage;
 
 public class PageBuilder {
 
-    public static <T extends WebObject> void initElements(T webObject) {
-        WebObjectFactory.initElements(webObject); // Building custom WebObjects
+    public static <T extends WebObject, W extends WebPage> void initElements(T webObject, WOProps<W> parentProps) {
+        WebObjectFactory.initElements(webObject, parentProps); // Building custom WebObjects
         WebElementFactory.initElements(webObject); // Building Selenium WebElement
     }
 

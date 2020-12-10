@@ -5,18 +5,18 @@ import cz.inventi.qa.framework.core.annotations.handlers.FindElementHandler;
 import cz.inventi.qa.framework.core.factories.PageBuilder;
 
 public abstract class WebObject {
-    private WOProps props;
+    private WOProps<?> props;
 
-    public WebObject(WOProps props) {
+    public WebObject(WOProps<?> props) {
         this.props = props;
-        PageBuilder.initElements(this);
+        PageBuilder.initElements(this, props);
     }
 
     public String getXpath () {
         return props.getXpath();
     }
 
-    public WOProps getProps() {
+    public WOProps<?> getProps() {
         return props;
     }
 

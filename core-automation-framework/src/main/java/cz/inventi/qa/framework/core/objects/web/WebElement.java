@@ -140,7 +140,7 @@ public class WebElement implements org.openqa.selenium.WebElement {
         printAction(xpath);
 
         for (org.openqa.selenium.WebElement selElement : selWebElement.findElements(By.xpath(xpath))) {
-            webElements.add((WebElement) selElement);
+            webElements.add(new WebElement(selWebElement, new WebElementLocator(DriverManager.getDriver(), getXpath(), 0)));
         }
         return webElements;
     }
