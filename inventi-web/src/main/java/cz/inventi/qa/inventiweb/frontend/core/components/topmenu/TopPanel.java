@@ -7,6 +7,7 @@ import cz.inventi.qa.framework.core.objects.web.WOProps;
 import cz.inventi.qa.framework.core.objects.web.WebComponent;
 import cz.inventi.qa.framework.core.objects.web.WebElement;
 import cz.inventi.qa.framework.core.objects.web.WebObject;
+import cz.inventi.qa.inventiweb.frontend.core.data.enums.MenuLink;
 import cz.inventi.qa.inventiweb.frontend.core.webobjects.HomePage;
 import lombok.Getter;
 
@@ -36,5 +37,10 @@ public class TopPanel<T extends WebObject> extends WebComponent<T> {
     public HomePage logoImg() {
         logoImg.isDisplayed();
         return WebObjectFactory.initPage(HomePage.class);
+    }
+
+    public TopPanel selectlinkInMainMenu(MenuLink menuLink){
+        mainMenu.clickMenuItem(menuLink);
+        return this;
     }
 }

@@ -13,10 +13,10 @@ import java.util.List;
 
 @Getter
 @FindElement(xpath = "//div[contains(@class, 'menu__wrapper')]")
-public class MainMenu <T extends WebObject> extends WebComponent<T> {
+public class MainMenu<T extends WebObject> extends WebComponent<T> {
 
-    @FindElement(xpath = "//nav[@id='menu-main']//a")
-    public List<WebElement> menuLinks;
+    @FindElement(xpath = "//nav[@id='menu-main']//ul//li//a//span")
+    private List<WebElement> menuLinks;
 
     public MainMenu(WOProps props) {
         super(props);
@@ -24,7 +24,10 @@ public class MainMenu <T extends WebObject> extends WebComponent<T> {
 
     public T clickMenuItem(MenuLink menuLink) {
         for (WebElement link : menuLinks) {
-            if (link.getText().equals(menuLink.getText())) link.click();
+            System.out.println("Menu link: " + link.getText());
+            if (link.getText().equals(menuLink.getText())) {
+                link.click();
+            }
         }
 
         // TODO create and add all page return values
