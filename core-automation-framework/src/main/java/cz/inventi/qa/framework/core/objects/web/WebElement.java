@@ -135,12 +135,12 @@ public class WebElement implements org.openqa.selenium.WebElement {
         return selWebElement.findElement(By.xpath(by.toString()));
     }
 
-    public List<WebElement> findElements(String xpath) {
+    public List<WebElement> findElements(String findElementsXpath) {
         List<WebElement> webElements = new ArrayList<>();
-        printAction(xpath);
+        printAction(findElementsXpath);
 
-        for (org.openqa.selenium.WebElement selElement : selWebElement.findElements(By.xpath(xpath))) {
-            webElements.add(new WebElement(selWebElement, new WebElementLocator(DriverManager.getDriver(), getXpath(), 0)));
+        for (org.openqa.selenium.WebElement selElement : selWebElement.findElements(By.xpath(findElementsXpath))) {
+            webElements.add(new WebElement(selWebElement, new WebElementLocator(DriverManager.getDriver(), getXpath() + findElementsXpath, 0)));
         }
         return webElements;
     }
