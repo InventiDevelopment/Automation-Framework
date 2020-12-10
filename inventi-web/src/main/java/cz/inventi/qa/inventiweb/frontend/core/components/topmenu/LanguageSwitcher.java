@@ -34,7 +34,7 @@ public class LanguageSwitcher<T extends WebObject> extends WebComponent<T> {
         }
         return this;
     }
-
+    
     public Language getCurrentLanguage() {
         String languageName = currentLanguageWrapper
                 .getAttribute("title")
