@@ -39,7 +39,7 @@ public class TopPanel<T extends WebObject> extends WebComponent<T> {
         return WebObjectFactory.initPage(HomePage.class);
     }
 
-    public TopPanel selectlinkInMainMenu(MenuLink menuLink){
+    public TopPanel<T> clickMenuItem(MenuLink menuLink){
         mainMenu.clickMenuItem(menuLink);
         return this;
     }

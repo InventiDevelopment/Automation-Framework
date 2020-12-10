@@ -15,7 +15,7 @@ import java.util.Objects;
 public class LanguageManager {
     private static final String LANGUAGE_DIRECTORY = "lang/";
     private static Language currentLanguage = ParametersManager.getLanguage();
-    private static final String LANGUAGE_FILE_PATH = loadLanguageFile();
+    private static String languageFile = loadLanguageFile();
     private static ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
     private static LanguageData languageData;
     private static Map<String, String> dictionary;
@@ -23,12 +23,12 @@ public class LanguageManager {
     public static void init () {
         if (!currentLanguage.equals(Language.NONE)) {
             try {
-                Log.debug("Loading language YAML dictionary file: '" + LANGUAGE_FILE_PATH + "'");
-                languageData = mapper.readValue(new File(LANGUAGE_FILE_PATH), LanguageData.class);
+                Log.debug("Loading language YAML dictionary file: '" + languageFile + "'");
+                languageData = mapper.readValue(new File(languageFile), LanguageData.class);
                 dictionary = languageData.getDictionary();
                 Log.debug("YAML language dictionary successfully loaded");
             } catch (IOException e) {
-                Log.fail("Not possible to read from language YML files. Check that files are accessible on following locations:\n '" + LANGUAGE_FILE_PATH + "'", e);
+                Log.fail("Not possible to read from language YML files. Check that files are accessible on following locations:\n '" + languageFile + "'", e);
             }
         } else {
             Log.debug("No language parameter acquired, skipping translation file lookup");
@@ -56,5 +56,12 @@ public class LanguageManager {
         } catch (NullPointerException e) {
             throw new RuntimeException("Given '" + index +  "' key has not been found in the dictionary file.");
         }
+    }
+
+    public static void changeLanguage(Language language) {
+        ParametersManager.setLanguage(language);
+        currentLanguage = language;
+        languageFile = loadLanguageFile();
+        init();
     }
 }

@@ -1,6 +1,8 @@
 package cz.inventi.qa.inventiweb.frontend.core.webobjects;
 
 import cz.inventi.qa.framework.core.data.enums.Language;
+import cz.inventi.qa.framework.core.factories.webobject.WebObjectFactory;
+import cz.inventi.qa.framework.core.managers.LanguageManager;
 import cz.inventi.qa.framework.core.objects.web.WOProps;
 import cz.inventi.qa.framework.core.objects.web.WebPage;
 import cz.inventi.qa.inventiweb.frontend.core.components.footer.Footer;
@@ -12,17 +14,18 @@ public class BasePage<T extends WebPage> extends WebPage {
     TopPanel<T> topPanel;
     Footer<T> footer;
 
-    public BasePage(WOProps props) {
+    public BasePage(WOProps<T> props) {
         super(props);
     }
 
-    public TopPanel<T> assertCurrentLanguageIs(Language language){
+    public T assertCurrentLanguageIs(Language language){
         topPanel.assertCurrentLanguageIs(language);
-        return topPanel;
+        return (T) WebObjectFactory.initPage(getProps().getPage());
     }
 
-    public TopPanel<T> switchLanguageTo(Language language){
+    public T switchLanguageTo(Language language){
         topPanel.switchLanguageTo(language);
-        return topPanel;
+        LanguageManager.changeLanguage(language);
+        return (T) WebObjectFactory.initPage(getProps().getPage());
     }
 }
