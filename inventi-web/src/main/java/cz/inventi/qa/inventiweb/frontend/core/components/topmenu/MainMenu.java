@@ -24,9 +24,11 @@ public class MainMenu<T extends WebObject> extends WebComponent<T> {
 
     public T clickMenuItem(MenuLink menuLink) {
         for (WebElement link : menuLinks) {
-            System.out.println("Menu link: " + link.getText());
-            if (link.getText().equals(menuLink.getText())) {
+            String currentLinkText = link.getText().toLowerCase();
+            String menuLinkText = menuLink.getText().toLowerCase();
+            if (currentLinkText.equals(menuLinkText)) {
                 link.click();
+                break;
             }
         }
 

@@ -20,7 +20,7 @@ public class RegressionTest extends BaseTest {
     @Parameters({"environment", "browser", "language"})
     public void init(@Optional("prod") String environment,
                      @Optional("chrome") String browser,
-                     @Optional("EN") String language) {
+                     @Optional("CS_CZ") String language) {
 
         homePage = FrameworkManager.initWebApp(browser, environment, language, HomePage.class);
     }

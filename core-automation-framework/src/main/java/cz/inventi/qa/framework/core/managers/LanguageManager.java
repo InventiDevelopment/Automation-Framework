@@ -15,7 +15,7 @@ import java.util.Objects;
 public class LanguageManager {
     private static final String LANGUAGE_DIRECTORY = "lang/";
     private static Language currentLanguage = ParametersManager.getLanguage();
-    private static final String LANGUAGE_FILE_PATH = Utils.getFilePathDecoded(Objects.requireNonNull(LanguageManager.class.getClassLoader().getResource(LANGUAGE_DIRECTORY + currentLanguage.toString().toLowerCase() + ".yml")).getPath());
+    private static final String LANGUAGE_FILE_PATH = loadLanguageFile();
     private static ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
     private static LanguageData languageData;
     private static Map<String, String> dictionary;
@@ -33,6 +33,13 @@ public class LanguageManager {
         } else {
             Log.debug("No language parameter acquired, skipping translation file lookup");
         }
+    }
+
+    private static String loadLanguageFile() {
+        if (!currentLanguage.equals(Language.NONE)) {
+            return Utils.getFilePathDecoded(Objects.requireNonNull(LanguageManager.class.getClassLoader().getResource(LANGUAGE_DIRECTORY + currentLanguage.toString().toLowerCase() + ".yml")).getPath());
+        }
+        return "";
     }
 
     public static Map<String, String> getDictionary() {
