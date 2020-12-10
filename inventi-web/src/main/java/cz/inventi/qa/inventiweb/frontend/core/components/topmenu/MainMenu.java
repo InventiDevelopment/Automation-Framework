@@ -2,11 +2,9 @@ package cz.inventi.qa.inventiweb.frontend.core.components.topmenu;
 
 import cz.inventi.qa.framework.core.annotations.FindElement;
 import cz.inventi.qa.framework.core.factories.webobject.WebObjectFactory;
-import cz.inventi.qa.framework.core.objects.web.WOProps;
-import cz.inventi.qa.framework.core.objects.web.WebComponent;
-import cz.inventi.qa.framework.core.objects.web.WebElement;
-import cz.inventi.qa.framework.core.objects.web.WebObject;
+import cz.inventi.qa.framework.core.objects.web.*;
 import cz.inventi.qa.inventiweb.frontend.core.data.enums.MenuLink;
+import cz.inventi.qa.inventiweb.frontend.core.webobjects.EventsPage;
 import lombok.Getter;
 
 import java.util.List;
@@ -22,7 +20,7 @@ public class MainMenu<T extends WebObject> extends WebComponent<T> {
         super(props);
     }
 
-    public T clickMenuItem(MenuLink menuLink) {
+    public <W extends WebPage> W clickMenuItem(MenuLink menuLink) {
         for (WebElement link : menuLinks) {
             String currentLinkText = link.getText().toLowerCase();
             String menuLinkText = menuLink.getText().toLowerCase();
@@ -35,7 +33,7 @@ public class MainMenu<T extends WebObject> extends WebComponent<T> {
         // TODO create and add all page return values
         switch (menuLink) {
             case EVENTS:
-                return null;
+                return (W) WebObjectFactory.initPage(EventsPage.class);
             case CAREERS:
                 return null;
             case CONTACTS:
@@ -45,7 +43,7 @@ public class MainMenu<T extends WebObject> extends WebComponent<T> {
             case WHO_ARE_WE:
                 return null;
             case CASE_STUDIES:
-                return (T) WebObjectFactory.initPage(null);
+                return null;
             default:
                 throw new RuntimeException("Given page (" + menuLink.toString() + ") return value not defined.");
         }

@@ -9,7 +9,7 @@ import cz.inventi.qa.framework.core.objects.web.WebPage;
 
 public class PageBuilder {
 
-    public static <T extends WebObject, W extends WebPage> void initElements(T webObject, WOProps<W> parentProps) {
+    public static <T extends WebObject> void initElements(T webObject, WOProps parentProps) {
         WebObjectFactory.initElements(webObject, parentProps); // Building custom WebObjects
         WebElementFactory.initElements(webObject); // Building Selenium WebElement
     }

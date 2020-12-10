@@ -3,26 +3,33 @@ package cz.inventi.qa.framework.core.objects.web;
 import cz.inventi.qa.framework.core.annotations.FindElement;
 import cz.inventi.qa.framework.core.factories.PageBuilder;
 
-public class WOProps<T extends WebPage> {
+public class WOProps {
     private String xpath = "";
     private Object returnKlass;
-    private Class<T> page;
-
-    public WOProps(String xpath, Object returnKlass, WOProps<T> parentProps) {
-        this.xpath = xpath;
-        this.returnKlass = returnKlass;
-        this.page = parentProps.getPage();
-    }
+    private WOProps parentProps;
 
     public WOProps(String xpath) {
         this.xpath = xpath;
     }
 
-    public WOProps(FindElement findElementAnnotation, Class<T> webPage) {
-        if (findElementAnnotation != null) {
-            this.xpath = PageBuilder.generateIndexedXpath(findElementAnnotation);
-        }
-        this.page = webPage;
+    public WOProps(String xpath, Object returnKlass, WOProps parentProps) {
+        this.xpath = xpath;
+        this.returnKlass = returnKlass;
+        this.parentProps = parentProps;
+    }
+
+    public WOProps(FindElement findElementAnnotation, Object returnKlass) {
+        this(findElementAnnotation);
+        this.returnKlass = returnKlass;
+    }
+
+    public WOProps(FindElement findElementAnnotation) {
+        this(PageBuilder.generateIndexedXpath(findElementAnnotation));
+    }
+
+    public WOProps(FindElement findElementAnnotation, WOProps parentProps) {
+        this(findElementAnnotation);
+        this.parentProps = parentProps;
     }
 
     public String getXpath() {
@@ -33,7 +40,7 @@ public class WOProps<T extends WebPage> {
         return returnKlass;
     }
 
-    public Class<T> getPage() {
-        return page;
+    public  <T extends WebPage> Class<T> getPage() {
+        return parentProps.getPage();
     }
 }

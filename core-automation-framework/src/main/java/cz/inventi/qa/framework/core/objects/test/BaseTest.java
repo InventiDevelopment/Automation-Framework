@@ -1,8 +1,11 @@
 package cz.inventi.qa.framework.core.objects.test;
 
 import cz.inventi.qa.framework.core.Log;
+import cz.inventi.qa.framework.core.data.enums.RunMode;
 import cz.inventi.qa.framework.core.managers.ConfigManager;
 import cz.inventi.qa.framework.core.annotations.ConfigFiles;
+import cz.inventi.qa.framework.core.managers.DriverManager;
+import org.testng.annotations.AfterClass;
 
 import java.util.Objects;
 
@@ -27,5 +30,12 @@ public abstract class BaseTest {
                     "is created in resources folder in the package you are launching test from.");
         }
         return null;
+    }
+
+    @AfterClass
+    public void quit() {
+        if (!ConfigManager.getRunMode().equals(RunMode.DEBUG)) {
+            DriverManager.cleanDriver();
+        }
     }
 }

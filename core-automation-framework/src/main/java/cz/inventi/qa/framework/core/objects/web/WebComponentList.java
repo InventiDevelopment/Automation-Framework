@@ -25,7 +25,7 @@ public class WebComponentList<R extends WebComponent<?>> {
     private String componentXpath;
     private WOProps props;
 
-    public <W extends WebPage> WebComponentList(Class<R> componentClass, WOProps<W> props) {
+    public WebComponentList(Class<R> componentClass, WOProps props) {
         this.returnComponent = props.getReturnKlass();
         this.componentClass = componentClass;
         this.props = props;
@@ -53,9 +53,9 @@ public class WebComponentList<R extends WebComponent<?>> {
     }
 
     private int getNumberOfComponents() {
-        if (ConfigManager.getDriverConfigData().getGeneralSettings().getWait().waitsAutomatically()) {
+        if (ConfigManager.driverWaitsAutomatically()) {
             FluentWait<WebDriver> fluentWait = new FluentWait<>(DriverManager.getDriver())
-                    .withTimeout(Duration.ofMillis(ConfigManager.getDriverConfigData().getGeneralSettings().getWait().getTimeouts().getMax()))
+                    .withTimeout(Duration.ofMillis(ConfigManager.getTimeouts().getMax()))
                     .pollingEvery(Duration.ofMillis(100))
                     .ignoring(NoSuchElementException.class)
                     .ignoring(StaleElementReferenceException.class)
@@ -66,9 +66,9 @@ public class WebComponentList<R extends WebComponent<?>> {
         return DriverManager.getDriver().findElements(By.xpath(componentXpath)).size();
     }
 
-    private <W extends WebPage> WOProps<W> getWOProps (int xpathIndex) {
+    private WOProps getWOProps (int xpathIndex) {
         FindElementHandler componentXpathWithIndex = new FindElementHandler(componentXpath, xpathIndex);
         String parentXpath = ((R) returnComponent).getXpath();
-        return new WOProps<W>(PageBuilder.generateXpathWithParent(parentXpath, componentXpathWithIndex), returnComponent, props);
+        return new WOProps(PageBuilder.generateXpathWithParent(parentXpath, componentXpathWithIndex), returnComponent, props);
     }
 }

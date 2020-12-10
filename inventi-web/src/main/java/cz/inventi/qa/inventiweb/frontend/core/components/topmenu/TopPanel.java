@@ -3,10 +3,7 @@ package cz.inventi.qa.inventiweb.frontend.core.components.topmenu;
 import cz.inventi.qa.framework.core.annotations.FindElement;
 import cz.inventi.qa.framework.core.data.enums.Language;
 import cz.inventi.qa.framework.core.factories.webobject.WebObjectFactory;
-import cz.inventi.qa.framework.core.objects.web.WOProps;
-import cz.inventi.qa.framework.core.objects.web.WebComponent;
-import cz.inventi.qa.framework.core.objects.web.WebElement;
-import cz.inventi.qa.framework.core.objects.web.WebObject;
+import cz.inventi.qa.framework.core.objects.web.*;
 import cz.inventi.qa.inventiweb.frontend.core.data.enums.MenuLink;
 import cz.inventi.qa.inventiweb.frontend.core.webobjects.HomePage;
 import lombok.Getter;
@@ -39,8 +36,7 @@ public class TopPanel<T extends WebObject> extends WebComponent<T> {
         return WebObjectFactory.initPage(HomePage.class);
     }
 
-    public TopPanel<T> clickMenuItem(MenuLink menuLink){
-        mainMenu.clickMenuItem(menuLink);
-        return this;
+    public <W extends WebPage> W clickMenuItem(MenuLink menuLink){
+        return mainMenu.clickMenuItem(menuLink);
     }
 }

@@ -17,19 +17,19 @@ import java.lang.reflect.Modifier;
 
 public class WebObjectFactory {
 
-    public static <T extends WebObject, W extends WebPage> void initElements (T webObject, WOProps<W> parentProps) {
+    public static <T extends WebObject> void initElements (T webObject, WOProps parentProps) {
         initParentWebObjectFields(webObject, parentProps);
         initElements(webObject.getClass(), webObject, parentProps);
     }
 
-    private static <T extends WebObject, W extends WebPage> void initElements (Class<? extends WebObject> parentWebObjectClass, T webObject, WOProps<W> webPage) {
+    private static <T extends WebObject, W extends WebPage> void initElements (Class<? extends WebObject> parentWebObjectClass, T webObject, WOProps parentProps) {
         for (Field childComponentField : parentWebObjectClass.getDeclaredFields()) {
             if (!Modifier.toString(childComponentField.getModifiers()).equals("")) {
                 childComponentField.setAccessible(true);
             }
 
             if (isRelatedWebComponentField(childComponentField)) {
-                assignWebComponentField(childComponentField, webObject, webPage);
+                assignWebComponentField(childComponentField, webObject, parentProps);
             }
         }
     }
@@ -38,7 +38,7 @@ public class WebObjectFactory {
         return WebComponent.class.isAssignableFrom(field.getType());
     }
 
-    private static <T extends WebObject, W extends WebPage> void assignWebComponentField(Field childComponentField, T parentWebObject, WOProps<W> parentProps) {
+    private static <T extends WebObject> void assignWebComponentField(Field childComponentField, T parentWebObject, WOProps parentProps) {
         T childWebComponent = WebObjectFactory.reflectionInitClass((Class<T>) childComponentField.getType(), new Class<?>[]{WOProps.class}, new Object[]{getWOProps(childComponentField, parentWebObject, parentProps)});
 
         try {
@@ -49,13 +49,13 @@ public class WebObjectFactory {
         }
     }
 
-    private static <T extends WebObject, W extends WebPage> WOProps<W> getWOProps (Field f, T parentWebObject, WOProps<W> parentProps) {
+    private static <T extends WebObject> WOProps getWOProps (Field f, T parentWebObject, WOProps parentProps) {
         String finalXpath = "";
 
         if (!hasNoParentAnnotation(f)) {
             finalXpath = PageBuilder.generateXpathWithParent(parentWebObject.getXpath(), f.getType().getDeclaredAnnotation(FindElement.class));
         }
-        return new WOProps<W>(finalXpath, parentWebObject, parentProps);
+        return new WOProps(finalXpath, parentWebObject, parentProps);
     }
 
     private static boolean hasNoParentAnnotation (Field f) {
@@ -63,18 +63,18 @@ public class WebObjectFactory {
         return childNoParentAnnotation != null && childNoParentAnnotation.value();
     }
 
-    private static <T extends WebObject, W extends WebPage> void initParentWebObjectFields(T webObject, WOProps<W> props) {
+    private static <T extends WebObject> void initParentWebObjectFields(T webObject, WOProps parentProps) {
         if (WebObject.class.isAssignableFrom(webObject.getClass().getSuperclass())) {
             Class<T> parentClass = (Class<T>) webObject.getClass().getSuperclass();
             while (!parentClass.equals(WebObject.class) && !parentClass.equals(WebComponent.class)) {
-                initElements(parentClass, webObject, props);
+                initElements(parentClass, webObject, parentProps);
                 parentClass = (Class<T>) parentClass.getSuperclass();
             }
         }
     }
 
     public static <T extends WebPage> T initPage (Class<T> webPageClass) {
-        return reflectionInitClass(webPageClass, new Class[] {WOProps.class}, new Object[] {new WOProps<T>(webPageClass.getDeclaredAnnotation(FindElement.class), webPageClass)});
+        return reflectionInitClass(webPageClass, new Class[] {WOProps.class}, new Object[] {new WOProps(webPageClass.getDeclaredAnnotation(FindElement.class), webPageClass)});
     }
 
     public static <T extends WebObject> T reflectionInitClass (Class<T> klass, Class<?>[] constructorArgs, Object[] constructorParams) {
@@ -90,7 +90,7 @@ public class WebObjectFactory {
         }
     }
 
-    public static <T extends WebObject> T reflectionInitClassWithProps (Class<T> klass, WOProps<?> props) {
+    public static <T extends WebObject> T reflectionInitClassWithProps (Class<T> klass, WOProps props) {
         return reflectionInitClass(klass, new Class[] {WOProps.class}, new Object[] {props});
     }
 }

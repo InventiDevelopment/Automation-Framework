@@ -4,11 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import cz.inventi.qa.framework.core.Log;
 import cz.inventi.qa.framework.core.Utils;
+import cz.inventi.qa.framework.core.data.enums.RunMode;
+import cz.inventi.qa.framework.core.data.web.Timeouts;
 import cz.inventi.qa.framework.core.objects.config.AppConfigData;
 import cz.inventi.qa.framework.core.objects.config.DriverConfigData;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 
 public class ConfigManager {
@@ -73,5 +76,17 @@ public class ConfigManager {
 
     public static String getCustomDriverConfigPath() {
         return customDriverConfigPath;
+    }
+
+    public static RunMode getRunMode() {
+        return RunMode.valueOf(driverConfigData.getGeneralSettings().getRunMode().toUpperCase());
+    }
+
+    public static boolean driverWaitsAutomatically() {
+        return driverConfigData.getGeneralSettings().getWait().waitsAutomatically();
+    }
+
+    public static Timeouts getTimeouts() {
+        return driverConfigData.getGeneralSettings().getWait().getTimeouts();
     }
 }

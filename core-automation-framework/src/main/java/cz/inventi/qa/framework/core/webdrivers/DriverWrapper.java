@@ -2,17 +2,13 @@ package cz.inventi.qa.framework.core.webdrivers;
 
 import cz.inventi.qa.framework.core.data.enums.WindowSize;
 import cz.inventi.qa.framework.core.data.web.GeneralSettings;
-import cz.inventi.qa.framework.core.data.web.Timeouts;
 import cz.inventi.qa.framework.core.managers.ConfigManager;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
-import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.time.Duration;
 import java.util.logging.Level;
 
 public abstract class DriverWrapper {

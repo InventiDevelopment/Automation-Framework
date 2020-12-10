@@ -1,5 +1,6 @@
 generalSettings:
   windowSize: maximized
+  runMode: debug
   customTargetPath: "~/.m2/repository/webdriver"
   wait:
     waitsAutomatically: true

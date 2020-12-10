@@ -10,7 +10,7 @@ public class ChangeLanguageTest extends RegressionTest {
 
     @Test
     public void changeLanguage() {
-        this.homePage.getTopPanel()
+        homePage.getTopPanel()
                 .switchLanguageTo(CS_CZ)
                 .assertCurrentLanguageIs(CS_CZ)
                 .switchLanguageTo(EN)

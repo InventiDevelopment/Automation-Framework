@@ -28,7 +28,7 @@ public class Utils {
         Log.debug("Waiting for document load and JS actions to finish");
 
         new FluentWait<>(driver)
-                .withTimeout(Duration.ofMillis(ConfigManager.getDriverConfigData().getGeneralSettings().getWait().getTimeouts().getMid()))
+                .withTimeout(Duration.ofMillis(ConfigManager.getTimeouts().getMid()))
                 .pollingEvery(Duration.ofMillis(100))
                 .withMessage("JavaScript operations still not finished - document not ready")
                 .until(webDriver -> ((JavascriptExecutor) driver).executeScript("return document.readyState").equals("complete"));

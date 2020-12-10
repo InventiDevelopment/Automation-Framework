@@ -9,6 +9,8 @@ public class GeneralSettings extends WebDriverSetting {
     private String customTargetPath;
     @JsonProperty
     private String windowSize;
+    @JsonProperty
+    private String runMode;
 
     public Wait getWait() {
         return wait;
@@ -20,5 +22,9 @@ public class GeneralSettings extends WebDriverSetting {
 
     public String getWindowSize() {
         return windowSize;
+    }
+
+    public String getRunMode() {
+        return runMode;
     }
 }

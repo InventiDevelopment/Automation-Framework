@@ -6,6 +6,7 @@ import cz.inventi.qa.framework.core.annotations.FindElement;
 import cz.inventi.qa.framework.core.objects.web.WOProps;
 import cz.inventi.qa.inventiweb.frontend.core.components.footer.FooterMenu;
 import cz.inventi.qa.inventiweb.frontend.core.components.topmenu.TopPanel;
+import cz.inventi.qa.inventiweb.frontend.core.data.enums.MenuLink;
 import lombok.Getter;
 
 @Getter
@@ -23,5 +24,9 @@ public class HomePage extends BasePage<HomePage> {
         topPanel.logoImg();
         footerMenu.footerMenuIsDisplayed();
         return this;
+    }
+
+    public EventsPage navigateToEventsPage() {
+        return topPanel.clickMenuItem(MenuLink.EVENTS);
     }
 }

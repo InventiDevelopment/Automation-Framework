@@ -1,14 +1,13 @@
 package cz.inventi.qa.framework.core.objects.web;
 
 import cz.inventi.qa.framework.core.Utils;
-import cz.inventi.qa.framework.core.factories.webobject.WebObjectFactory;
 import cz.inventi.qa.framework.core.managers.ConfigManager;
 import cz.inventi.qa.framework.core.managers.DriverManager;
 import org.testng.Assert;
 
 public abstract class WebPage extends WebObject {
 
-    public WebPage(WOProps<?> props) {
+    public WebPage(WOProps props) {
         super(props);
         waitUntilPageLoaded();
     }
@@ -29,6 +28,6 @@ public abstract class WebPage extends WebObject {
     }
 
     public <T extends WebPage> T regeneratePage() {
-        return (T) WebObjectFactory.initPage(getProps().getPage());
+        return (T) this;
     }
 }
