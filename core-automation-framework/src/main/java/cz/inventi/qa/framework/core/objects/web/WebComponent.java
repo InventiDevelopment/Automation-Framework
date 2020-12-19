@@ -12,6 +12,7 @@ public class WebComponent<T extends WebObject> extends WebObject {
         return getKlass();
     }
 
+    @SuppressWarnings("unchecked")
     public T getKlass() {
         return (T) props.getReturnKlass();
     }

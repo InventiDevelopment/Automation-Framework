@@ -1,4 +1,6 @@
 generalSettings:
+  windowSize: maximized
+  runMode: normal
   customTargetPath: "~/.m2/repository/webdriver"
   wait:
     waitsAutomatically: false

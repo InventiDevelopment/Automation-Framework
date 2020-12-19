@@ -1,8 +1,8 @@
 package cz.inventi.qa.framework.tests.unit.config;
 
 import cz.inventi.qa.framework.core.data.web.GeneralSettings;
-import cz.inventi.qa.framework.tests.core.TestCase;
 import cz.inventi.qa.framework.core.managers.ConfigManager;
+import cz.inventi.qa.framework.tests.core.TestCase;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

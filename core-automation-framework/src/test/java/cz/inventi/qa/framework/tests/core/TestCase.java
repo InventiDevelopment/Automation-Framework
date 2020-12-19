@@ -1,10 +1,14 @@
 package cz.inventi.qa.framework.tests.core;
 
-import cz.inventi.qa.framework.core.objects.test.BaseTest;
+import cz.inventi.qa.framework.core.annotations.ConfigFiles;
 import cz.inventi.qa.framework.core.managers.DriverManager;
 import cz.inventi.qa.framework.core.managers.FrameworkManager;
+import cz.inventi.qa.framework.core.objects.test.BaseTest;
 import cz.inventi.qa.framework.testweb.webobjects.HomePage;
-import org.testng.annotations.*;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Optional;
+import org.testng.annotations.Parameters;
 
 public class TestCase extends BaseTest {
     public HomePage homePage;

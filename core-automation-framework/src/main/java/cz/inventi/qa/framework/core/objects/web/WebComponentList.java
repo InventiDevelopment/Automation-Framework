@@ -17,7 +17,6 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class WebComponentList<R extends WebComponent<?>> {
     private Class<R> componentClass;
     private Object returnComponent;
@@ -66,9 +65,9 @@ public class WebComponentList<R extends WebComponent<?>> {
         return DriverManager.getDriver().findElements(By.xpath(componentXpath)).size();
     }
 
-    private WOProps getWOProps (int xpathIndex) {
+    private <O extends WebObject> WOProps getWOProps (int xpathIndex) {
         FindElementHandler componentXpathWithIndex = new FindElementHandler(componentXpath, xpathIndex);
-        String parentXpath = ((R) returnComponent).getXpath();
+        String parentXpath = props.getXpath();
         return new WOProps(PageBuilder.generateXpathWithParent(parentXpath, componentXpathWithIndex), returnComponent, props);
     }
 }

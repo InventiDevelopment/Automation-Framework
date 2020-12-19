@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="Unit Tests">
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Unit Tests" parallel="true">
     <suite-files>
         <suite-file path="unitTestsNoWait.xml"/>
         <suite-file path="unitTestsWithWait.xml"/>

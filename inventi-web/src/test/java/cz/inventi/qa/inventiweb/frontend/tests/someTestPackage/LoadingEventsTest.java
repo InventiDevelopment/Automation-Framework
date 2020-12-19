@@ -9,7 +9,7 @@ import static cz.inventi.qa.inventiweb.frontend.core.data.enums.MenuLink.EVENTS;
 public class LoadingEventsTest extends RegressionTest {
 
     @Test
-    public void evenetsPageIsLoaded() {
+    public void eventsPageIsLoaded() {
         homePage.switchLanguageTo(EN)
                 .getTopPanel()
                 .clickMenuItem(EVENTS);

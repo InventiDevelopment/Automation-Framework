@@ -51,9 +51,11 @@ public abstract class DriverWrapper {
     }
 
     private void setWindowSize() {
-        String windowSize = ConfigManager.getDriverConfigData().getGeneralSettings().getWindowSize().toUpperCase();
-        if (windowSize.equals(WindowSize.MAXIMIZED.toString())) {
-            driver.manage().window().maximize();
+        String windowSize = ConfigManager.getDriverConfigData().getGeneralSettings().getWindowSize();
+        if (windowSize != null) {
+            if (windowSize.toUpperCase().equals(WindowSize.MAXIMIZED.toString())) {
+                driver.manage().window().maximize();
+            }
         }
     }
 
