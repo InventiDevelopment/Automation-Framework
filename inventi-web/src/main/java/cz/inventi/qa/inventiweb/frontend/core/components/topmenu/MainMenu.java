@@ -4,7 +4,7 @@ import cz.inventi.qa.framework.core.annotations.FindElement;
 import cz.inventi.qa.framework.core.factories.webobject.WebObjectFactory;
 import cz.inventi.qa.framework.core.objects.web.*;
 import cz.inventi.qa.inventiweb.frontend.core.data.enums.MenuLink;
-import cz.inventi.qa.inventiweb.frontend.core.webobjects.EventsPage;
+import cz.inventi.qa.inventiweb.frontend.core.webobjects.*;
 import lombok.Getter;
 
 import java.util.List;
@@ -30,20 +30,19 @@ public class MainMenu<T extends WebObject> extends WebComponent<T> {
             }
         }
 
-        // TODO create and add all page return values
         switch (menuLink) {
             case EVENTS:
                 return (W) WebObjectFactory.initPage(EventsPage.class);
             case CAREERS:
-                return null;
+                return (W) WebObjectFactory.initPage(CareersPage.class);
             case CONTACTS:
-                return null;
+                return (W) WebObjectFactory.initPage(ContactsPage.class);
             case WHAT_WE_DO:
-                return null;
-            case WHO_ARE_WE:
-                return null;
+                return (W) WebObjectFactory.initPage(WhatWeDoPage.class);
+            case WHO_WE_ARE:
+                return (W) WebObjectFactory.initPage(WhoWeArePage.class);
             case CASE_STUDIES:
-                return null;
+                return (W) WebObjectFactory.initPage(CaseStudiesPage.class);
             default:
                 throw new RuntimeException("Given page (" + menuLink.toString() + ") return value not defined.");
         }

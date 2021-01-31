@@ -1,13 +1,14 @@
 package cz.inventi.qa.inventiweb.frontend.core.webobjects;
 
+import cz.inventi.qa.framework.core.annotations.Application;
 import cz.inventi.qa.framework.core.objects.web.WOProps;
-import cz.inventi.qa.framework.core.objects.web.WebPage;
 import cz.inventi.qa.inventiweb.frontend.core.components.topmenu.TopPanel;
 
-public class EventsPage extends WebPage {
+@Application("inventiweb")
+public class CareersPage extends BasePage<HomePage> {
     private TopPanel<EventsPage> topPanel;
 
-    public EventsPage(WOProps props) {
+    public CareersPage(WOProps props) {
         super(props);
     }
 }

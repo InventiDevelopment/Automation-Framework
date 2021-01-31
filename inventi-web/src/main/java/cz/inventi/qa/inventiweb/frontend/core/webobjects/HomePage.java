@@ -26,7 +26,27 @@ public class HomePage extends BasePage<HomePage> {
         return this;
     }
 
+    public WhoWeArePage navigateToWhoWeArePage() {
+        return topPanel.clickMenuItem(MenuLink.WHO_WE_ARE);
+    }
+
+    public WhatWeDoPage navigateToWhatWeDoPage() {
+        return topPanel.clickMenuItem(MenuLink.WHAT_WE_DO);
+    }
+
+    public CaseStudiesPage navigateToCaseStudiesPage() {
+        return topPanel.clickMenuItem(MenuLink.CASE_STUDIES);
+    }
+
     public EventsPage navigateToEventsPage() {
         return topPanel.clickMenuItem(MenuLink.EVENTS);
+    }
+
+    public CareersPage navigateToCareersPage() {
+        return topPanel.clickMenuItem(MenuLink.CAREERS);
+    }
+
+    public ContactsPage navigateToContactsPage() {
+        return topPanel.clickMenuItem(MenuLink.CAREERS);
     }
 }
