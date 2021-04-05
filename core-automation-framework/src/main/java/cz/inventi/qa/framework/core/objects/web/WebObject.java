@@ -1,8 +1,8 @@
 package cz.inventi.qa.framework.core.objects.web;
 
-import cz.inventi.qa.framework.core.annotations.FindElement;
-import cz.inventi.qa.framework.core.annotations.handlers.FindElementHandler;
-import cz.inventi.qa.framework.core.factories.PageBuilder;
+import cz.inventi.qa.framework.core.annotations.web.FindElement;
+import cz.inventi.qa.framework.core.annotations.web.handlers.FindElementHandler;
+import cz.inventi.qa.framework.core.factories.web.PageBuilder;
 
 public abstract class WebObject {
     private WOProps props;
@@ -21,9 +21,9 @@ public abstract class WebObject {
     }
 
     public FindElement getFindElementAnnotation () {
-        FindElement findElementAnnotation = getClass().getAnnotation(FindElement.class);
+        FindElement findElement = getClass().getAnnotation(FindElement.class);
 
-        if (findElementAnnotation == null) {
+        if (findElement == null) {
             return new FindElementHandler("", 0);
         }
         return getClass().getAnnotation(FindElement.class);

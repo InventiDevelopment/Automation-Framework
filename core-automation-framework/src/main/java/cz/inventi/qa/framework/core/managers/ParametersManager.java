@@ -1,51 +1,51 @@
 package cz.inventi.qa.framework.core.managers;
 
-import cz.inventi.qa.framework.core.Log;
-import cz.inventi.qa.framework.core.data.enums.Browser;
-import cz.inventi.qa.framework.core.data.enums.Language;
+import cz.inventi.qa.framework.core.data.enums.ApplicationType;
+import cz.inventi.qa.framework.core.objects.parameters.ApiAppParameters;
+import cz.inventi.qa.framework.core.objects.parameters.CommonParameters;
+import cz.inventi.qa.framework.core.objects.parameters.WebAppParameters;
+import cz.inventi.qa.framework.core.objects.api.Api;
+import cz.inventi.qa.framework.core.objects.web.WebPage;
 
 public class ParametersManager {
-    private static String environment;
-    private static Browser browser;
-    private static Language language;
+    private static ApiAppParameters<?> apiAppParameters;
+    private static WebAppParameters<?> webAppParameters;
+    private static CommonParameters commonParameters;
+    private static ApplicationType applicationType;
 
-    public static String getEnvironment() {
-        return environment;
+    public static <T extends Api> void setApiParameters(String environment, Class<T> api) {
+        setCommonParameters(environment);
+        apiAppParameters = new ApiAppParameters<>(environment, api);
+        applicationType = ApplicationType.API;
     }
 
-    public static void setEnvironment(String environment) {
-        ParametersManager.environment = environment;
+    public static <T extends WebPage> void setWebParameters(String environment, String browser, String language, Class<T> startingWebpage) {
+        setCommonParameters(environment, language);
+        webAppParameters = new WebAppParameters<>(environment, browser, language, startingWebpage);
+        applicationType = ApplicationType.WEB;
     }
 
-    public static Browser getBrowser() {
-        return browser;
+    public static void setCommonParameters(String environment, String language) {
+        commonParameters = new CommonParameters(environment, language);
     }
 
-    public static Language getLanguage() {
-        return language;
+    public static void setCommonParameters(String environment) {
+        commonParameters = new CommonParameters("EN", environment);
     }
 
-    public static void setBrowser(Browser browser) {
-        ParametersManager.browser = browser;
+    public static <T extends Api> ApiAppParameters<T> getApiAppParameters() {
+        return (ApiAppParameters<T>) apiAppParameters;
     }
 
-    public static void setLanguage(Language language) {
-        ParametersManager.language = language;
+    public static <T extends WebPage> WebAppParameters<T> getWebAppParameters() {
+        return (WebAppParameters<T>) webAppParameters;
     }
 
-    public static void setBrowser(String browser) {
-        try {
-            setBrowser(Browser.valueOf(browser.toUpperCase()));
-        } catch (IllegalArgumentException e) {
-            Log.fail("The '" + browser + "' browser is not supported.");
-        }
+    public static CommonParameters getCommonParameters() {
+        return commonParameters;
     }
 
-    public static void setLanguage(String language) {
-        try {
-            setLanguage(Language.valueOf(language.toUpperCase()));
-        } catch (IllegalArgumentException e) {
-            Log.fail("The '" + language + "' language is not supported.");
-        }
+    public static ApplicationType getApplicationType() {
+        return applicationType;
     }
 }

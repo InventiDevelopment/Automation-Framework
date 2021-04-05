@@ -1,0 +1,14 @@
+applications:
+  web:
+    testweb:
+      environments:
+        PROD: "test://testwebpage/index.htm"
+        TEST: "test://testwebpage/index.htm"
+        DEV: "test://testwebpage/index.htm"
+  mobile:
+  api:
+    jsonPlaceholder:
+      protocol: REST
+      environments:
+        PROD: "https://jsonplaceholder.typicode.com"
+  desktop:

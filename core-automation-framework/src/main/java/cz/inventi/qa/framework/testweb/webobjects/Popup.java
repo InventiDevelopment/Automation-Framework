@@ -1,7 +1,7 @@
 package cz.inventi.qa.framework.testweb.webobjects;
 
-import cz.inventi.qa.framework.core.annotations.FindElement;
-import cz.inventi.qa.framework.core.annotations.NoParent;
+import cz.inventi.qa.framework.core.annotations.web.FindElement;
+import cz.inventi.qa.framework.core.annotations.web.NoParent;
 import cz.inventi.qa.framework.core.objects.web.WOProps;
 import cz.inventi.qa.framework.core.objects.web.WebComponent;
 import cz.inventi.qa.framework.core.objects.web.WebObject;

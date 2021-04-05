@@ -3,32 +3,32 @@
 <suite name="Unit Tests With Automatic Wait">
     <test name="Core Components Tests">
         <classes>
-            <class name="cz.inventi.qa.framework.tests.unit.DriverTests"/>
-            <class name="cz.inventi.qa.framework.tests.unit.LoggerTests"/>
+            <class name="cz.inventi.qa.framework.tests.unit.web.DriverTests"/>
+            <class name="cz.inventi.qa.framework.tests.unit.logger.LoggerTests"/>
         </classes>
     </test>
     <test name="Wait Tests">
         <classes>
-            <class name="cz.inventi.qa.framework.tests.unit.config.WaitAutomaticallyTest"/>
+            <class name="cz.inventi.qa.framework.tests.unit.web.config.WaitAutomaticallyWebTest"/>
         </classes>
     </test>
     <test name="Config Tests">
         <classes>
-            <class name="cz.inventi.qa.framework.tests.unit.config.ConfigTests"/>
+            <class name="cz.inventi.qa.framework.tests.unit.config.AppConfigTests"/>
         </classes>
     </test>
     <test name="Language Tests">
         <classes>
-            <class name="cz.inventi.qa.framework.tests.unit.language.LanguageTest"/>
+            <class name="cz.inventi.qa.framework.tests.unit.web.language.LanguageWebTest"/>
         </classes>
     </test>
     <test name="WebObject Tests">
         <classes>
-            <class name="cz.inventi.qa.framework.tests.unit.webobjects.WebObjectTest"/>
-            <class name="cz.inventi.qa.framework.tests.unit.webobjects.WebElementTests"/>
-            <class name="cz.inventi.qa.framework.tests.unit.webobjects.WebComponentTests"/>
-            <class name="cz.inventi.qa.framework.tests.unit.webobjects.WebComponentListTests"/>
-            <class name="cz.inventi.qa.framework.tests.unit.webobjects.WebPageTests"/>
+            <class name="cz.inventi.qa.framework.tests.unit.web.webobjects.WebApplicationObjectWebTest"/>
+            <class name="cz.inventi.qa.framework.tests.unit.web.webobjects.ElementTests"/>
+            <class name="cz.inventi.qa.framework.tests.unit.web.webobjects.ComponentTests"/>
+            <class name="cz.inventi.qa.framework.tests.unit.web.webobjects.ComponentListTests"/>
+            <class name="cz.inventi.qa.framework.tests.unit.web.webobjects.PageTests"/>
         </classes>
     </test>
 </suite> <!-- Suite -->

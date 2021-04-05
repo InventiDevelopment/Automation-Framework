@@ -2,9 +2,9 @@ package cz.inventi.qa.framework.core.objects.web;
 
 import cz.inventi.qa.framework.core.Log;
 import cz.inventi.qa.framework.core.data.web.Timeouts;
-import cz.inventi.qa.framework.core.factories.webelement.WebElementLocator;
+import cz.inventi.qa.framework.core.factories.web.webelement.WebElementLocator;
 import cz.inventi.qa.framework.core.managers.ConfigManager;
-import cz.inventi.qa.framework.core.managers.DriverManager;
+import cz.inventi.qa.framework.core.managers.WebDriverManager;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -26,10 +26,10 @@ public class WebElement implements org.openqa.selenium.WebElement {
     public WebElement(org.openqa.selenium.WebElement selWebElement, WebElementLocator webElementLocator) {
         this.selWebElement = selWebElement;
         this.webElementLocator = webElementLocator;
-        driver = DriverManager.getDriver();
+        driver = WebDriverManager.getDriver();
         jsExec = (JavascriptExecutor) driver;
         actions = new Actions(driver);
-        timeouts = ConfigManager.getDriverConfigData().getGeneralSettings().getWait().getTimeouts();
+        timeouts = ConfigManager.getWebDriverConfigData().getGeneralSettings().getWait().getTimeouts();
     }
 
     public String getXpath () {
@@ -140,14 +140,14 @@ public class WebElement implements org.openqa.selenium.WebElement {
         printAction(findElementsXpath);
 
         for (org.openqa.selenium.WebElement selElement : selWebElement.findElements(By.xpath(findElementsXpath))) {
-            webElements.add(new WebElement(selWebElement, new WebElementLocator(DriverManager.getDriver(), getXpath() + findElementsXpath, 0)));
+            webElements.add(new WebElement(selWebElement, new WebElementLocator(WebDriverManager.getDriver(), getXpath() + findElementsXpath, 0)));
         }
         return webElements;
     }
 
     public WebElement findElement(String findElementXpath) {
         printAction(findElementXpath);
-        return new WebElement(selWebElement.findElement(By.xpath(findElementXpath)), new WebElementLocator(DriverManager.getDriver(), getXpath() + findElementXpath, 0));
+        return new WebElement(selWebElement.findElement(By.xpath(findElementXpath)), new WebElementLocator(WebDriverManager.getDriver(), getXpath() + findElementXpath, 0));
     }
 
     @Override
@@ -190,7 +190,7 @@ public class WebElement implements org.openqa.selenium.WebElement {
     }
 
     private FluentWait<WebDriver> getFluentWait (int timeout) {
-        if (!ConfigManager.getDriverConfigData().waitsAutomatically()) {
+        if (!ConfigManager.getWebDriverConfigData().waitsAutomatically()) {
             timeout = 0;
         }
 

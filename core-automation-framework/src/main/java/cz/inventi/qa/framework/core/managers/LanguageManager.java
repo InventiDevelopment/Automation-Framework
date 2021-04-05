@@ -5,7 +5,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import cz.inventi.qa.framework.core.Utils;
 import cz.inventi.qa.framework.core.Log;
 import cz.inventi.qa.framework.core.data.enums.Language;
-import cz.inventi.qa.framework.core.objects.config.LanguageData;
+import cz.inventi.qa.framework.core.data.config.LanguageData;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,7 +14,7 @@ import java.util.Objects;
 
 public class LanguageManager {
     private static final String LANGUAGE_DIRECTORY = "lang/";
-    private static Language currentLanguage = ParametersManager.getLanguage();
+    private static Language currentLanguage = ParametersManager.getCommonParameters().getLanguage();
     private static String languageFile = loadLanguageFile();
     private static ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
     private static LanguageData languageData;
@@ -23,7 +23,7 @@ public class LanguageManager {
     public static void init () {
         if (!currentLanguage.equals(Language.NONE)) {
             try {
-                Log.debug("Loading language YAML dictionary file: '" + languageFile + "'");
+                Log.debug("Loading '" + currentLanguage + "' language YAML dictionary file: '" + languageFile + "'");
                 languageData = mapper.readValue(new File(languageFile), LanguageData.class);
                 dictionary = languageData.getDictionary();
                 Log.debug("YAML language dictionary successfully loaded");
@@ -59,7 +59,7 @@ public class LanguageManager {
     }
 
     public static void changeLanguage(Language language) {
-        ParametersManager.setLanguage(language);
+        ParametersManager.getCommonParameters().setLanguage(language);
         currentLanguage = language;
         languageFile = loadLanguageFile();
         init();

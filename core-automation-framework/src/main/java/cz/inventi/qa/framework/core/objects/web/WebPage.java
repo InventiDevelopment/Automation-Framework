@@ -2,7 +2,7 @@ package cz.inventi.qa.framework.core.objects.web;
 
 import cz.inventi.qa.framework.core.Utils;
 import cz.inventi.qa.framework.core.managers.ConfigManager;
-import cz.inventi.qa.framework.core.managers.DriverManager;
+import cz.inventi.qa.framework.core.managers.WebDriverManager;
 import org.testng.Assert;
 
 public abstract class WebPage extends WebObject {
@@ -13,13 +13,13 @@ public abstract class WebPage extends WebObject {
     }
 
     public void waitUntilPageLoaded() {
-        if (ConfigManager.getDriverConfigData().waitsAutomatically()) {
+        if (ConfigManager.getWebDriverConfigData().waitsAutomatically()) {
             Utils.waitUntilDocumentReady();
         }
     }
 
     public String getPageTitle() {
-        return DriverManager.getDriver().getTitle();
+        return WebDriverManager.getDriver().getTitle();
     }
 
     public WebPage assertPageTitle(String expectedTitle) {

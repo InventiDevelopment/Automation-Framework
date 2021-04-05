@@ -1,7 +1,7 @@
 package cz.inventi.qa.framework.core;
 
 import cz.inventi.qa.framework.core.managers.ConfigManager;
-import cz.inventi.qa.framework.core.managers.DriverManager;
+import cz.inventi.qa.framework.core.managers.WebDriverManager;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.FluentWait;
@@ -13,7 +13,7 @@ import java.time.Duration;
 public class Utils {
     public static void waitFor (int millis) {
         try {
-            DriverManager.getDriver().wait(millis);
+            WebDriverManager.getDriver().wait(millis);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -24,11 +24,11 @@ public class Utils {
     }
 
     public static void waitUntilDocumentReady() {
-        WebDriver driver = DriverManager.getDriver();
+        WebDriver driver = WebDriverManager.getDriver();
         Log.debug("Waiting for document load and JS actions to finish");
 
         new FluentWait<>(driver)
-                .withTimeout(Duration.ofMillis(ConfigManager.getTimeouts().getMid()))
+                .withTimeout(Duration.ofMillis(ConfigManager.getWebDriverConfigData().getTimeouts().getMid()))
                 .pollingEvery(Duration.ofMillis(100))
                 .withMessage("JavaScript operations still not finished - document not ready")
                 .until(webDriver -> ((JavascriptExecutor) driver).executeScript("return document.readyState").equals("complete"));

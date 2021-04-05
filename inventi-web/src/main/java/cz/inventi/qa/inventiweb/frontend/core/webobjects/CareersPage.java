@@ -4,7 +4,7 @@ import cz.inventi.qa.framework.core.annotations.Application;
 import cz.inventi.qa.framework.core.objects.web.WOProps;
 import cz.inventi.qa.inventiweb.frontend.core.components.topmenu.TopPanel;
 
-@Application("inventiweb")
+@Application(name = "inventiweb")
 public class CareersPage extends BasePage<HomePage> {
     private TopPanel<EventsPage> topPanel;
 

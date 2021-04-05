@@ -1,0 +1,9 @@
+applications:
+  web:
+    inventiweb:
+      environments:
+        prod: "https://inventi.cz/"
+        test: "https://inventi.cz/"
+  mobile:
+  api:
+  desktop:

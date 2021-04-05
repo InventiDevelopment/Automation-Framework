@@ -1,8 +1,8 @@
 package cz.inventi.qa.inventiweb.frontend.core.components.topmenu;
 
-import cz.inventi.qa.framework.core.annotations.FindElement;
+import cz.inventi.qa.framework.core.annotations.web.FindElement;
 import cz.inventi.qa.framework.core.data.enums.Language;
-import cz.inventi.qa.framework.core.factories.webobject.WebObjectFactory;
+import cz.inventi.qa.framework.core.factories.web.webobject.WebObjectFactory;
 import cz.inventi.qa.framework.core.objects.web.*;
 import cz.inventi.qa.inventiweb.frontend.core.data.enums.MenuLink;
 import cz.inventi.qa.inventiweb.frontend.core.webobjects.HomePage;

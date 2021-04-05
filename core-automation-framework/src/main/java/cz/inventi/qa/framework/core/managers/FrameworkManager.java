@@ -1,30 +1,29 @@
 package cz.inventi.qa.framework.core.managers;
 
-import cz.inventi.qa.framework.core.Log;
 import cz.inventi.qa.framework.core.data.enums.Language;
+import cz.inventi.qa.framework.core.factories.api.ApiObjectFactory;
+import cz.inventi.qa.framework.core.factories.web.webobject.WebObjectFactory;
+import cz.inventi.qa.framework.core.objects.api.Api;
 import cz.inventi.qa.framework.core.objects.web.WebPage;
-import cz.inventi.qa.framework.core.factories.webobject.WebObjectFactory;
 
 public class FrameworkManager {
 
-    public static <T extends WebPage> T initWebApp (String browser, String environment, Class<T> startingWebPage) {
+    public static <T extends WebPage> T initWebApp(String browser, String environment, Class<T> startingWebPage) {
         return initWebApp(browser, environment, Language.NONE.toString(), startingWebPage);
     }
 
-    public static <T extends WebPage> T initWebApp (String browser, String environment, String language, Class<T> startingWebPage) {
-        setParameters(browser, environment, language);
-        ConfigManager.init();
+    public static <T extends WebPage> T initWebApp(String browser, String environment, String language, Class<T> startingWebPage) {
+        ParametersManager.setWebParameters(browser, environment, language, startingWebPage);
+        ConfigManager.initWebConfigs();
         LanguageManager.init();
-        DriverManager.init();
-        AppManager.initApplication(startingWebPage);
+        AppManager.initWebApplication(startingWebPage);
         return WebObjectFactory.initPage(startingWebPage);
     }
 
-    private static void setParameters(String browser, String environment, String language) {
-        ParametersManager.setBrowser(browser);
-        ParametersManager.setLanguage(language);
-        ParametersManager.setEnvironment(environment);
-        Log.debug("Launching framework with parameters:\n- Browser: '" + ParametersManager.getBrowser() + "'\n- Language: '"
-                + ParametersManager.getLanguage() + "'\n- Environment: '" + ParametersManager.getEnvironment() + "'\n");
+    public static <T extends Api> T initApiApp(String environment, Class<T> api) {
+        ParametersManager.setApiParameters(environment, api);
+        ConfigManager.initApiConfigs();
+        AppManager.initApiApplication(api);
+        return ApiObjectFactory.initApi(api);
     }
 }

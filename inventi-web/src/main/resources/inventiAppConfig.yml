@@ -1,5 +1,0 @@
-applications:
-    inventiweb:
-      environments:
-        prod: "https://inventi.cz/"
-        test: "https://inventi.cz/"

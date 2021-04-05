@@ -1,6 +1,6 @@
 package cz.inventi.qa.inventiweb.frontend.core.components.footer;
 
-import cz.inventi.qa.framework.core.annotations.FindElement;
+import cz.inventi.qa.framework.core.annotations.web.FindElement;
 import cz.inventi.qa.framework.core.objects.web.WOProps;
 import cz.inventi.qa.framework.core.objects.web.WebComponent;
 import cz.inventi.qa.framework.core.objects.web.WebElement;

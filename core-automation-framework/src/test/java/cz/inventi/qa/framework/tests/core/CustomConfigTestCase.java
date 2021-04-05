@@ -1,7 +1,9 @@
 package cz.inventi.qa.framework.tests.core;
 
 import cz.inventi.qa.framework.core.annotations.ConfigFiles;
-import cz.inventi.qa.framework.core.managers.DriverManager;
+import cz.inventi.qa.framework.core.data.enums.RunMode;
+import cz.inventi.qa.framework.core.managers.ConfigManager;
+import cz.inventi.qa.framework.core.managers.WebDriverManager;
 import cz.inventi.qa.framework.core.managers.FrameworkManager;
 import cz.inventi.qa.framework.core.objects.test.BaseTest;
 import cz.inventi.qa.framework.testweb.webobjects.HomePage;
@@ -10,7 +12,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 
-@ConfigFiles(driverConfig = "config/customDriverConfig.yml", appConfig = "config/customAppConfig.yml")
+@ConfigFiles(driverConfig = "config/customWebDriverConfig.yml", appConfig = "config/customAppsConfig.yml")
 public class CustomConfigTestCase extends BaseTest {
     public HomePage homePage;
 
@@ -25,6 +27,8 @@ public class CustomConfigTestCase extends BaseTest {
 
     @AfterClass
     public void quit() {
-        DriverManager.cleanDriver();
+        if (!ConfigManager.getRunMode().equals(RunMode.DEBUG)) {
+            WebDriverManager.cleanDriver();
+        }
     }
 }

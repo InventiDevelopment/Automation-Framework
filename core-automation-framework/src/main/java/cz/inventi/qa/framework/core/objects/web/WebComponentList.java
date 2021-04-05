@@ -1,11 +1,11 @@
 package cz.inventi.qa.framework.core.objects.web;
 
-import cz.inventi.qa.framework.core.annotations.FindElement;
-import cz.inventi.qa.framework.core.annotations.handlers.FindElementHandler;
-import cz.inventi.qa.framework.core.factories.PageBuilder;
-import cz.inventi.qa.framework.core.factories.webobject.WebObjectFactory;
+import cz.inventi.qa.framework.core.annotations.web.FindElement;
+import cz.inventi.qa.framework.core.annotations.web.handlers.FindElementHandler;
+import cz.inventi.qa.framework.core.factories.web.PageBuilder;
+import cz.inventi.qa.framework.core.factories.web.webobject.WebObjectFactory;
 import cz.inventi.qa.framework.core.managers.ConfigManager;
-import cz.inventi.qa.framework.core.managers.DriverManager;
+import cz.inventi.qa.framework.core.managers.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
@@ -52,9 +52,9 @@ public class WebComponentList<R extends WebComponent<?>> {
     }
 
     private int getNumberOfComponents() {
-        if (ConfigManager.driverWaitsAutomatically()) {
-            FluentWait<WebDriver> fluentWait = new FluentWait<>(DriverManager.getDriver())
-                    .withTimeout(Duration.ofMillis(ConfigManager.getTimeouts().getMax()))
+        if (ConfigManager.getWebDriverConfigData().waitsAutomatically()) {
+            FluentWait<WebDriver> fluentWait = new FluentWait<>(WebDriverManager.getDriver())
+                    .withTimeout(Duration.ofMillis(ConfigManager.getWebDriverConfigData().getTimeouts().getMax()))
                     .pollingEvery(Duration.ofMillis(100))
                     .ignoring(NoSuchElementException.class)
                     .ignoring(StaleElementReferenceException.class)
@@ -62,7 +62,7 @@ public class WebComponentList<R extends WebComponent<?>> {
 
             fluentWait.until(ExpectedConditions.numberOfElementsToBeMoreThan(By.xpath(componentXpath), 0));
         }
-        return DriverManager.getDriver().findElements(By.xpath(componentXpath)).size();
+        return WebDriverManager.getDriver().findElements(By.xpath(componentXpath)).size();
     }
 
     private <O extends WebObject> WOProps getWOProps (int xpathIndex) {

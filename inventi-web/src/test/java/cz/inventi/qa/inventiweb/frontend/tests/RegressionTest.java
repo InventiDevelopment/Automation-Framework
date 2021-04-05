@@ -11,7 +11,7 @@ import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 
 @Getter
-@ConfigFiles(driverConfig = "inventiDriverConfig.yml", appConfig = "inventiAppConfig.yml")
+@ConfigFiles(driverConfig = "inventiWebDriverConfig.yml", appConfig = "inventiAppsConfig.yml")
 public class RegressionTest extends BaseTest {
     protected HomePage homePage;
 

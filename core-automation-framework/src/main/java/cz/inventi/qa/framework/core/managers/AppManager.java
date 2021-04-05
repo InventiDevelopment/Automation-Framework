@@ -1,55 +1,72 @@
 package cz.inventi.qa.framework.core.managers;
 
 import cz.inventi.qa.framework.core.Log;
-import cz.inventi.qa.framework.core.data.app.Environments;
-import cz.inventi.qa.framework.core.objects.web.WebPage;
 import cz.inventi.qa.framework.core.annotations.Application;
-import org.openqa.selenium.WebDriver;
+import cz.inventi.qa.framework.core.data.app.Applications;
+import cz.inventi.qa.framework.core.data.enums.ApplicationType;
+import cz.inventi.qa.framework.core.objects.api.Api;
+import cz.inventi.qa.framework.core.objects.web.WebPage;
 
-import java.io.File;
-import java.nio.file.Paths;
 import java.util.Map;
-import java.util.Objects;
 
 public class AppManager {
     private static AppManager appManager;
     private static String appUrl;
+    private static ApplicationType currentApplicationType;
+    private static String currentApplicationName;
 
-    public static <T extends WebPage> void initApplication(Class<T> klass) {
-        WebDriver driver = DriverManager.getDriver();
-        Application application = klass.getAnnotation(Application.class);
+    public static <T extends WebPage> void initWebApplication(Class<T> klass) {
+        setCurrentApplication(klass, ApplicationType.WEB);
+        WebDriverManager.init();
+    }
 
-        if (application == null) {
-            Log.fail("@Application() is not set above class in your init PageObject");
-        }
+    public static <T extends Api> void initApiApplication(Class<T> klass) {
+        setCurrentApplication(klass, ApplicationType.API);
+    }
 
-        String environment = ParametersManager.getEnvironment();
-        String applicationName = Objects.requireNonNull(application).value();
+    private static void setCurrentApplication(Class<?> klass, ApplicationType applicationType) {
+        currentApplicationType = applicationType;
+        checkAppAnnotationPresent(klass);
+        initializeEnvironment(klass.getAnnotation(Application.class));
+    }
 
-        Map<String, Environments> appMap = ConfigManager.getAppConfigData().getApplications();
-        appUrl = appMap.entrySet()
-                .stream()
-                .filter(map -> map.getKey().toLowerCase().equals(applicationName.toLowerCase()))
-                .map(Map.Entry::getValue)
-                .flatMap(e -> e.getEnvironments().entrySet().stream())
-                .filter(map -> map.getKey().toLowerCase().equals(environment.toLowerCase()))
-                .map(Map.Entry::getValue)
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("URL of application: '" + applicationName + "' with env: '" + environment + "' is not found in YAML. Please check config and definition of init class."));
+    public static <T extends cz.inventi.qa.framework.core.data.app.Application> T getCurrentApplication () {
+        Applications applications = ConfigManager.getAppsConfigData().getApplications();
 
-        try {
-            formatResourcesURL();
-            driver.get(appUrl);
-        } catch (Exception e) {
-            Log.fail("Unable to get url: '" + appUrl + "'. Please check that url is valid.");
+        switch (currentApplicationType) {
+            case API:
+                return (T) applications.getApi().get(currentApplicationName);
+            case DESKTOP:
+                return (T) applications.getDesktop().get(currentApplicationName);
+            case MOBILE:
+                return (T) applications.getMobile().get(currentApplicationName);
+            case WEB:
+                return (T) applications.getWeb().get(currentApplicationName);
+            default:
+                return null;
         }
     }
 
-    private static void formatResourcesURL () {
-        if (appUrl.contains("test://") || appUrl.contains("main://")) {
-            String[] resourcePackage = appUrl.split("://");
-            appUrl = new File(Paths.get("src",resourcePackage[0], "resources") + "/" + resourcePackage[1]).getAbsolutePath();
+    private static void checkAppAnnotationPresent(Class<?> klass) {
+        Application applicationAnnotation = klass.getAnnotation(Application.class);
+
+        if (applicationAnnotation == null) {
+            Log.fail("@Application() annotation is not set on your initial class '" + klass.getName() + "'");
         }
+        currentApplicationName = applicationAnnotation.name();
+    }
+
+    private static void initializeEnvironment (Application applicationAnnotation) {
+        String environment = ParametersManager.getCommonParameters().getEnvironment();
+        Map<String, String> currentAppEnvironments = getCurrentApplication().getEnvironments();
+
+        appUrl = currentAppEnvironments
+                .entrySet()
+                .stream()
+                .filter(map -> map.getKey().toLowerCase().equals(environment.toLowerCase()))
+                .map(Map.Entry::getValue)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("URL of application: '" + currentApplicationName + "' with env: '" + environment + "' cannot be found in YAML. Please check config and definition of init class."));
     }
 
     public AppManager getAppManager() {
@@ -61,5 +78,17 @@ public class AppManager {
 
     public static String getAppUrl() {
         return appUrl;
+    }
+
+    public static ApplicationType getCurrentApplicationType() {
+        return currentApplicationType;
+    }
+
+    public static void setCurrentApplicationType(ApplicationType currentApplicationType) {
+        AppManager.currentApplicationType = currentApplicationType;
+    }
+
+    public static String getCurrentApplicationName() {
+        return currentApplicationName;
     }
 }

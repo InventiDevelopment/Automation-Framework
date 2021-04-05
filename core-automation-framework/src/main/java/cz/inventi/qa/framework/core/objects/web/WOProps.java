@@ -1,7 +1,7 @@
 package cz.inventi.qa.framework.core.objects.web;
 
-import cz.inventi.qa.framework.core.annotations.FindElement;
-import cz.inventi.qa.framework.core.factories.PageBuilder;
+import cz.inventi.qa.framework.core.annotations.web.FindElement;
+import cz.inventi.qa.framework.core.factories.web.PageBuilder;
 
 public class WOProps {
     private String xpath = "";
@@ -18,17 +18,17 @@ public class WOProps {
         this.parentProps = parentProps;
     }
 
-    public WOProps(FindElement findElementAnnotation, Object returnKlass) {
-        this(findElementAnnotation);
+    public WOProps(FindElement findElement, Object returnKlass) {
+        this(findElement);
         this.returnKlass = returnKlass;
     }
 
-    public WOProps(FindElement findElementAnnotation) {
-        this(PageBuilder.generateIndexedXpath(findElementAnnotation));
+    public WOProps(FindElement findElement) {
+        this(PageBuilder.generateIndexedXpath(findElement));
     }
 
-    public WOProps(FindElement findElementAnnotation, WOProps parentProps) {
-        this(findElementAnnotation);
+    public WOProps(FindElement findElement, WOProps parentProps) {
+        this(findElement);
         this.parentProps = parentProps;
     }
 

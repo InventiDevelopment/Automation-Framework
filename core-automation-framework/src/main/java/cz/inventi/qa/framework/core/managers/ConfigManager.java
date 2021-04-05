@@ -1,72 +1,91 @@
 package cz.inventi.qa.framework.core.managers;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import cz.inventi.qa.framework.core.Log;
 import cz.inventi.qa.framework.core.Utils;
+import cz.inventi.qa.framework.core.data.config.AppConfigData;
+import cz.inventi.qa.framework.core.data.config.WebDriverConfigData;
 import cz.inventi.qa.framework.core.data.enums.RunMode;
-import cz.inventi.qa.framework.core.data.web.Timeouts;
-import cz.inventi.qa.framework.core.objects.config.AppConfigData;
-import cz.inventi.qa.framework.core.objects.config.DriverConfigData;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.Objects;
 
 public class ConfigManager {
 
     private static final String CONFIG_DIRECTORY = "config/";
-    private static final String DRIVER_CONFIG_FILE_NAME = CONFIG_DIRECTORY + "driverConfig.yml";
-    private static final String APP_CONFIG_FILE_NAME =  CONFIG_DIRECTORY + "appConfig.yml";
-    private static final String PATH_TO_APP_CONFIG = Objects.requireNonNull(ConfigManager.class.getClassLoader().getResource(APP_CONFIG_FILE_NAME)).getPath();
-    private static final String PATH_TO_DRIVER_CONFIG = Objects.requireNonNull(ConfigManager.class.getClassLoader().getResource(DRIVER_CONFIG_FILE_NAME)).getPath();
-    private static AppConfigData appConfigData;
-    private static DriverConfigData driverConfigData;
-    private static ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+    private static final String WEBDRIVER_CONFIG_FILE_NAME = CONFIG_DIRECTORY + "webDriverConfig.yml";
+    private static final String APP_CONFIG_FILE_NAME = CONFIG_DIRECTORY + "appsConfig.yml";
+    private static final ObjectMapper mapper = new ObjectMapper(new YAMLFactory()).configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    private static AppConfigData appsConfigData;
+    private static WebDriverConfigData webDriverConfigData;
     private static String customAppConfigPath;
     private static String customDriverConfigPath;
 
-    public static void init() {
-        String appConfigPath = PATH_TO_APP_CONFIG;
-        String driverConfigPath = PATH_TO_DRIVER_CONFIG;
+    public static void initWebConfigs() {
+        Log.debug("Initializing configuration files for WEB testing");
+        initGeneralAppConfig();
+        initWebDriverConfig();
+    }
+
+    public static void initApiConfigs() {
+       Log.debug("Initializing configuration files for API testing");
+       initGeneralAppConfig();
+    }
+
+    private static void initGeneralAppConfig() {
+        String appConfigPath = Objects.requireNonNull(ConfigManager.class.getClassLoader().getResource(APP_CONFIG_FILE_NAME)).getPath();
 
         if (customAppConfigPath != null) {
             appConfigPath = customAppConfigPath;
         }
 
+        appConfigPath = Utils.getFilePathDecoded(appConfigPath);
+
+        try {
+            Log.debug("Loading APP YAML configuration file: '" + appConfigPath + "'");
+            appsConfigData = mapper.readValue(new File(appConfigPath), AppConfigData.class);
+            Log.debug("APP YAML configuration file successfully loaded");
+            Log.debug("APP YAML config content:\n" + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(appsConfigData));
+        } catch (IOException e) {
+            Log.fail("Not possible to read from APP YML file. Check that file is accessible at following location: '" + appConfigPath + "'", e);
+        }
+    }
+
+    private static void initWebDriverConfig () {
+        String driverConfigPath = Objects.requireNonNull(ConfigManager.class.getClassLoader().getResource(WEBDRIVER_CONFIG_FILE_NAME)).getPath();
+
         if (customDriverConfigPath != null) {
             driverConfigPath = customDriverConfigPath;
         }
 
-        appConfigPath = Utils.getFilePathDecoded(appConfigPath);
         driverConfigPath = Utils.getFilePathDecoded(driverConfigPath);
 
         try {
-            Log.debug("Loading YAML configuration files:\n- APP: '" + appConfigPath + "'\n- DRIVER: '" + driverConfigPath + "'\n");
-            appConfigData = mapper.readValue(new File(appConfigPath), AppConfigData.class);
-            driverConfigData = mapper.readValue(new File(driverConfigPath), DriverConfigData.class);
-            Log.debug("YAML app configuration files successfully loaded");
-            Log.debug("YAML APP config content:\n" + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(appConfigData));
-            Log.debug("YAML DRIVER config content:\n" + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(driverConfigData));
+            Log.debug("Loading WEBDRIVER YAML configuration file: '" + driverConfigPath + "'");
+            webDriverConfigData = mapper.readValue(new File(driverConfigPath), WebDriverConfigData.class);
+            Log.debug("WEBDRIVER YAML configuration files successfully loaded");
+            Log.debug("WEBDRIVER YAML config content:\n" + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(webDriverConfigData));
         } catch (IOException e) {
-            Log.fail("Not possible to read from YML files. Check that files are accessible on following locations:\n- APP: " + appConfigPath + "'\n- DRIVER: '" + driverConfigPath + "'\n", e);
+            Log.fail("Not possible to read from WEBDRIVER YML files. Check that file is accessible at following location: '" + driverConfigPath + "'\n", e);
         }
     }
 
-    public static DriverConfigData getDriverConfigData () {
-        return driverConfigData;
+    public static WebDriverConfigData getWebDriverConfigData() {
+        return webDriverConfigData;
     }
 
-    public static AppConfigData getAppConfigData () {
-        return appConfigData;
+    public static AppConfigData getAppsConfigData() {
+        return appsConfigData;
     }
 
     public static void setCustomAppConfigPath (String customAppConfigPath) {
         ConfigManager.customAppConfigPath = customAppConfigPath;
     }
 
-    public static void setCustomDriverConfigPath (String customDriverConfigPath) {
+    public static void setCustomWebDriverConfigPath(String customDriverConfigPath) {
         ConfigManager.customDriverConfigPath = customDriverConfigPath;
     }
 
@@ -74,19 +93,11 @@ public class ConfigManager {
         return customAppConfigPath;
     }
 
-    public static String getCustomDriverConfigPath() {
+    public static String getCustomWebDriverConfigPath() {
         return customDriverConfigPath;
     }
 
     public static RunMode getRunMode() {
-        return RunMode.valueOf(driverConfigData.getGeneralSettings().getRunMode().toUpperCase());
-    }
-
-    public static boolean driverWaitsAutomatically() {
-        return driverConfigData.getGeneralSettings().getWait().waitsAutomatically();
-    }
-
-    public static Timeouts getTimeouts() {
-        return driverConfigData.getGeneralSettings().getWait().getTimeouts();
+        return RunMode.valueOf(webDriverConfigData.getGeneralSettings().getRunMode().toUpperCase());
     }
 }

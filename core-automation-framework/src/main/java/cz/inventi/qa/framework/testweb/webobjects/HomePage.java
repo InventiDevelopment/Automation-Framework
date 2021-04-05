@@ -1,13 +1,13 @@
 package cz.inventi.qa.framework.testweb.webobjects;
 
 import cz.inventi.qa.framework.core.annotations.Application;
-import cz.inventi.qa.framework.core.annotations.FindElement;
+import cz.inventi.qa.framework.core.annotations.web.FindElement;
 import cz.inventi.qa.framework.core.objects.web.WOProps;
 import cz.inventi.qa.framework.core.objects.web.WebElement;
 import lombok.Getter;
 
 @Getter
-@Application("testweb")
+@Application(name = "testweb")
 @FindElement(xpath = "//body")
 public class HomePage extends BasePage<HomePage> {
 

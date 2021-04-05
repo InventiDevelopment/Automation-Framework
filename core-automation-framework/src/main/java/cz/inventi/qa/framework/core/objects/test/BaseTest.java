@@ -1,24 +1,21 @@
 package cz.inventi.qa.framework.core.objects.test;
 
 import cz.inventi.qa.framework.core.Log;
-import cz.inventi.qa.framework.core.data.enums.RunMode;
-import cz.inventi.qa.framework.core.managers.ConfigManager;
 import cz.inventi.qa.framework.core.annotations.ConfigFiles;
-import cz.inventi.qa.framework.core.managers.DriverManager;
-import org.testng.annotations.AfterClass;
+import cz.inventi.qa.framework.core.managers.ConfigManager;
 
 import java.util.Objects;
 
 public abstract class BaseTest {
 
     public BaseTest() {
-        ConfigFiles configFilesAnnotation = this.getClass().getSuperclass().getDeclaredAnnotation(ConfigFiles.class);
+        ConfigFiles configFiles = this.getClass().getSuperclass().getDeclaredAnnotation(ConfigFiles.class);
 
-        if (configFilesAnnotation != null) {
-            String appConfigPath = getCustomPackageConfigPath(configFilesAnnotation.appConfig(), this.getClass().getSuperclass().getClassLoader());
-            String driverConfigPath = getCustomPackageConfigPath(configFilesAnnotation.driverConfig(), this.getClass().getSuperclass().getClassLoader());
+        if (configFiles != null) {
+            String appConfigPath = getCustomPackageConfigPath(configFiles.appConfig(), this.getClass().getSuperclass().getClassLoader());
+            String driverConfigPath = getCustomPackageConfigPath(configFiles.driverConfig(), this.getClass().getSuperclass().getClassLoader());
             ConfigManager.setCustomAppConfigPath(appConfigPath);
-            ConfigManager.setCustomDriverConfigPath(driverConfigPath);
+            ConfigManager.setCustomWebDriverConfigPath(driverConfigPath);
         }
     }
 
@@ -30,12 +27,5 @@ public abstract class BaseTest {
                     "is created in resources folder in the package you are launching test from.");
         }
         return null;
-    }
-
-    @AfterClass
-    public void quit() {
-        if (!ConfigManager.getRunMode().equals(RunMode.DEBUG)) {
-            DriverManager.cleanDriver();
-        }
     }
 }

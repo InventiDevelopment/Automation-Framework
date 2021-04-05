@@ -1,7 +1,8 @@
 # Inventi Automation Framework
 ### Predispositions
-- JDK 8+
+- JDK 15+
 - Maven 3.5+
+- Allure 2.13+
 
 ### Installation
 Download resources and run following command in the project root folder:
@@ -31,3 +32,6 @@ mvn --projects core-automation-framework clean test -DsuiteXmlFile="unitTests.xm
 - Log4J
 - WebDriverManager
 - Selenium
+- AspectJ
+- Allure
+- REST Assured
