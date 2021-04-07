@@ -1,6 +1,5 @@
 package cz.inventi.qa.framework.tests.core;
 
-import cz.inventi.qa.framework.core.managers.FrameworkManager;
 import cz.inventi.qa.framework.core.objects.test.BaseApiTest;
 import cz.inventi.qa.framework.testapi.JsonPlaceHolderApi;
 import org.testng.annotations.BeforeClass;
@@ -13,6 +12,6 @@ public class ApiTestCase extends BaseApiTest {
     @BeforeClass
     @Parameters({"environment"})
     public void init(@Optional("PROD") String environment) {
-        jsonPlaceHolderApi = FrameworkManager.initApiApp(environment, JsonPlaceHolderApi.class);
+        jsonPlaceHolderApi = initApiAppInstance(environment, JsonPlaceHolderApi.class);
     }
 }

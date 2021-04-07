@@ -8,6 +8,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
 public @interface ConfigFiles {
-    String appConfig() default "config/appsConfig.yml";
+    String appsConfig() default "config/appsConfig.yml";
     String driverConfig() default "config/webDriverConfig.yml";
 }

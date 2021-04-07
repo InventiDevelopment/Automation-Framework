@@ -24,7 +24,7 @@ public class BasePage<T extends WebPage> extends WebPage {
 
     public T switchLanguageTo(Language language){
         topPanel.switchLanguageTo(language);
-        LanguageManager.changeLanguage(language);
+        getLanguageManager().changeLanguage(language);
         return (T) this;
     }
 }

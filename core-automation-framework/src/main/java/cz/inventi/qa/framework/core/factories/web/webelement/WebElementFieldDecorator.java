@@ -2,6 +2,7 @@ package cz.inventi.qa.framework.core.factories.web.webelement;
 
 import cz.inventi.qa.framework.core.annotations.web.FindElement;
 import cz.inventi.qa.framework.core.annotations.web.NoParent;
+import cz.inventi.qa.framework.core.objects.framework.AppInstance;
 import cz.inventi.qa.framework.core.objects.web.WebObject;
 import cz.inventi.qa.framework.core.objects.web.WebElement;
 import org.openqa.selenium.support.pagefactory.DefaultFieldDecorator;
@@ -81,6 +82,6 @@ public class WebElementFieldDecorator extends DefaultFieldDecorator implements F
     }
 
     private WebElement extendWebElement (org.openqa.selenium.WebElement selWebElement, WebElementLocator webElementLocator) {
-        return new WebElement(selWebElement, webElementLocator);
+        return new WebElement(selWebElement, webElementLocator, page.getAppInstance());
     }
 }

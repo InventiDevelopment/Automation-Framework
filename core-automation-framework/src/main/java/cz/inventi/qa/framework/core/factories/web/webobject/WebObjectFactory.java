@@ -1,6 +1,7 @@
 package cz.inventi.qa.framework.core.factories.web.webobject;
 
 import cz.inventi.qa.framework.core.factories.web.PageBuilder;
+import cz.inventi.qa.framework.core.objects.framework.AppInstance;
 import cz.inventi.qa.framework.core.objects.web.WOProps;
 import cz.inventi.qa.framework.core.objects.web.WebObject;
 import cz.inventi.qa.framework.core.Log;
@@ -55,7 +56,7 @@ public class WebObjectFactory {
         if (!hasNoParentAnnotation(f)) {
             finalXpath = PageBuilder.generateXpathWithParent(parentWebObject.getXpath(), f.getType().getDeclaredAnnotation(FindElement.class));
         }
-        return new WOProps(finalXpath, parentWebObject, parentProps);
+        return new WOProps(finalXpath, parentWebObject, parentProps, parentProps.getAppInstance());
     }
 
     private static boolean hasNoParentAnnotation (Field f) {
@@ -73,8 +74,8 @@ public class WebObjectFactory {
         }
     }
 
-    public static <T extends WebPage> T initPage (Class<T> webPageClass) {
-        return reflectionInitWOClass(webPageClass, new Class[] {WOProps.class}, new Object[] {new WOProps(webPageClass.getDeclaredAnnotation(FindElement.class), webPageClass)});
+    public static <T extends WebPage> T initPage (Class<T> webPageClass, AppInstance appInstance) {
+        return reflectionInitWOClass(webPageClass, new Class[] {WOProps.class}, new Object[] {new WOProps(webPageClass.getDeclaredAnnotation(FindElement.class), webPageClass, appInstance)});
     }
 
     public static <T extends WebObject> T reflectionInitWOClass(Class<T> klass, Class<?>[] constructorArgs, Object[] constructorParams) {

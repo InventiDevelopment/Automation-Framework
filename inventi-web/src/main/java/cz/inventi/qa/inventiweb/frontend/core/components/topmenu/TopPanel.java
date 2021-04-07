@@ -33,7 +33,7 @@ public class TopPanel<T extends WebObject> extends WebComponent<T> {
 
     public HomePage logoImg() {
         logoImg.isDisplayed();
-        return WebObjectFactory.initPage(HomePage.class);
+        return initPage(HomePage.class);
     }
 
     public <W extends WebPage> W clickMenuItem(MenuLink menuLink){

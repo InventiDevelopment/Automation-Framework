@@ -33,16 +33,16 @@ public class Menu<T extends WebObject> extends WebComponent<T> {
 
     public HomePage clickHome () {
         getMenuLink("home").click();
-        return WebObjectFactory.initPage(HomePage.class);
+        return initPage(HomePage.class);
     }
 
     public WhatWeDoPage clickWhatWeDo () {
         getMenuLink("what we do").click();
-        return WebObjectFactory.initPage(WhatWeDoPage.class);
+        return initPage(WhatWeDoPage.class);
     }
 
     public ContactUsPage clickContactUs () {
         getMenuLink("contact us").click();
-        return WebObjectFactory.initPage(ContactUsPage.class);
+        return initPage(ContactUsPage.class);
     }
 }

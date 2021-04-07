@@ -3,17 +3,17 @@ package cz.inventi.qa.framework.core.factories.api;
 import cz.inventi.qa.framework.core.Log;
 import cz.inventi.qa.framework.core.annotations.api.EndpointSpecs;
 import cz.inventi.qa.framework.core.data.app.ApiApplication;
-import cz.inventi.qa.framework.core.managers.AppManager;
-import cz.inventi.qa.framework.core.managers.ConfigManager;
 import cz.inventi.qa.framework.core.objects.api.AOProps;
 import cz.inventi.qa.framework.core.objects.api.Api;
 import cz.inventi.qa.framework.core.objects.api.ApiObject;
 import cz.inventi.qa.framework.core.objects.api.Endpoint;
+import cz.inventi.qa.framework.core.objects.framework.AppInstance;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+import java.util.Objects;
 
 
 public class ApiObjectFactory {
@@ -59,10 +59,10 @@ public class ApiObjectFactory {
             if (endpointSpecs == null) {
                 Log.fail("Class '" + f.getType() + "' is missing @EndpointSpecs annotation");
             }
-            endpointUrl += endpointSpecs.url();
+            endpointUrl += Objects.requireNonNull(endpointSpecs).url();
         }
 
-        return new AOProps(endpointUrl, parentApiObject, parentProps);
+        return new AOProps(endpointUrl, parentApiObject, parentProps, parentProps.getAppInstance());
     }
 
     private static <T extends ApiObject> void initParentApiObjectFields(T apiObject, AOProps parentProps) {
@@ -75,11 +75,11 @@ public class ApiObjectFactory {
         }
     }
 
-    public static <T extends Api> T initApi (Class<T> apiClass) {
-        AOProps aoProps = new AOProps(AppManager.getAppUrl(), apiClass, null);
-        ApiApplication apiApplication = ConfigManager.getAppsConfigData().getApplications().getApi().get(AppManager.getCurrentApplicationName());
+    public static <T extends Api> T initApi (Class<T> apiClass, AppInstance appInstance) {
+        AOProps aoProps = new AOProps(appInstance.getAppManager().getAppUrl(), apiClass, null, appInstance);
+        ApiApplication apiApplication = appInstance.getConfigManager().getAppsConfigData().getApplications().getApi().get(appInstance.getAppManager().getCurrentApplicationName());
         T api = reflectionInitAOClass(apiClass, new Class[] {AOProps.class}, new Object[] {aoProps});
-        api.setBaseUrl(AppManager.getAppUrl());
+        api.setBaseUrl(appInstance.getAppManager().getAppUrl());
         api.setApiProtocolType(apiApplication.getProtocol());
         return api;
     }

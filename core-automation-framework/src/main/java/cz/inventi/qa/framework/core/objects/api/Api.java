@@ -1,6 +1,7 @@
 package cz.inventi.qa.framework.core.objects.api;
 
 import cz.inventi.qa.framework.core.data.enums.ApiProtocolType;
+import cz.inventi.qa.framework.core.objects.framework.AppInstance;
 
 public class Api extends ApiObject {
     private String baseUrl;
@@ -30,5 +31,9 @@ public class Api extends ApiObject {
 
     public void setApiProtocolType(ApiProtocolType apiProtocolType) {
         this.apiProtocolType = apiProtocolType;
+    }
+
+    public AppInstance getAppInstance() {
+        return getProps().getAppInstance();
     }
 }

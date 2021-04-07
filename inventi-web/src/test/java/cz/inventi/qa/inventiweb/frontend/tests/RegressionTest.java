@@ -10,8 +10,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 
-@Getter
-@ConfigFiles(driverConfig = "inventiWebDriverConfig.yml", appConfig = "inventiAppsConfig.yml")
+@ConfigFiles(driverConfig = "inventiWebDriverConfig.yml", appsConfig = "inventiAppsConfig.yml")
 public class RegressionTest extends BaseTest {
     protected HomePage homePage;
 
@@ -21,7 +20,7 @@ public class RegressionTest extends BaseTest {
                      @Optional("chrome") String browser,
                      @Optional("CS_CZ") String language) {
 
-        homePage = FrameworkManager.initWebApp(browser, environment, language, HomePage.class);
+        homePage = initWebAppInstance(browser, environment, language, HomePage.class);
         homePage.switchLanguageTo(Language.valueOf(language));
     }
 }

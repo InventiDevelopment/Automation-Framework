@@ -2,7 +2,6 @@ package cz.inventi.qa.inventiweb.frontend.core.components.topmenu;
 
 import cz.inventi.qa.framework.core.annotations.web.FindElement;
 import cz.inventi.qa.framework.core.data.enums.Language;
-import cz.inventi.qa.framework.core.managers.LanguageManager;
 import cz.inventi.qa.framework.core.objects.web.WOProps;
 import cz.inventi.qa.framework.core.objects.web.WebComponent;
 import cz.inventi.qa.framework.core.objects.web.WebElement;
@@ -40,10 +39,10 @@ public class LanguageSwitcher<T extends WebObject> extends WebComponent<T> {
                 .getAttribute("title")
                 .toLowerCase();
 
-        if (languageName.equals(LanguageManager.getTranslation(Keyword.CZECH).toLowerCase())) {
+        if (languageName.equals(getLanguageManager().getTranslation(Keyword.CZECH).toLowerCase())) {
             return Language.CS_CZ;
         }
-        if (languageName.equals(LanguageManager.getTranslation(Keyword.ENGLISH).toLowerCase())) {
+        if (languageName.equals(getLanguageManager().getTranslation(Keyword.ENGLISH).toLowerCase())) {
             return Language.EN;
         }
         throw new RuntimeException("Cannot detect page language from value '" + languageName + "'.");

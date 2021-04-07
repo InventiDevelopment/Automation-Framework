@@ -6,6 +6,7 @@ import cz.inventi.qa.framework.core.factories.web.PageBuilder;
 import cz.inventi.qa.framework.core.factories.web.webobject.WebObjectFactory;
 import cz.inventi.qa.framework.core.managers.ConfigManager;
 import cz.inventi.qa.framework.core.managers.WebDriverManager;
+import cz.inventi.qa.framework.core.objects.framework.AppInstance;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
@@ -18,11 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WebComponentList<R extends WebComponent<?>> {
-    private Class<R> componentClass;
-    private Object returnComponent;
+    private final Class<R> componentClass;
+    private final Object returnComponent;
+    private final String componentXpath;
+    private final WOProps props;
     private List<R> componentsList;
-    private String componentXpath;
-    private WOProps props;
 
     public WebComponentList(Class<R> componentClass, WOProps props) {
         this.returnComponent = props.getReturnKlass();
@@ -52,9 +53,9 @@ public class WebComponentList<R extends WebComponent<?>> {
     }
 
     private int getNumberOfComponents() {
-        if (ConfigManager.getWebDriverConfigData().waitsAutomatically()) {
-            FluentWait<WebDriver> fluentWait = new FluentWait<>(WebDriverManager.getDriver())
-                    .withTimeout(Duration.ofMillis(ConfigManager.getWebDriverConfigData().getTimeouts().getMax()))
+        if (getAppInstance().getConfigManager().getWebDriverConfigData().waitsAutomatically()) {
+            FluentWait<WebDriver> fluentWait = new FluentWait<>(getDriver())
+                    .withTimeout(Duration.ofMillis(getAppInstance().getConfigManager().getWebDriverConfigData().getTimeouts().getMax()))
                     .pollingEvery(Duration.ofMillis(100))
                     .ignoring(NoSuchElementException.class)
                     .ignoring(StaleElementReferenceException.class)
@@ -62,12 +63,20 @@ public class WebComponentList<R extends WebComponent<?>> {
 
             fluentWait.until(ExpectedConditions.numberOfElementsToBeMoreThan(By.xpath(componentXpath), 0));
         }
-        return WebDriverManager.getDriver().findElements(By.xpath(componentXpath)).size();
+        return getDriver().findElements(By.xpath(componentXpath)).size();
     }
 
     private <O extends WebObject> WOProps getWOProps (int xpathIndex) {
         FindElementHandler componentXpathWithIndex = new FindElementHandler(componentXpath, xpathIndex);
         String parentXpath = props.getXpath();
-        return new WOProps(PageBuilder.generateXpathWithParent(parentXpath, componentXpathWithIndex), returnComponent, props);
+        return new WOProps(PageBuilder.generateXpathWithParent(parentXpath, componentXpathWithIndex), returnComponent, props, getAppInstance());
+    }
+
+    public WebDriver getDriver() {
+        return props.getAppInstance().getWebDriverManager().getDriver();
+    }
+
+    public AppInstance getAppInstance() {
+        return props.getAppInstance();
     }
 }

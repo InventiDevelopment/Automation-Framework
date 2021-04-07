@@ -4,45 +4,59 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import cz.inventi.qa.framework.core.Log;
-import cz.inventi.qa.framework.core.Utils;
 import cz.inventi.qa.framework.core.data.config.AppConfigData;
 import cz.inventi.qa.framework.core.data.config.WebDriverConfigData;
 import cz.inventi.qa.framework.core.data.enums.RunMode;
+import cz.inventi.qa.framework.core.objects.framework.AppInstance;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
 public class ConfigManager {
-
     private static final String CONFIG_DIRECTORY = "config/";
     private static final String WEBDRIVER_CONFIG_FILE_NAME = CONFIG_DIRECTORY + "webDriverConfig.yml";
     private static final String APP_CONFIG_FILE_NAME = CONFIG_DIRECTORY + "appsConfig.yml";
     private static final ObjectMapper mapper = new ObjectMapper(new YAMLFactory()).configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    private static AppConfigData appsConfigData;
-    private static WebDriverConfigData webDriverConfigData;
-    private static String customAppConfigPath;
-    private static String customDriverConfigPath;
+    private final AppInstance appInstance;
+    private AppConfigData appsConfigData;
+    private WebDriverConfigData webDriverConfigData;
+    private String customAppConfigPath;
+    private String customDriverConfigPath;
 
-    public static void initWebConfigs() {
+    public ConfigManager(AppInstance appInstance) {
+        this.appInstance = appInstance;
+    }
+
+    public void initWebConfigs() {
         Log.debug("Initializing configuration files for WEB testing");
         initGeneralAppConfig();
         initWebDriverConfig();
     }
 
-    public static void initApiConfigs() {
+    public void initApiConfigs() {
        Log.debug("Initializing configuration files for API testing");
        initGeneralAppConfig();
     }
 
-    private static void initGeneralAppConfig() {
+    private static String getCustomPackageConfigPath(String configFileName, ClassLoader classLoader) {
+        try {
+            return Objects.requireNonNull(classLoader.getResource(configFileName)).getPath();
+        } catch (NullPointerException e) {
+            Log.fail("Not possible to read from a custom yml file. Check that the '" + configFileName + "' file " +
+                    "is created in resources folder in the package you are launching test from.");
+        }
+        return null;
+    }
+
+    private void initGeneralAppConfig() {
         String appConfigPath = Objects.requireNonNull(ConfigManager.class.getClassLoader().getResource(APP_CONFIG_FILE_NAME)).getPath();
 
         if (customAppConfigPath != null) {
-            appConfigPath = customAppConfigPath;
+            appConfigPath = getCustomPackageConfigPath(customAppConfigPath, this.getClass().getSuperclass().getClassLoader());
         }
 
-        appConfigPath = Utils.getFilePathDecoded(appConfigPath);
+        appConfigPath = appInstance.getWebUtils().getFilePathDecoded(appConfigPath);
 
         try {
             Log.debug("Loading APP YAML configuration file: '" + appConfigPath + "'");
@@ -54,14 +68,14 @@ public class ConfigManager {
         }
     }
 
-    private static void initWebDriverConfig () {
+    private void initWebDriverConfig () {
         String driverConfigPath = Objects.requireNonNull(ConfigManager.class.getClassLoader().getResource(WEBDRIVER_CONFIG_FILE_NAME)).getPath();
 
         if (customDriverConfigPath != null) {
-            driverConfigPath = customDriverConfigPath;
+            driverConfigPath = getCustomPackageConfigPath(customDriverConfigPath, this.getClass().getSuperclass().getClassLoader());
         }
 
-        driverConfigPath = Utils.getFilePathDecoded(driverConfigPath);
+        driverConfigPath = appInstance.getWebUtils().getFilePathDecoded(driverConfigPath);
 
         try {
             Log.debug("Loading WEBDRIVER YAML configuration file: '" + driverConfigPath + "'");
@@ -73,31 +87,31 @@ public class ConfigManager {
         }
     }
 
-    public static WebDriverConfigData getWebDriverConfigData() {
+    public WebDriverConfigData getWebDriverConfigData() {
         return webDriverConfigData;
     }
 
-    public static AppConfigData getAppsConfigData() {
+    public AppConfigData getAppsConfigData() {
         return appsConfigData;
     }
 
-    public static void setCustomAppConfigPath (String customAppConfigPath) {
-        ConfigManager.customAppConfigPath = customAppConfigPath;
+    public void setCustomAppConfigPath (String customAppConfigPath) {
+        appInstance.getConfigManager().customAppConfigPath = customAppConfigPath;
     }
 
-    public static void setCustomWebDriverConfigPath(String customDriverConfigPath) {
-        ConfigManager.customDriverConfigPath = customDriverConfigPath;
+    public void setCustomWebDriverConfigPath(String customDriverConfigPath) {
+        appInstance.getConfigManager().customDriverConfigPath = customDriverConfigPath;
     }
 
-    public static String getCustomAppConfigPath() {
+    public String getCustomAppConfigPath() {
         return customAppConfigPath;
     }
 
-    public static String getCustomWebDriverConfigPath() {
+    public String getCustomWebDriverConfigPath() {
         return customDriverConfigPath;
     }
 
-    public static RunMode getRunMode() {
+    public RunMode getRunMode() {
         return RunMode.valueOf(webDriverConfigData.getGeneralSettings().getRunMode().toUpperCase());
     }
 }

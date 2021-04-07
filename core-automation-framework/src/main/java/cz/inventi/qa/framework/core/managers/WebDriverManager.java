@@ -2,6 +2,7 @@ package cz.inventi.qa.framework.core.managers;
 
 import cz.inventi.qa.framework.core.Log;
 import cz.inventi.qa.framework.core.data.enums.Browser;
+import cz.inventi.qa.framework.core.objects.framework.AppInstance;
 import cz.inventi.qa.framework.core.webdrivers.ChromeWebWebDriver;
 import cz.inventi.qa.framework.core.webdrivers.WebDriverWrapper;
 import org.openqa.selenium.WebDriver;
@@ -12,22 +13,27 @@ import java.nio.file.Paths;
 
 
 public class WebDriverManager {
-    private static WebDriverWrapper webDriverWrapper;
+    private final AppInstance appInstance;
+    private WebDriverWrapper webDriverWrapper;
 
-    public static void init() {
-        Browser currentBrowser = ParametersManager.getWebAppParameters().getBrowser();
+    public WebDriverManager(AppInstance appInstance) {
+        this.appInstance = appInstance;
+    }
+
+    public void init() {
+        Browser currentBrowser = appInstance.getParametersManager().getWebAppParameters().getBrowser();
 
         switch (currentBrowser) {
             case CHROME:
-                webDriverWrapper = new ChromeWebWebDriver();
+                webDriverWrapper = new ChromeWebWebDriver(appInstance);
                 break;
             default:
                 Log.fail("Browser '" + currentBrowser + "' support currently not implemented.");
         }
-        initializeWebDriver(AppManager.getAppUrl());
+        initializeWebDriver(appInstance.getAppManager().getAppUrl());
     }
 
-    private static void initializeWebDriver (String appUrl) {
+    private void initializeWebDriver (String appUrl) {
         try {
             formatResourcesURL(appUrl);
             getDriver().get(appUrl);
@@ -36,22 +42,22 @@ public class WebDriverManager {
         }
     }
 
-    private static void formatResourcesURL (String appUrl) {
+    private void formatResourcesURL (String appUrl) {
         if (appUrl.contains("test://") || appUrl.contains("main://")) {
             String[] resourcePackage = appUrl.split("://");
             appUrl = new File(Paths.get("src",resourcePackage[0], "resources") + "/" + resourcePackage[1]).getAbsolutePath();
         }
     }
 
-    public static WebDriver getDriver() {
+    public WebDriver getDriver() {
         return webDriverWrapper.getDriver();
     }
 
-    public static WebDriverWait getWait() {
+    public WebDriverWait getWait() {
         return webDriverWrapper.getWait();
     }
 
-    public static void cleanDriver() {
+    public void cleanDriver() {
         webDriverWrapper.getDriver().quit();
     }
 }

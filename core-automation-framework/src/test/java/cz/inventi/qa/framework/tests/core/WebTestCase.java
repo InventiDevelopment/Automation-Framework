@@ -1,9 +1,8 @@
 package cz.inventi.qa.framework.tests.core;
 
 import cz.inventi.qa.framework.core.data.enums.RunMode;
-import cz.inventi.qa.framework.core.managers.ConfigManager;
-import cz.inventi.qa.framework.core.managers.WebDriverManager;
 import cz.inventi.qa.framework.core.managers.FrameworkManager;
+import cz.inventi.qa.framework.core.objects.framework.AppInstance;
 import cz.inventi.qa.framework.core.objects.test.BaseTest;
 import cz.inventi.qa.framework.testweb.webobjects.HomePage;
 import org.testng.annotations.AfterClass;
@@ -12,6 +11,7 @@ import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 
 public class WebTestCase extends BaseTest {
+    private AppInstance appInstance;
     public HomePage homePage;
 
     @BeforeClass
@@ -20,13 +20,14 @@ public class WebTestCase extends BaseTest {
                      @Optional("EN") String language,
                      @Optional("chrome") String browser) {
 
-        homePage = FrameworkManager.initWebApp(browser, environment, language, HomePage.class);
+        homePage = initWebAppInstance(browser, environment, language, HomePage.class);
+        appInstance = homePage.getAppInstance();
     }
 
     @AfterClass
     public void quit() {
-        if (!ConfigManager.getRunMode().equals(RunMode.DEBUG)) {
-            WebDriverManager.cleanDriver();
+        if (!appInstance.getConfigManager().getRunMode().equals(RunMode.DEBUG)) {
+            appInstance.getWebDriverManager().cleanDriver();
         }
     }
 }

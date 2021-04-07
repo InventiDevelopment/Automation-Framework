@@ -5,6 +5,7 @@ import cz.inventi.qa.framework.core.data.web.Timeouts;
 import cz.inventi.qa.framework.core.factories.web.webelement.WebElementLocator;
 import cz.inventi.qa.framework.core.managers.ConfigManager;
 import cz.inventi.qa.framework.core.managers.WebDriverManager;
+import cz.inventi.qa.framework.core.objects.framework.AppInstance;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -16,20 +17,22 @@ import java.util.List;
 
 public class WebElement implements org.openqa.selenium.WebElement {
     private static final int MAX_RETRIES = 5;
-    private WebDriver driver;
-    private JavascriptExecutor jsExec;
+    private final WebDriver driver;
+    private final JavascriptExecutor jsExec;
+    private final WebElementLocator webElementLocator;
+    private final Actions actions;
+    private final Timeouts timeouts;
+    private final AppInstance appInstance;
     private org.openqa.selenium.WebElement selWebElement;
-    private WebElementLocator webElementLocator;
-    private Actions actions;
-    private Timeouts timeouts;
 
-    public WebElement(org.openqa.selenium.WebElement selWebElement, WebElementLocator webElementLocator) {
+    public WebElement(org.openqa.selenium.WebElement selWebElement, WebElementLocator webElementLocator, AppInstance appInstance) {
         this.selWebElement = selWebElement;
         this.webElementLocator = webElementLocator;
-        driver = WebDriverManager.getDriver();
+        this.appInstance = appInstance;
+        driver = appInstance.getWebDriverManager().getDriver();
         jsExec = (JavascriptExecutor) driver;
         actions = new Actions(driver);
-        timeouts = ConfigManager.getWebDriverConfigData().getGeneralSettings().getWait().getTimeouts();
+        timeouts = appInstance.getConfigManager().getWebDriverConfigData().getGeneralSettings().getWait().getTimeouts();
     }
 
     public String getXpath () {
@@ -140,14 +143,14 @@ public class WebElement implements org.openqa.selenium.WebElement {
         printAction(findElementsXpath);
 
         for (org.openqa.selenium.WebElement selElement : selWebElement.findElements(By.xpath(findElementsXpath))) {
-            webElements.add(new WebElement(selWebElement, new WebElementLocator(WebDriverManager.getDriver(), getXpath() + findElementsXpath, 0)));
+            webElements.add(new WebElement(selWebElement, new WebElementLocator(getXpath() + findElementsXpath, 0, appInstance), appInstance));
         }
         return webElements;
     }
 
     public WebElement findElement(String findElementXpath) {
         printAction(findElementXpath);
-        return new WebElement(selWebElement.findElement(By.xpath(findElementXpath)), new WebElementLocator(WebDriverManager.getDriver(), getXpath() + findElementXpath, 0));
+        return new WebElement(selWebElement.findElement(By.xpath(findElementXpath)), new WebElementLocator(getXpath() + findElementXpath, 0, appInstance), appInstance);
     }
 
     @Override
@@ -190,7 +193,7 @@ public class WebElement implements org.openqa.selenium.WebElement {
     }
 
     private FluentWait<WebDriver> getFluentWait (int timeout) {
-        if (!ConfigManager.getWebDriverConfigData().waitsAutomatically()) {
+        if (!appInstance.getConfigManager().getWebDriverConfigData().waitsAutomatically()) {
             timeout = 0;
         }
 

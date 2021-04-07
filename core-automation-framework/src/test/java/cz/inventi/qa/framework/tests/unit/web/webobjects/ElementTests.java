@@ -1,13 +1,13 @@
 package cz.inventi.qa.framework.tests.unit.web.webobjects;
 
-import cz.inventi.qa.framework.core.factories.web.webobject.WebObjectFactory;
+import cz.inventi.qa.framework.core.objects.web.WebElement;
 import cz.inventi.qa.framework.tests.core.WebTestCase;
 import cz.inventi.qa.framework.testweb.webobjects.WhatWeDoPage;
-import cz.inventi.qa.framework.core.objects.web.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class ElementTests extends WebTestCase {
+    private WhatWeDoPage whatWeDoPage;
 
     @Test
     public void parentXpathTest () {
@@ -18,10 +18,10 @@ public class ElementTests extends WebTestCase {
 
     @Test
     public void clickJSTest () {
-        WhatWeDoPage whatWeDoPage = WebObjectFactory.initPage(WhatWeDoPage.class);
-        homePage
+        whatWeDoPage = homePage
             .getMenu()
-            .clickWhatWeDo()
+            .clickWhatWeDo();
+        whatWeDoPage
             .getAppendContentBtn()
             .clickJS();
 
@@ -30,7 +30,6 @@ public class ElementTests extends WebTestCase {
 
     @Test
     public void hoverTest () {
-        WhatWeDoPage whatWeDoPage = WebObjectFactory.initPage(WhatWeDoPage.class);
         whatWeDoPage
             .getMenu()
             .clickHome()

@@ -6,7 +6,7 @@ import org.openqa.selenium.support.PageFactory;
 public class WebElementFactory {
 
     public static <T extends WebObject> void initElements(final T page) {
-        initElements(new WebElementLocatorFactory(), page);
+        initElements(new WebElementLocatorFactory(page.getAppInstance()), page);
     }
 
     public static <T extends WebObject> void initElements(final WebElementLocatorFactory factory, final T page) {

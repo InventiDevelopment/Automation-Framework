@@ -1,10 +1,12 @@
 package cz.inventi.qa.framework.core.objects.api;
 
 import cz.inventi.qa.framework.core.Log;
+import cz.inventi.qa.framework.core.objects.framework.AppInstance;
 
 import java.util.regex.Pattern;
 
 public class AOProps {
+    private final AppInstance appInstance;
     private String endpointUrl = "";
     private String fullUrl = "";
     private Object returnKlass;
@@ -12,12 +14,13 @@ public class AOProps {
     private boolean parameter;
     private String parameterValue;
 
-    public AOProps(String url) {
+    public AOProps(String url, AppInstance appInstance) {
         this.endpointUrl = url;
+        this.appInstance = appInstance;
     }
 
-    public AOProps(String url, Object returnKlass, AOProps parentProps) {
-        this.endpointUrl = url;
+    public AOProps(String url, Object returnKlass, AOProps parentProps, AppInstance appInstance) {
+        this(url, appInstance);
         this.returnKlass = returnKlass;
         this.parentProps = parentProps;
         checkIfAOIsParameter(url);
@@ -68,6 +71,10 @@ public class AOProps {
 
     public void setParameterValue(String parameterValue) {
         this.parameterValue = parameterValue;
+    }
+
+    public AppInstance getAppInstance() {
+        return appInstance;
     }
 
     public String getFullUrlWithParams () {
