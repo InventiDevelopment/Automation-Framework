@@ -13,21 +13,21 @@ public class AppInstance {
     private final LanguageManager languageManager;
     private final AppManager appManager;
     private final WebDriverManager webDriverManager;
-    private final WebUtils webUtils;
+    private WebUtils webUtils;
 
     public AppInstance() {
-        this.parametersManager = new ParametersManager(this);
-        this.configManager = new ConfigManager(this);
-        this.languageManager = new LanguageManager(this);
-        this.appManager = new AppManager(this);
-        this.webDriverManager = new WebDriverManager(this);
-        this.webUtils = new WebUtils(this);
+        parametersManager = new ParametersManager(this);
+        configManager = new ConfigManager(this);
+        languageManager = new LanguageManager(this);
+        appManager = new AppManager(this);
+        webDriverManager = new WebDriverManager(this);
     }
 
     public <T extends WebPage> T initWebApp(String browser, String environment, String language, Class<T> startingWebPage) {
         parametersManager.setWebParameters(browser, environment, language, startingWebPage);
         configManager.initWebConfigs();
         languageManager.init();
+        languageManager.setLanguage(language);
         appManager.initWebApplication(startingWebPage);
         webDriverManager.init();
         return WebObjectFactory.initPage(startingWebPage, this);

@@ -4,8 +4,8 @@ import cz.inventi.qa.framework.core.Log;
 import cz.inventi.qa.framework.core.data.enums.Language;
 
 public class CommonParameters {
+    private final String environment;
     private Language language;
-    private String environment;
 
     public CommonParameters(String language, String environment) {
         this.environment = environment;

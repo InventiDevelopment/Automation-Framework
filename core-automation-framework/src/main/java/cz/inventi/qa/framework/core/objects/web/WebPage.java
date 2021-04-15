@@ -11,7 +11,7 @@ public abstract class WebPage extends WebObject {
 
     public void waitUntilPageLoaded() {
         if (getAppInstance().getConfigManager().getWebDriverConfigData().waitsAutomatically()) {
-            webUtils().waitUntilDocumentReady();
+            webUtils().waitUntilDocumentReady(getAppInstance());
         }
     }
 

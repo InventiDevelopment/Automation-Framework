@@ -15,13 +15,13 @@ public abstract class BaseTest {
     }
 
     public <T extends WebPage> T initWebAppInstance(String browser, String environment, String language, Class<T> startingWebPage) {
-        T webPageInitialized = FrameworkManager.getInstance().initWebAppInstance(browser, environment, language, startingWebPage, configFiles.appsConfig(), configFiles.driverConfig());
+        T webPageInitialized = FrameworkManager.getInstance().initWebAppInstance(browser, environment, language, startingWebPage, configFiles);
         appInstance = webPageInitialized.getAppInstance();
         return webPageInitialized;
     }
 
     public <T extends Api> T initApiAppInstance(String environment, Class<T> api) {
-        T apiInitialized = FrameworkManager.getInstance().initApiAppInstance(environment, api, configFiles.appsConfig(), configFiles.driverConfig());
+        T apiInitialized = FrameworkManager.getInstance().initApiAppInstance(environment, api, configFiles);
         appInstance = apiInitialized.getAppInstance();
         return apiInitialized;
     }

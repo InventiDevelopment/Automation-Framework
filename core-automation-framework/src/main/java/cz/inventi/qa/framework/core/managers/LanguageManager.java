@@ -23,8 +23,12 @@ public class LanguageManager {
     private Map<String, String> dictionary;
 
     public LanguageManager(AppInstance appInstance) {
+        this(appInstance, Language.NONE);
+    }
+
+    public LanguageManager(AppInstance appInstance, Language language) {
         this.appInstance = appInstance;
-        currentLanguage = appInstance.getParametersManager().getCommonParameters().getLanguage();
+        currentLanguage = language;
         mapper = new ObjectMapper(new YAMLFactory());
         languageFile = loadLanguageFile();
     }
@@ -73,10 +77,18 @@ public class LanguageManager {
         }
     }
 
-    public void changeLanguage(Language language) {
+    public void setLanguage(Language language) {
         appInstance.getParametersManager().getCommonParameters().setLanguage(language);
         currentLanguage = language;
         languageFile = loadLanguageFile();
         init();
+    }
+
+    public void setLanguage(String language) {
+        try {
+            setLanguage(Language.valueOf(language));
+        } catch (Exception e) {
+            throw new RuntimeException("Language '" + language + "' could not be found, please enter correct value according to ISO 639-1.");
+        }
     }
 }

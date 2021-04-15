@@ -1,7 +1,6 @@
 package cz.inventi.qa.inventiweb.frontend.core.webobjects;
 
 import cz.inventi.qa.framework.core.data.enums.Language;
-import cz.inventi.qa.framework.core.managers.LanguageManager;
 import cz.inventi.qa.framework.core.objects.web.WOProps;
 import cz.inventi.qa.framework.core.objects.web.WebPage;
 import cz.inventi.qa.inventiweb.frontend.core.components.footer.Footer;
@@ -24,7 +23,7 @@ public class BasePage<T extends WebPage> extends WebPage {
 
     public T switchLanguageTo(Language language){
         topPanel.switchLanguageTo(language);
-        getLanguageManager().changeLanguage(language);
+        getLanguageManager().setLanguage(language);
         return (T) this;
     }
 }
