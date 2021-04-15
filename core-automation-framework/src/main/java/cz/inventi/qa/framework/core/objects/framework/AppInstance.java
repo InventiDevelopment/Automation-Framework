@@ -26,8 +26,7 @@ public class AppInstance {
     public <T extends WebPage> T initWebApp(String browser, String environment, String language, Class<T> startingWebPage) {
         parametersManager.setWebParameters(browser, environment, language, startingWebPage);
         configManager.initWebConfigs();
-        languageManager.init();
-        languageManager.setLanguage(language);
+        languageManager.init(language);
         appManager.initWebApplication(startingWebPage);
         webDriverManager.init();
         return WebObjectFactory.initPage(startingWebPage, this);

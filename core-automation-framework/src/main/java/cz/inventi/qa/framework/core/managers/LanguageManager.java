@@ -33,7 +33,11 @@ public class LanguageManager {
         languageFile = loadLanguageFile();
     }
 
-    public void init() {
+    public void init(Language language) {
+        appInstance.getParametersManager().getCommonParameters().setLanguage(language);
+        languageFile = loadLanguageFile();
+        currentLanguage = language;
+
         if (!currentLanguage.equals(Language.NONE)) {
             try {
                 Log.debug("Loading '" + currentLanguage + "' language YAML dictionary file: '" + languageFile + "'");
@@ -48,10 +52,13 @@ public class LanguageManager {
         }
     }
 
+    public void init(String language) {
+        init(getLanguage(language));
+    }
+
     private String loadLanguageFile() {
         if (!currentLanguage.equals(Language.NONE)) {
-            return appInstance
-                    .getWebUtils()
+            return WebUtils
                     .getFilePathDecoded(
                             Objects.requireNonNull(LanguageManager.class
                                     .getClassLoader()
@@ -77,18 +84,15 @@ public class LanguageManager {
         }
     }
 
-    public void setLanguage(Language language) {
-        appInstance.getParametersManager().getCommonParameters().setLanguage(language);
-        currentLanguage = language;
-        languageFile = loadLanguageFile();
-        init();
-    }
-
-    public void setLanguage(String language) {
+    public Language getLanguage(String language) {
         try {
-            setLanguage(Language.valueOf(language));
+            return Language.valueOf(language);
         } catch (Exception e) {
             throw new RuntimeException("Language '" + language + "' could not be found, please enter correct value according to ISO 639-1.");
         }
+    }
+
+    public void changeLanguage(Language language) {
+        init(language);
     }
 }
