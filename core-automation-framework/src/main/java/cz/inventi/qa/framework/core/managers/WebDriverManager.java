@@ -22,7 +22,6 @@ public class WebDriverManager {
 
     public void init() {
         Browser currentBrowser = appInstance.getParametersManager().getWebAppParameters().getBrowser();
-
         switch (currentBrowser) {
             case CHROME:
                 webDriverWrapper = new ChromeWebWebDriver(appInstance);
@@ -35,18 +34,18 @@ public class WebDriverManager {
 
     private void initializeWebDriver (String appUrl) {
         try {
-            formatResourcesURL(appUrl);
-            getDriver().get(appUrl);
+            getDriver().get(formatResourcesURL(appUrl));
         } catch (Exception e) {
             Log.fail("Unable to get url: '" + appUrl + "'. Please check that url is valid.");
         }
     }
 
-    private void formatResourcesURL (String appUrl) {
+    private String formatResourcesURL (String appUrl) {
         if (appUrl.contains("test://") || appUrl.contains("main://")) {
             String[] resourcePackage = appUrl.split("://");
-            appUrl = new File(Paths.get("src",resourcePackage[0], "resources") + "/" + resourcePackage[1]).getAbsolutePath();
+            return appUrl = new File(Paths.get("src",resourcePackage[0], "resources") + "/" + resourcePackage[1]).getAbsolutePath();
         }
+        return appUrl;
     }
 
     public WebDriver getDriver() {

@@ -25,7 +25,7 @@ public class ParametersManager {
         applicationType = ApplicationType.API;
     }
 
-    public <T extends WebPage> void setWebParameters(String environment, String browser, String language, Class<T> startingWebpage) {
+    public <T extends WebPage> void setWebParameters(String browser, String environment, String language, Class<T> startingWebpage) {
         setCommonParameters(environment, language);
         webAppParameters = new WebAppParameters<>(environment, browser, language, startingWebpage);
         applicationType = ApplicationType.WEB;

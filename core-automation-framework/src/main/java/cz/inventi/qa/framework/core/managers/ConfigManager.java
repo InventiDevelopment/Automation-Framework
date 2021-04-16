@@ -39,12 +39,12 @@ public class ConfigManager {
        initGeneralAppConfig();
     }
 
-    private static String getCustomPackageConfigPath(String configFileName, ClassLoader classLoader) {
+    private static String getCustomPackageConfigPath(String configFileName) {
         try {
-            return Objects.requireNonNull(classLoader.getResource(configFileName)).getPath();
+            return Objects.requireNonNull(ConfigManager.class.getClassLoader().getResource(configFileName)).getPath();
         } catch (NullPointerException e) {
-            Log.fail("Not possible to read from a custom yml file. Check that the '" + configFileName + "' file " +
-                    "is created in resources folder in the package you are launching test from.");
+            Log.fail("Not possible to read from a custom yml file at '" + ConfigManager.class.getClassLoader().getResource("") + configFileName + "'. Check that the '" + configFileName + "' file " +
+                    "is created in resources folder in the package you are launching test from." + e);
         }
         return null;
     }
@@ -53,7 +53,7 @@ public class ConfigManager {
         String appConfigPath = Objects.requireNonNull(ConfigManager.class.getClassLoader().getResource(APP_CONFIG_FILE_NAME)).getPath();
 
         if (customAppConfigPath != null) {
-            appConfigPath = getCustomPackageConfigPath(customAppConfigPath, this.getClass().getSuperclass().getClassLoader());
+            appConfigPath = getCustomPackageConfigPath(customAppConfigPath);
         }
 
         appConfigPath = appInstance.getWebUtils().getFilePathDecoded(appConfigPath);
@@ -72,7 +72,7 @@ public class ConfigManager {
         String driverConfigPath = Objects.requireNonNull(ConfigManager.class.getClassLoader().getResource(WEBDRIVER_CONFIG_FILE_NAME)).getPath();
 
         if (customDriverConfigPath != null) {
-            driverConfigPath = getCustomPackageConfigPath(customDriverConfigPath, this.getClass().getSuperclass().getClassLoader());
+            driverConfigPath = getCustomPackageConfigPath(customDriverConfigPath);
         }
 
         driverConfigPath = appInstance.getWebUtils().getFilePathDecoded(driverConfigPath);

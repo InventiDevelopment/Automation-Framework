@@ -1,6 +1,7 @@
 package cz.inventi.qa.framework.core.managers;
 
 import cz.inventi.qa.framework.core.annotations.ConfigFiles;
+import cz.inventi.qa.framework.core.data.enums.ApplicationType;
 import cz.inventi.qa.framework.core.objects.api.Api;
 import cz.inventi.qa.framework.core.objects.framework.AppInstance;
 import cz.inventi.qa.framework.core.objects.web.WebPage;

@@ -53,7 +53,8 @@ public class LanguageManager {
     }
 
     public void init(String language) {
-        init(getLanguage(language));
+        currentLanguage = getLanguage(language);
+        init(currentLanguage);
     }
 
     private String loadLanguageFile() {

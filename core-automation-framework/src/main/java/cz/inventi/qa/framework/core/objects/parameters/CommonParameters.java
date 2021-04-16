@@ -7,7 +7,7 @@ public class CommonParameters {
     private final String environment;
     private Language language;
 
-    public CommonParameters(String language, String environment) {
+    public CommonParameters(String environment, String language) {
         this.environment = environment;
         setLanguage(language);
     }

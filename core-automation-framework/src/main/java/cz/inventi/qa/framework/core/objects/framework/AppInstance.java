@@ -13,6 +13,7 @@ public class AppInstance {
     private final LanguageManager languageManager;
     private final AppManager appManager;
     private final WebDriverManager webDriverManager;
+    private final ReportManager reportManager;
     private WebUtils webUtils;
 
     public AppInstance() {
@@ -21,6 +22,7 @@ public class AppInstance {
         languageManager = new LanguageManager(this);
         appManager = new AppManager(this);
         webDriverManager = new WebDriverManager(this);
+        reportManager = new ReportManager(this);
     }
 
     public <T extends WebPage> T initWebApp(String browser, String environment, String language, Class<T> startingWebPage) {
@@ -29,6 +31,7 @@ public class AppInstance {
         languageManager.init(language);
         appManager.initWebApplication(startingWebPage);
         webDriverManager.init();
+        reportManager.init();
         return WebObjectFactory.initPage(startingWebPage, this);
     }
 
@@ -36,6 +39,7 @@ public class AppInstance {
         parametersManager.setApiParameters(environment,api);
         configManager.initApiConfigs();
         appManager.initApiApplication(api);
+        reportManager.init();
         return ApiObjectFactory.initApi(api, this);
     }
 
