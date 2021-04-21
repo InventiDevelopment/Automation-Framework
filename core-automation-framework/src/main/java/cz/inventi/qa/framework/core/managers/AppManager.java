@@ -35,6 +35,7 @@ public class AppManager {
         initializeEnvironment(klass.getAnnotation(Application.class));
     }
 
+    @SuppressWarnings("unchecked")
     public <T extends cz.inventi.qa.framework.core.data.app.Application> T getCurrentApplication () {
         Applications applications = appInstance.getConfigManager().getAppsConfigData().getApplications();
 

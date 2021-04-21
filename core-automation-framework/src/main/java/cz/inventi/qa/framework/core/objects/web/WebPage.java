@@ -24,6 +24,7 @@ public abstract class WebPage extends WebObject {
         return this;
     }
 
+    @SuppressWarnings("unchecked")
     public <T extends WebPage> T regeneratePage() {
         return (T) this;
     }

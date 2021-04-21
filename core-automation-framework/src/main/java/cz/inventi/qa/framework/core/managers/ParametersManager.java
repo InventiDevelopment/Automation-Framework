@@ -39,10 +39,12 @@ public class ParametersManager {
         commonParameters = new CommonParameters(environment,"EN");
     }
 
+    @SuppressWarnings("unchecked")
     public <T extends Api> ApiAppParameters<T> getApiAppParameters() {
         return (ApiAppParameters<T>) apiAppParameters;
     }
 
+    @SuppressWarnings("unchecked")
     public <T extends WebPage> WebAppParameters<T> getWebAppParameters() {
         return (WebAppParameters<T>) webAppParameters;
     }

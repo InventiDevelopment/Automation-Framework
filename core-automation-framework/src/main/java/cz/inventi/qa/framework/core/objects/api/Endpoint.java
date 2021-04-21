@@ -35,6 +35,7 @@ public abstract class Endpoint<T> extends ApiObject {
         return getProps().getFullUrl();
     }
 
+    @SuppressWarnings("unchecked")
     public T setUrlParameter(String urlParameter) {
         getProps().setParameterValue(URLEncoder.encode(urlParameter, StandardCharsets.UTF_8));
         return (T) this;

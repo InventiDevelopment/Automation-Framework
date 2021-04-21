@@ -16,6 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 
 
+@SuppressWarnings("unchecked")
 public class WebObjectFactory {
 
     public static <T extends WebObject> void initElements (T webObject, WOProps parentProps) {
