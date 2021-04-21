@@ -43,5 +43,12 @@ public class BasicApiTests extends ApiTestCase {
 
         Assert.assertNotEquals(posts.size(), 0);
     }
+
+    @Test
+    public void createNewPostTest () {
+        jsonPlaceHolderApi
+            .posts
+            .createRandomPostWithAssert();
+    }
 }
 

@@ -36,7 +36,7 @@ public class ParametersManager {
     }
 
     public void setCommonParameters(String environment) {
-        commonParameters = new CommonParameters("EN", environment);
+        commonParameters = new CommonParameters(environment,"EN");
     }
 
     public <T extends Api> ApiAppParameters<T> getApiAppParameters() {

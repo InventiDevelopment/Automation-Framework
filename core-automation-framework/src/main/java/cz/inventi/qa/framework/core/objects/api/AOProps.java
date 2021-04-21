@@ -3,6 +3,7 @@ package cz.inventi.qa.framework.core.objects.api;
 import cz.inventi.qa.framework.core.Log;
 import cz.inventi.qa.framework.core.objects.framework.AppInstance;
 
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class AOProps {
@@ -77,7 +78,15 @@ public class AOProps {
         return appInstance;
     }
 
-    public String getFullUrlWithParams () {
+    public String getAppUrl() {
+        return appInstance.getAppManager().getAppUrl();
+    }
+
+    public String getBasePath() {
+        return getFullUrl().replace(getAppUrl() + "/", "");
+    }
+
+    public String getFullUrlWithParams() {
         String fullUrlWithParams = "";
         AOProps currentProps = this;
 
@@ -95,5 +104,28 @@ public class AOProps {
             currentProps = currentProps.parentProps;
         }
         return fullUrlWithParams;
+    }
+
+    public Map<String, String> getPathParams() {
+        Map<String, String> pathParams = new HashMap<>();
+        AOProps currentProps = this;
+
+        while (currentProps != null) {
+            if (currentProps.isParameter()) {
+                String parameterValue = currentProps.parameterValue;
+
+                if (parameterValue == null || "".equals(parameterValue)) {
+                    Log.warn("Endpoint '" + currentProps.endpointUrl + "' is parametrized, but no parameter value has been supplied");
+                }
+
+                String strippedEndpointUrl = currentProps.endpointUrl
+                        .replace("{", "")
+                        .replace("}", "");
+
+                pathParams.put(strippedEndpointUrl, parameterValue);
+            }
+            currentProps = currentProps.parentProps;
+        }
+        return pathParams;
     }
 }
