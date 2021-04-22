@@ -4,6 +4,8 @@
 !pom.xml
 !.gitignore
 !README.md
+!LICENSE
+!COPYRIGHT
 *.iml
 /*/target/
 *.log
