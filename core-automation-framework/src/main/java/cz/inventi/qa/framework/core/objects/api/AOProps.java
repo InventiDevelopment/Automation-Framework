@@ -92,7 +92,7 @@ public class AOProps {
 
         while (currentProps != null) {
             if (currentProps.isParameter()) {
-                String parameterValue = currentProps.parameterValue;
+                String parameterValue = currentProps.getParameterValue().toLowerCase();
 
                 if (parameterValue == null || "".equals(parameterValue)) {
                     Log.warn("Endpoint '" + currentProps.endpointUrl + "' is parametrized, but no parameter value has been supplied");
@@ -106,15 +106,15 @@ public class AOProps {
         return fullUrlWithParams;
     }
 
-    public Map<String, String> getPathParams() {
-        Map<String, String> pathParams = new HashMap<>();
+    public Map<String, Object> getPathParams() {
+        Map<String, Object> pathParams = new HashMap<>();
         AOProps currentProps = this;
 
         while (currentProps != null) {
             if (currentProps.isParameter()) {
-                String parameterValue = currentProps.parameterValue;
+                String parameterValue = currentProps.getParameterValue().toLowerCase();
 
-                if (parameterValue == null || "".equals(parameterValue)) {
+                if ("".equals(parameterValue)) {
                     Log.warn("Endpoint '" + currentProps.endpointUrl + "' is parametrized, but no parameter value has been supplied");
                 }
 

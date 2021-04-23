@@ -4,6 +4,9 @@ import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
+import java.util.Map;
+
+
 public abstract class RestEndpoint<T> extends Endpoint<T> {
 
     public RestEndpoint(AOProps props) {

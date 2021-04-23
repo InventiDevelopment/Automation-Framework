@@ -15,6 +15,7 @@ import java.util.Objects;
 
 public class ConfigManager {
     private static final String CONFIG_DIRECTORY = "config/";
+    private static final String RESOURCES_DIRECTORY = "src/main/resources";
     private static final String WEBDRIVER_CONFIG_FILE_NAME = CONFIG_DIRECTORY + "webDriverConfig.yml";
     private static final String APP_CONFIG_FILE_NAME = CONFIG_DIRECTORY + "appsConfig.yml";
     private static final ObjectMapper mapper = new ObjectMapper(new YAMLFactory()).configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -40,23 +41,23 @@ public class ConfigManager {
     }
 
     private static String getCustomPackageConfigPath(String configFileName) {
+        File customConfigFile = new File(RESOURCES_DIRECTORY + "/" + CONFIG_DIRECTORY + configFileName);
+
         try {
-            return Objects.requireNonNull(ConfigManager.class.getClassLoader().getResource(configFileName)).getPath();
+            return Objects.requireNonNull(customConfigFile.getAbsolutePath());
         } catch (NullPointerException e) {
-            Log.fail("Not possible to read from a custom yml file at '" + ConfigManager.class.getClassLoader().getResource("") + configFileName + "'. Check that the '" + configFileName + "' file " +
-                    "is created in resources folder in the package you are launching test from." + e);
+            Log.fail("Not possible to read from a custom yml file '" + configFileName + "' at '" + customConfigFile.getAbsolutePath() + "'. Check that the '" + configFileName + "' file " +
+                    "is created in resources folder in the package you are launching test from.\nStacktrace: " + e);
         }
         return null;
     }
 
     private void initGeneralAppConfig() {
-        String appConfigPath = Objects.requireNonNull(ConfigManager.class.getClassLoader().getResource(APP_CONFIG_FILE_NAME)).getPath();
+        String appConfigPath = new File(RESOURCES_DIRECTORY + "/" + APP_CONFIG_FILE_NAME).getAbsolutePath();
 
         if (customAppConfigPath != null) {
             appConfigPath = getCustomPackageConfigPath(customAppConfigPath);
         }
-
-        appConfigPath = appInstance.getWebUtils().getFilePathDecoded(appConfigPath);
 
         try {
             Log.debug("Loading APP YAML configuration file: '" + appConfigPath + "'");
@@ -69,13 +70,11 @@ public class ConfigManager {
     }
 
     private void initWebDriverConfig () {
-        String driverConfigPath = Objects.requireNonNull(ConfigManager.class.getClassLoader().getResource(WEBDRIVER_CONFIG_FILE_NAME)).getPath();
+        String driverConfigPath = new File(RESOURCES_DIRECTORY + "/" + WEBDRIVER_CONFIG_FILE_NAME).getAbsolutePath();
 
         if (customDriverConfigPath != null) {
             driverConfigPath = getCustomPackageConfigPath(customDriverConfigPath);
         }
-
-        driverConfigPath = appInstance.getWebUtils().getFilePathDecoded(driverConfigPath);
 
         try {
             Log.debug("Loading WEBDRIVER YAML configuration file: '" + driverConfigPath + "'");
