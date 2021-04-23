@@ -11,9 +11,9 @@ public abstract class Endpoint<T> extends ApiObject {
 
     public abstract Object callGet();
     public abstract Object callPost(String body);
-    public abstract Object callPut();
+    public abstract Object callPut(String body);
     public abstract Object callHead();
-    public abstract Object callPatch();
+    public abstract Object callPatch(String body);
     public abstract Object callDelete();
     public abstract Object callOptions();
     public abstract Object callTrace();

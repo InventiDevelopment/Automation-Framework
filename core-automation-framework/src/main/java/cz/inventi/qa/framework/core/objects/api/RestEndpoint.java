@@ -15,19 +15,25 @@ public abstract class RestEndpoint<T> extends Endpoint<T> {
     }
 
     public Response callPost(String body) {
-        return createRequest().post();
+        return createRequest()
+                .body(body)
+                .post();
     }
 
-    public Response callPut() {
-        return createRequest().put();
+    public Response callPut(String body) {
+        return createRequest()
+                .body(body)
+                .put();
     }
 
     public Response callHead() {
         return createRequest().head();
     }
 
-    public Response callPatch() {
-        return createRequest().patch();
+    public Response callPatch(String body) {
+        return createRequest()
+                .body(body)
+                .patch();
     }
 
     public Response callDelete() {
