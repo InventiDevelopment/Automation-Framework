@@ -1,8 +1,10 @@
 package cz.inventi.qa.framework.core.factories.api;
 
 import cz.inventi.qa.framework.core.Log;
+import cz.inventi.qa.framework.core.annotations.api.ApiAuth;
 import cz.inventi.qa.framework.core.annotations.api.EndpointSpecs;
 import cz.inventi.qa.framework.core.data.app.ApiApplication;
+import cz.inventi.qa.framework.core.data.enums.api.ApiAuthMethod;
 import cz.inventi.qa.framework.core.objects.api.AOProps;
 import cz.inventi.qa.framework.core.objects.api.Api;
 import cz.inventi.qa.framework.core.objects.api.ApiObject;
@@ -51,21 +53,37 @@ public class ApiObjectFactory {
     }
 
     private static <T extends ApiObject> AOProps createAOProps(Field f, T parentApiObject, AOProps parentProps) {
-        String endpointUrl = "";
+        return new AOProps(getEndpointUrl(f), parentApiObject, parentProps, parentProps.getAppInstance(), getAuthMethod(f, parentProps));
+    }
 
+    private static <T extends ApiObject> ApiAuthMethod getAuthMethod(Field f, AOProps parentProps) {
+        if (Endpoint.class.isAssignableFrom(f.getType())) {
+            ApiAuth fieldApiAuth = f.getType().getDeclaredAnnotation(ApiAuth.class);
+
+            if (fieldApiAuth != null) {
+                return fieldApiAuth.authType();
+            }
+        }
+        return parentProps.getAuthMethod();
+    }
+
+    private static String getEndpointUrl(Field f) {
         if (Endpoint.class.isAssignableFrom(f.getType())) {
             EndpointSpecs endpointSpecs = f.getType().getAnnotation(EndpointSpecs.class);
 
             if (endpointSpecs == null) {
                 Log.fail("Class '" + f.getType() + "' is missing @EndpointSpecs annotation");
             }
-            endpointUrl += Objects.requireNonNull(endpointSpecs).url();
+            return Objects.requireNonNull(endpointSpecs).url();
         }
-
-        return new AOProps(endpointUrl, parentApiObject, parentProps, parentProps.getAppInstance());
+        return "";
     }
 
     private static <T extends ApiObject> void initParentApiObjectFields(T apiObject, AOProps parentProps) {
+        initEndpoints(apiObject, parentProps);
+    }
+
+    private static <T extends ApiObject> void initEndpoints(T apiObject, AOProps parentProps) {
         if (Endpoint.class.isAssignableFrom(apiObject.getClass().getSuperclass())) {
             Class<T> parentClass = (Class<T>) apiObject.getClass().getSuperclass();
             while (!parentClass.equals(Api.class) && !parentClass.equals(Endpoint.class)) {
@@ -76,12 +94,22 @@ public class ApiObjectFactory {
     }
 
     public static <T extends Api> T initApi (Class<T> apiClass, AppInstance appInstance) {
-        AOProps aoProps = new AOProps(appInstance.getAppManager().getAppUrl(), apiClass, null, appInstance);
+        AOProps aoProps = new AOProps(appInstance.getAppManager().getAppUrl(), apiClass, null, appInstance, getAuthMethod(apiClass));
         ApiApplication apiApplication = appInstance.getConfigManager().getAppsConfigData().getApplications().getApi().get(appInstance.getAppManager().getCurrentApplicationName());
         T api = reflectionInitAOClass(apiClass, new Class[] {AOProps.class}, new Object[] {aoProps});
         api.setBaseUrl(appInstance.getAppManager().getAppUrl());
         api.setApiProtocolType(apiApplication.getProtocol());
         return api;
+    }
+
+    private static <T extends ApiObject> ApiAuthMethod getAuthMethod(Class<T> apiObjectClass) {
+        ApiAuth apiAuth = apiObjectClass.getDeclaredAnnotation(ApiAuth.class);
+
+        if (apiAuth != null) {
+            return apiAuth.authType();
+        } else {
+            return ApiAuthMethod.NONE;
+        }
     }
 
     public static <T extends ApiObject> T reflectionInitAOClass(Class<T> klass, Class<?>[] constructorArgs, Object[] constructorParams) {

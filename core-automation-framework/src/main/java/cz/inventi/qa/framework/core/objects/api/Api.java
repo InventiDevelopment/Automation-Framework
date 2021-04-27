@@ -1,6 +1,6 @@
 package cz.inventi.qa.framework.core.objects.api;
 
-import cz.inventi.qa.framework.core.data.enums.ApiProtocolType;
+import cz.inventi.qa.framework.core.data.enums.api.ApiProtocolType;
 import cz.inventi.qa.framework.core.objects.framework.AppInstance;
 
 public class Api extends ApiObject {
@@ -9,12 +9,6 @@ public class Api extends ApiObject {
 
     public Api(AOProps props) {
         super(props);
-    }
-
-    public Api(AOProps props, String baseUrl, ApiProtocolType apiProtocolType) {
-        super(props);
-        this.baseUrl = baseUrl;
-        this.apiProtocolType = apiProtocolType;
     }
 
     public String getBaseUrl() {
@@ -36,4 +30,9 @@ public class Api extends ApiObject {
     public AppInstance getAppInstance() {
         return getProps().getAppInstance();
     }
+
+    public void setAuthToken(String authToken) {
+
+    }
+
 }

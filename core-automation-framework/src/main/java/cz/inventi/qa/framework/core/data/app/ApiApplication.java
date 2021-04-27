@@ -1,7 +1,7 @@
 package cz.inventi.qa.framework.core.data.app;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import cz.inventi.qa.framework.core.data.enums.ApiProtocolType;
+import cz.inventi.qa.framework.core.data.enums.api.ApiProtocolType;
 
 public class ApiApplication extends Application {
 

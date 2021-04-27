@@ -1,7 +1,9 @@
 package cz.inventi.qa.framework.core.objects.api;
 
 import cz.inventi.qa.framework.core.Log;
+import cz.inventi.qa.framework.core.data.enums.api.ApiAuthMethod;
 import cz.inventi.qa.framework.core.objects.framework.AppInstance;
+import cz.inventi.qa.framework.core.objects.parameters.AuthParameters;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -14,16 +16,18 @@ public class AOProps {
     private AOProps parentProps;
     private boolean parameter;
     private String parameterValue;
+    private ApiAuthMethod apiAuthMethod;
 
     public AOProps(String url, AppInstance appInstance) {
         this.endpointUrl = url;
         this.appInstance = appInstance;
     }
 
-    public AOProps(String url, Object returnKlass, AOProps parentProps, AppInstance appInstance) {
+    public AOProps(String url, Object returnKlass, AOProps parentProps, AppInstance appInstance, ApiAuthMethod apiAuthMethod) {
         this(url, appInstance);
         this.returnKlass = returnKlass;
         this.parentProps = parentProps;
+        this.apiAuthMethod = apiAuthMethod;
         checkIfAOIsParameter(url);
         composeFullUrl(parentProps);
     }
@@ -54,8 +58,8 @@ public class AOProps {
         return returnKlass;
     }
 
-    public  <T extends Api> Class<T> getApi() {
-        return parentProps.getApi();
+    public ApiAuthMethod getAuthMethod() {
+        return apiAuthMethod;
     }
 
     public boolean isParameter() {
@@ -78,6 +82,13 @@ public class AOProps {
         return appInstance;
     }
 
+    public AuthParameters getAuthParameters() {
+        return appInstance
+                .getParametersManager()
+                .getApiAppParameters()
+                .getAuthParameters();
+    }
+
     public String getAppUrl() {
         return appInstance.getAppManager().getAppUrl();
     }
@@ -94,7 +105,7 @@ public class AOProps {
             if (currentProps.isParameter()) {
                 String parameterValue = currentProps.getParameterValue().toLowerCase();
 
-                if (parameterValue == null || "".equals(parameterValue)) {
+                if ("".equals(parameterValue)) {
                     Log.warn("Endpoint '" + currentProps.endpointUrl + "' is parametrized, but no parameter value has been supplied");
                 }
                 fullUrlWithParams = parameterValue + "/" + fullUrlWithParams;

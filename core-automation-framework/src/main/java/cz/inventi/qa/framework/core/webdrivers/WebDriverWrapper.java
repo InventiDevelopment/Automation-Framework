@@ -1,8 +1,7 @@
 package cz.inventi.qa.framework.core.webdrivers;
 
-import cz.inventi.qa.framework.core.data.enums.WindowSize;
+import cz.inventi.qa.framework.core.data.enums.web.WindowSize;
 import cz.inventi.qa.framework.core.data.web.GeneralSettings;
-import cz.inventi.qa.framework.core.managers.ConfigManager;
 import cz.inventi.qa.framework.core.objects.framework.AppInstance;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.logging.LogType;

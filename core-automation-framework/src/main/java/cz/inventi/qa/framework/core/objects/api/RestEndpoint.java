@@ -1,10 +1,9 @@
 package cz.inventi.qa.framework.core.objects.api;
 
+import cz.inventi.qa.framework.core.objects.api.filters.ErrorResponseFilter;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
-
-import java.util.Map;
 
 
 public abstract class RestEndpoint<T> extends Endpoint<T> {
@@ -58,8 +57,20 @@ public abstract class RestEndpoint<T> extends Endpoint<T> {
     public RequestSpecification createRequest() {
             return RestAssured
                     .given()
+                    .filter(new ErrorResponseFilter())
                     .baseUri(getProps().getAppUrl())
                     .basePath(getProps().getBasePath())
                     .pathParams(getProps().getPathParams());
+    }
+
+    public RequestSpecification createRequestWithAuth() {
+        switch (getAuthMethod()) {
+            case OAUTH2:
+                return createRequest()
+                        .auth()
+                        .oauth2(getAuthParameters().getAuthToken());
+            default:
+                return createRequest();
+        }
     }
 }

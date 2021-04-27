@@ -1,7 +1,7 @@
 package cz.inventi.qa.framework.core.objects.parameters;
 
 import cz.inventi.qa.framework.core.Log;
-import cz.inventi.qa.framework.core.data.enums.Browser;
+import cz.inventi.qa.framework.core.data.enums.web.Browser;
 import cz.inventi.qa.framework.core.objects.web.WebPage;
 
 public class WebAppParameters <T extends WebPage> {

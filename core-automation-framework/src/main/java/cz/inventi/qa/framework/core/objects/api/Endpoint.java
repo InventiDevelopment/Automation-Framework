@@ -9,17 +9,7 @@ public abstract class Endpoint<T> extends ApiObject {
         super(props);
     }
 
-    public abstract Object callGet();
-    public abstract Object callPost(String body);
-    public abstract Object callPut(String body);
-    public abstract Object callHead();
-    public abstract Object callPatch(String body);
-    public abstract Object callDelete();
-    public abstract Object callOptions();
-    public abstract Object callTrace();
-    public abstract Object callConnect();
-
-    public String getFullUrlWithParams () {
+    public String getFullUrlWithParams() {
         return getProps().getFullUrlWithParams();
     }
 
@@ -27,7 +17,7 @@ public abstract class Endpoint<T> extends ApiObject {
         return getProps().isParameter();
     }
 
-    public String getEndpointUrl () {
+    public String getEndpointUrl() {
         return getProps().getEndpointUrl();
     }
 
@@ -44,4 +34,27 @@ public abstract class Endpoint<T> extends ApiObject {
     public String getUrlParameter() {
         return getProps().getParameterValue();
     }
+
+    public abstract Object callGet();
+
+    public abstract Object callPost(String body);
+
+    public abstract Object callPut(String body);
+
+    public abstract Object callHead();
+
+    public abstract Object callPatch(String body);
+
+    public abstract Object callDelete();
+
+    public abstract Object callOptions();
+
+    public abstract Object callTrace();
+
+    public abstract Object callConnect();
+
+    public abstract Object createRequest();
+
+    public abstract Object createRequestWithAuth();
+
 }
