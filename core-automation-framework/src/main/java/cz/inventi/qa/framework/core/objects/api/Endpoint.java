@@ -2,6 +2,7 @@ package cz.inventi.qa.framework.core.objects.api;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 public abstract class Endpoint<T> extends ApiObject {
 
@@ -36,6 +37,8 @@ public abstract class Endpoint<T> extends ApiObject {
     }
 
     public abstract Object callGet();
+
+    public abstract Object callGet(Map<String, Object> queryParams);
 
     public abstract Object callPost(String body);
 

@@ -1,6 +1,8 @@
 package cz.inventi.qa.framework.core.objects.framework;
 
+import cz.inventi.qa.framework.core.ApiUtils;
 import cz.inventi.qa.framework.core.WebUtils;
+import cz.inventi.qa.framework.core.data.enums.ApplicationType;
 import cz.inventi.qa.framework.core.factories.api.ApiObjectFactory;
 import cz.inventi.qa.framework.core.factories.web.webobject.WebObjectFactory;
 import cz.inventi.qa.framework.core.managers.*;
@@ -14,7 +16,9 @@ public class AppInstance {
     private final AppManager appManager;
     private final WebDriverManager webDriverManager;
     private final ReportManager reportManager;
+    private ApplicationType applicationType;
     private WebUtils webUtils;
+    private ApiUtils apiUtils;
 
     public AppInstance() {
         parametersManager = new ParametersManager(this);
@@ -32,6 +36,7 @@ public class AppInstance {
         appManager.initWebApplication(startingWebPage);
         webDriverManager.init();
         reportManager.init();
+        applicationType = ApplicationType.WEB;
         return WebObjectFactory.initPage(startingWebPage, this);
     }
 
@@ -40,6 +45,7 @@ public class AppInstance {
         configManager.initApiConfigs();
         appManager.initApiApplication(api);
         reportManager.init();
+        applicationType = ApplicationType.API;
         return ApiObjectFactory.initApi(api, this);
     }
 
@@ -65,5 +71,13 @@ public class AppInstance {
 
     public WebUtils getWebUtils() {
         return webUtils;
+    }
+
+    public ApiUtils getApiUtils() {
+        return apiUtils;
+    }
+
+    public ApplicationType getApplicationType() {
+        return applicationType;
     }
 }

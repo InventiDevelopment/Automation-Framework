@@ -4,7 +4,6 @@ public class AuthParameters {
     private String username;
     private String password;
     private String authToken;
-    private String bearerToken;
     private String apiKey;
 
     public void setUsername(String username) {
@@ -17,10 +16,6 @@ public class AuthParameters {
 
     public void setAuthToken(String authToken) {
         this.authToken = authToken;
-    }
-
-    public void setBearerToken(String bearerToken) {
-        this.bearerToken = bearerToken;
     }
 
     public void setApiKey(String apiKey) {
@@ -37,10 +32,6 @@ public class AuthParameters {
 
     public String getAuthToken() {
         return authToken;
-    }
-
-    public String getBearerToken() {
-        return "Bearer " + bearerToken;
     }
 
     public String getApiKey() {

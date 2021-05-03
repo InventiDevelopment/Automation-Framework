@@ -2,6 +2,7 @@ package cz.inventi.qa.framework.tests.core;
 
 import cz.inventi.qa.framework.core.annotations.ConfigFiles;
 import cz.inventi.qa.framework.core.data.enums.RunMode;
+import cz.inventi.qa.framework.core.managers.FrameworkManager;
 import cz.inventi.qa.framework.core.objects.test.BaseTest;
 import cz.inventi.qa.framework.testweb.webobjects.HomePage;
 import org.testng.annotations.AfterClass;
@@ -24,7 +25,7 @@ public class CustomConfigTestCase extends BaseTest {
 
     @AfterClass
     public void quit() {
-        if (!getConfigManager().getRunMode().equals(RunMode.DEBUG)) {
+        if (!FrameworkManager.getRunMode().equals(RunMode.DEBUG)) {
             getWebDriverManager().cleanDriver();
         }
     }

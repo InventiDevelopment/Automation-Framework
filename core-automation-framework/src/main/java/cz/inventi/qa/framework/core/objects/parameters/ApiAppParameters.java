@@ -2,7 +2,7 @@ package cz.inventi.qa.framework.core.objects.parameters;
 
 import cz.inventi.qa.framework.core.objects.api.Api;
 
-public class ApiAppParameters <T extends Api> {
+public class ApiAppParameters<T extends Api> {
     private String environment;
     private Class<T> api;
     private AuthParameters authParameters;

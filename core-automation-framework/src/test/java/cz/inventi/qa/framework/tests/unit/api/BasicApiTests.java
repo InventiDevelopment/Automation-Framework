@@ -1,9 +1,9 @@
 package cz.inventi.qa.framework.tests.unit.api;
 
+import cz.inventi.qa.framework.core.objects.assertions.Assert;
 import cz.inventi.qa.framework.testapi.dtos.CommentDto;
-import cz.inventi.qa.framework.testapi.dtos.PostDto;
+import cz.inventi.qa.framework.testapi.dtos.PostResponseDto;
 import cz.inventi.qa.framework.tests.core.ApiTestCase;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.List;
@@ -13,12 +13,12 @@ public class BasicApiTests extends ApiTestCase {
     @Test
     public void getPostByIdTest () {
         long POST_ID = Long.parseLong("1");
-        PostDto post = jsonPlaceHolderApi
+        PostResponseDto post = jsonPlaceHolderApi
                 .posts
                 .post
                 .getPost(Long.toString(POST_ID));
 
-        Assert.assertEquals(post.getId(), POST_ID);
+        Assert.assertEquals(post.getId(), POST_ID, "Post ID is equal");
     }
 
     @Test
@@ -31,17 +31,17 @@ public class BasicApiTests extends ApiTestCase {
                 .comments
                 .getComments();
 
-        Assert.assertNotEquals(comments.size(), 0);
-        Assert.assertEquals(comments.get(0).getPostId(), POST_ID);
+        Assert.assertNotEquals(comments.size(), 0, "There is at least 1 comment");
+        Assert.assertEquals(comments.get(0).getPostId(), POST_ID, "Comment's post ID is correct");
     }
 
     @Test
     public void getAllPostsTest () {
-        List<PostDto> posts = jsonPlaceHolderApi
+        List<PostResponseDto> posts = jsonPlaceHolderApi
                 .posts
                 .getPosts();
 
-        Assert.assertNotEquals(posts.size(), 0);
+        Assert.assertNotEquals(posts.size(), 0, "There is at least 1 post");
     }
 
     @Test

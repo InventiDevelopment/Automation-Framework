@@ -4,7 +4,8 @@ import cz.inventi.qa.framework.core.ApiUtils;
 import cz.inventi.qa.framework.core.annotations.api.EndpointSpecs;
 import cz.inventi.qa.framework.core.objects.api.AOProps;
 import cz.inventi.qa.framework.core.objects.api.RestEndpoint;
-import cz.inventi.qa.framework.testapi.dtos.PostDto;
+import cz.inventi.qa.framework.testapi.dtos.PostRequestDto;
+import cz.inventi.qa.framework.testapi.dtos.PostResponseDto;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -20,8 +21,8 @@ public class Posts extends RestEndpoint<Posts> {
         super(props);
     }
 
-    public List<PostDto> getPosts() {
-        return callGet().getBody().jsonPath().getList("", PostDto.class);
+    public List<PostResponseDto> getPosts() {
+        return callGet().getBody().jsonPath().getList("", PostResponseDto.class);
     }
 
     public Response createPost() {
@@ -29,13 +30,13 @@ public class Posts extends RestEndpoint<Posts> {
     }
 
     public Posts createRandomPostWithAssert() {
-        PostDto newPost = generateRandomPost();
-        PostDto mappedResponse = createRequest()
+        PostRequestDto newPost = generateRandomPost();
+        PostResponseDto mappedResponse = createRequest()
                 .body(ApiUtils.convertToJson(newPost))
                 .contentType(ContentType.JSON)
                 .post()
                 .body()
-                .as(PostDto.class);
+                .as(PostResponseDto.class);
 
         Assert.assertEquals(mappedResponse.getBody(), newPost.getBody());
         Assert.assertEquals(mappedResponse.getTitle(), newPost.getTitle());
@@ -43,7 +44,7 @@ public class Posts extends RestEndpoint<Posts> {
         return this;
     }
 
-    private PostDto generateRandomPost() {
-        return new PostDto(Long.parseLong("1"), RandomStringUtils.random(25, true, false), RandomStringUtils.random(160, true, false));
+    private PostRequestDto generateRandomPost() {
+        return new PostRequestDto(Long.parseLong("1"), RandomStringUtils.random(25, true, false), RandomStringUtils.random(160, true, false));
     }
 }

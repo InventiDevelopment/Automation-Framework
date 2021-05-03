@@ -1,9 +1,11 @@
 package cz.inventi.qa.framework.core.objects.api;
 
-import cz.inventi.qa.framework.core.objects.api.filters.ErrorResponseFilter;
+import cz.inventi.qa.framework.core.data.enums.api.ApiAuthMethod;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+
+import java.util.Map;
 
 
 public abstract class RestEndpoint<T> extends Endpoint<T> {
@@ -12,65 +14,90 @@ public abstract class RestEndpoint<T> extends Endpoint<T> {
         super(props);
     }
 
+    @Override
     public Response callGet() {
         return createRequest().get();
     }
 
+    @Override
+    public Response callGet(Map<String, Object> queryParams) {
+        return createRequest()
+                .queryParams(queryParams)
+                .get();
+    }
+
+    @Override
     public Response callPost(String body) {
         return createRequest()
                 .body(body)
                 .post();
     }
 
+    @Override
     public Response callPut(String body) {
         return createRequest()
                 .body(body)
                 .put();
     }
 
+    @Override
     public Response callHead() {
         return createRequest().head();
     }
 
+    @Override
     public Response callPatch(String body) {
         return createRequest()
                 .body(body)
                 .patch();
     }
 
+    @Override
     public Response callDelete() {
         return createRequest().delete();
     }
 
+    @Override
     public Response callOptions() {
         return createRequest().options();
     }
 
+    @Override
     public Response callTrace() {
         throw new RuntimeException("TRACE method not supported for REST API calls");
     }
 
+    @Override
     public Response callConnect() {
         throw new RuntimeException("CONNECT method not supported for REST API calls");
     }
 
+    @Override
     public RequestSpecification createRequest() {
-            return RestAssured
-                    .given()
-                    .filter(new ErrorResponseFilter())
-                    .baseUri(getProps().getAppUrl())
-                    .basePath(getProps().getBasePath())
-                    .pathParams(getProps().getPathParams());
+            if (!ApiAuthMethod.NONE.equals(getAuthMethod())) {
+                return createRequestWithAuth();
+            } else {
+                return prepareRequest();
+            }
     }
 
+    @Override
     public RequestSpecification createRequestWithAuth() {
         switch (getAuthMethod()) {
             case OAUTH2:
-                return createRequest()
+                return prepareRequest()
                         .auth()
                         .oauth2(getAuthParameters().getAuthToken());
             default:
-                return createRequest();
+                return prepareRequest();
         }
+    }
+
+    private RequestSpecification prepareRequest() {
+        return RestAssured
+                .given()
+                .baseUri(getProps().getAppUrl())
+                .basePath(getProps().getBasePath())
+                .pathParams(getProps().getPathParams());
     }
 }

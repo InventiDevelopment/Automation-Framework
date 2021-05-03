@@ -6,7 +6,6 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import cz.inventi.qa.framework.core.Log;
 import cz.inventi.qa.framework.core.data.config.AppConfigData;
 import cz.inventi.qa.framework.core.data.config.WebDriverConfigData;
-import cz.inventi.qa.framework.core.data.enums.RunMode;
 import cz.inventi.qa.framework.core.objects.framework.AppInstance;
 
 import java.io.File;
@@ -110,7 +109,4 @@ public class ConfigManager {
         return customDriverConfigPath;
     }
 
-    public RunMode getRunMode() {
-        return RunMode.valueOf(webDriverConfigData.getGeneralSettings().getRunMode().toUpperCase());
-    }
 }

@@ -1,6 +1,5 @@
 package cz.inventi.qa.framework.tests.core;
 
-import cz.inventi.qa.framework.core.annotations.ConfigFiles;
 import cz.inventi.qa.framework.core.objects.test.BaseApiTest;
 import cz.inventi.qa.framework.testapi.JsonPlaceHolderApi;
 import org.testng.annotations.BeforeClass;

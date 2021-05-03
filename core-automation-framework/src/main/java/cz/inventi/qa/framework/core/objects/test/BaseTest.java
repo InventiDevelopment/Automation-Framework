@@ -1,5 +1,6 @@
 package cz.inventi.qa.framework.core.objects.test;
 
+import cz.inventi.qa.framework.core.Log;
 import cz.inventi.qa.framework.core.annotations.ConfigFiles;
 import cz.inventi.qa.framework.core.managers.*;
 import cz.inventi.qa.framework.core.objects.api.Api;
@@ -17,12 +18,14 @@ public abstract class BaseTest {
     public <T extends WebPage> T initWebAppInstance(String browser, String environment, String language, Class<T> startingWebPage) {
         T webPageInitialized = FrameworkManager.getInstance().initWebAppInstance(browser, environment, language, startingWebPage, configFiles);
         appInstance = webPageInitialized.getAppInstance();
+        Log.info(appInstance.getApplicationType() + " app instance of '" + startingWebPage + "' has been successfully initialized");
         return webPageInitialized;
     }
 
     public <T extends Api> T initApiAppInstance(String environment, Class<T> api) {
         T apiInitialized = FrameworkManager.getInstance().initApiAppInstance(environment, api, configFiles);
         appInstance = apiInitialized.getAppInstance();
+        Log.info(appInstance.getApplicationType() + " app instance of '" + api + "' has been successfully initialized");
         return apiInitialized;
     }
 

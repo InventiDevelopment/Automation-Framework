@@ -15,6 +15,7 @@ public class ReportManager {
 
     public void init() {
         ApplicationType applicationType = appInstance.getAppManager().getCurrentApplicationType();
+
         if (ApplicationType.API.equals(applicationType)) {
             RestAssured.requestSpecification = new RequestSpecBuilder().build().filter(new AllureRestAssured());
         }
