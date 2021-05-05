@@ -1,10 +1,10 @@
 package cz.inventi.qa.framework.tests.unit.web.webobjects;
 
-import cz.inventi.qa.framework.tests.core.WebTestCase;
+import cz.inventi.qa.framework.core.objects.test.WebFlow;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class PageTests extends WebTestCase {
+public class PageTests extends WebFlow {
 
     @Test
     public void getPageTitleTest () {

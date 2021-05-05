@@ -5,13 +5,10 @@ import cz.inventi.qa.framework.core.annotations.api.EndpointSpecs;
 import cz.inventi.qa.framework.core.objects.api.AOProps;
 import cz.inventi.qa.framework.core.objects.api.RestEndpoint;
 import cz.inventi.qa.framework.testapi.dtos.PostRequestDto;
-import cz.inventi.qa.framework.testapi.dtos.PostResponseDto;
+import io.qameta.allure.Step;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.testng.Assert;
-
-import java.util.List;
 
 @EndpointSpecs(url = "posts")
 public class Posts extends RestEndpoint<Posts> {
@@ -21,27 +18,23 @@ public class Posts extends RestEndpoint<Posts> {
         super(props);
     }
 
-    public List<PostResponseDto> getPosts() {
-        return callGet().getBody().jsonPath().getList("", PostResponseDto.class);
+    @Step("Get All Posts")
+    public Response getPosts() {
+        return callGet();
     }
 
-    public Response createPost() {
-        return createRequest().body(generateRandomPost()).post();
+    @Step("Create New Post")
+    public Response createPost(PostRequestDto postRequestDto) {
+        return createRequest().body(ApiUtils.convertToJson(postRequestDto)).post();
     }
 
-    public Posts createRandomPostWithAssert() {
+    @Step("Create a Random Post")
+    public Response createRandomPost() {
         PostRequestDto newPost = generateRandomPost();
-        PostResponseDto mappedResponse = createRequest()
+        return createRequest()
                 .body(ApiUtils.convertToJson(newPost))
                 .contentType(ContentType.JSON)
-                .post()
-                .body()
-                .as(PostResponseDto.class);
-
-        Assert.assertEquals(mappedResponse.getBody(), newPost.getBody());
-        Assert.assertEquals(mappedResponse.getTitle(), newPost.getTitle());
-        Assert.assertEquals(mappedResponse.getUserId(), newPost.getUserId());
-        return this;
+                .post();
     }
 
     private PostRequestDto generateRandomPost() {

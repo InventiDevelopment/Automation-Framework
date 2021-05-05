@@ -9,7 +9,7 @@
     </test>
     <test name="Wait Tests">
         <classes>
-            <class name="cz.inventi.qa.framework.tests.unit.web.config.WaitAutomaticallyWebTest"/>
+            <class name="cz.inventi.qa.framework.tests.unit.web.config.WaitAutomaticallyTest"/>
         </classes>
     </test>
     <test name="Config Tests">
@@ -24,7 +24,7 @@
     </test>
     <test name="WebObject Tests">
         <classes>
-            <class name="cz.inventi.qa.framework.tests.unit.web.webobjects.WebApplicationObjectWebTest"/>
+            <class name="cz.inventi.qa.framework.tests.unit.web.webobjects.WebApplicationObjectWebFlow"/>
             <class name="cz.inventi.qa.framework.tests.unit.web.webobjects.ElementTests"/>
             <class name="cz.inventi.qa.framework.tests.unit.web.webobjects.ComponentTests"/>
             <class name="cz.inventi.qa.framework.tests.unit.web.webobjects.ComponentListTests"/>

@@ -10,40 +10,73 @@ import java.util.Optional;
 public class Assert {
 
     public static void assertEquals(Object object1, Object object2, String name) {
-        assertTrue(object1.equals(object2), name);
+        try {
+            org.testng.Assert.assertEquals(object1, object2);
+            createStepWithStatus(name, Status.PASSED);
+        } catch (Exception e) {
+            createStepWithStatus(name, Status.FAILED);
+            throw new RuntimeException(e);
+        }
     }
 
     public static void assertNotEquals(Object object1, Object object2, String name) {
-        assertTrue(!object1.equals(object2), name);
+        try {
+            org.testng.Assert.assertNotEquals(object1, object2);
+            createStepWithStatus(name, Status.PASSED);
+        } catch (Exception e) {
+            createStepWithStatus(name, Status.FAILED);
+            throw new RuntimeException(e);
+        }
     }
 
     public static void assertTrue(boolean condition, String name) {
-        Optional<String> parentStep = Allure.getLifecycle().getCurrentTestCaseOrStep();
-        StepResult stepResult = new StepResult();
-        stepResult.setName(name);
-        Allure.getLifecycle().startStep(parentStep.orElseThrow(), RandomStringUtils.randomAlphanumeric(120), stepResult);
-
         try {
             org.testng.Assert.assertTrue(condition);
-            stepResult.setStatus(Status.PASSED);
-            Allure.getLifecycle().stopStep();
+            createStepWithStatus(name,  Status.PASSED);
         } catch (Exception e) {
-            stepResult.setStatus(Status.FAILED);
-            Allure.getLifecycle().stopStep();
+            createStepWithStatus(name, Status.FAILED);
             throw new RuntimeException(e);
         }
     }
 
     public static void assertFalse(boolean condition, String name) {
-        assertTrue(!condition, name);
+        try {
+            org.testng.Assert.assertFalse(condition);
+            createStepWithStatus(name, Status.PASSED);
+        } catch (Exception e) {
+            createStepWithStatus(name, Status.FAILED);
+            throw new RuntimeException(e);
+        }
     }
 
     public static void assertNotNull(Object object, String name) {
-        assertTrue(object != null, name);
+        try {
+            org.testng.Assert.assertNotNull(object);
+            createStepWithStatus(name, Status.PASSED);
+        } catch (Exception e) {
+            createStepWithStatus(name, Status.FAILED);
+            throw new RuntimeException(e);
+        }
     }
 
     public static void assertNull(Object object, String name) {
-        assertTrue(object == null, name);
+        try {
+            org.testng.Assert.assertNull(object);
+            createStepWithStatus(name, Status.PASSED);
+        } catch (Exception e) {
+            createStepWithStatus(name, Status.FAILED);
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static StepResult createStepWithStatus(String stepName, Status status) {
+        Optional<String> parentStep = Allure.getLifecycle().getCurrentTestCaseOrStep();
+        StepResult stepResult = new StepResult();
+        stepResult.setName(stepName);
+        Allure.getLifecycle().startStep(parentStep.orElseThrow(), RandomStringUtils.randomAlphanumeric(120), stepResult);
+        stepResult.setStatus(status);
+        Allure.getLifecycle().stopStep();
+        return stepResult;
     }
 }
 

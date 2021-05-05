@@ -1,6 +1,8 @@
 package cz.inventi.qa.framework.core.objects.api;
 
+import cz.inventi.qa.framework.core.data.enums.RunMode;
 import cz.inventi.qa.framework.core.data.enums.api.ApiAuthMethod;
+import cz.inventi.qa.framework.core.managers.FrameworkManager;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
@@ -94,10 +96,18 @@ public abstract class RestEndpoint<T> extends Endpoint<T> {
     }
 
     private RequestSpecification prepareRequest() {
-        return RestAssured
+        RequestSpecification requestSpecification = RestAssured
                 .given()
                 .baseUri(getProps().getAppUrl())
                 .basePath(getProps().getBasePath())
                 .pathParams(getProps().getPathParams());
+
+        if (FrameworkManager.getRunMode().equals(RunMode.DEBUG)) {
+            requestSpecification
+                    .log()
+                    .all();
+        }
+
+        return requestSpecification;
     }
 }

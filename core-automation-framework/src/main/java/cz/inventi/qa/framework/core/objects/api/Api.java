@@ -31,7 +31,6 @@ public class Api extends ApiObject {
         return getProps().getAppInstance();
     }
 
-
     public void setAuthToken(String authToken) {
         getAppInstance()
                 .getParametersManager()
@@ -39,5 +38,4 @@ public class Api extends ApiObject {
                 .getAuthParameters()
                 .setAuthToken(authToken);
     }
-
 }

@@ -10,7 +10,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 
-@ConfigFiles(driverConfig = "config/customWebDriverConfig.yml", appsConfig = "config/customAppsConfig.yml")
+@ConfigFiles(driverConfig = "customWebDriverConfig.yml", appsConfig = "customAppsConfig.yml")
 public class CustomConfigTestCase extends BaseTest {
     public HomePage homePage;
 

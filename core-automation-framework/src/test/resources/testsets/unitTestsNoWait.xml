@@ -24,7 +24,7 @@
     </test>
     <test name="WebObject Tests">
         <classes>
-            <class name="cz.inventi.qa.framework.tests.unit.web.webobjects.WebApplicationObjectWebTest"/>
+            <class name="cz.inventi.qa.framework.tests.unit.web.webobjects.WebApplicationObjectWebFlow"/>
             <class name="cz.inventi.qa.framework.tests.unit.web.webobjects.ElementTests">
                 <methods>
                     <exclude name="clickJSTest"/>

@@ -43,7 +43,7 @@ public class WebDriverManager {
     private String formatResourcesURL (String appUrl) {
         if (appUrl.contains("test://") || appUrl.contains("main://")) {
             String[] resourcePackage = appUrl.split("://");
-            return appUrl = new File(Paths.get("src",resourcePackage[0], "resources") + "/" + resourcePackage[1]).getAbsolutePath();
+            return new File(Paths.get("src",resourcePackage[0], "resources") + "/" + resourcePackage[1]).getAbsolutePath();
         }
         return appUrl;
     }

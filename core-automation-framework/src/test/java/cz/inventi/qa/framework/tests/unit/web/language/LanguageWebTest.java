@@ -1,12 +1,12 @@
 package cz.inventi.qa.framework.tests.unit.web.language;
 
 import cz.inventi.qa.framework.core.data.enums.Language;
-import cz.inventi.qa.framework.tests.core.WebTestCase;
-import cz.inventi.qa.framework.testweb.lang.Index;
+import cz.inventi.qa.framework.core.objects.test.WebFlow;
+import cz.inventi.qa.framework.testapps.testweb.lang.Index;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class LanguageWebTest extends WebTestCase {
+public class LanguageWebTest extends WebFlow {
 
     @Test
     public void getLanguageDictionaryTest() {

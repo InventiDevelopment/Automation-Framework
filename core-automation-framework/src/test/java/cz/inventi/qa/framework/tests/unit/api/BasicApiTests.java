@@ -2,8 +2,10 @@ package cz.inventi.qa.framework.tests.unit.api;
 
 import cz.inventi.qa.framework.core.objects.assertions.Assert;
 import cz.inventi.qa.framework.testapi.dtos.CommentDto;
+import cz.inventi.qa.framework.testapi.dtos.PostRequestDto;
 import cz.inventi.qa.framework.testapi.dtos.PostResponseDto;
 import cz.inventi.qa.framework.tests.core.ApiTestCase;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.Test;
 
 import java.util.List;
@@ -11,7 +13,7 @@ import java.util.List;
 public class BasicApiTests extends ApiTestCase {
 
     @Test
-    public void getPostByIdTest () {
+    public void getPostByIdTest() {
         long POST_ID = Long.parseLong("1");
         PostResponseDto post = jsonPlaceHolderApi
                 .posts
@@ -22,7 +24,7 @@ public class BasicApiTests extends ApiTestCase {
     }
 
     @Test
-    public void getPostCommentsTest () {
+    public void getPostCommentsTest() {
         long POST_ID = Long.parseLong("2");
         List<CommentDto> comments = jsonPlaceHolderApi
                 .posts
@@ -36,19 +38,32 @@ public class BasicApiTests extends ApiTestCase {
     }
 
     @Test
-    public void getAllPostsTest () {
+    public void getAllPostsTest() {
         List<PostResponseDto> posts = jsonPlaceHolderApi
                 .posts
-                .getPosts();
+                .getPosts()
+                .getBody()
+                .jsonPath()
+                .getList("", PostResponseDto.class);
 
         Assert.assertNotEquals(posts.size(), 0, "There is at least 1 post");
     }
 
     @Test
-    public void createNewPostTest () {
-        jsonPlaceHolderApi
+    public void createNewPostTest() {
+        PostRequestDto newPost = generateRandomPost();
+        PostResponseDto createdPost = jsonPlaceHolderApi
             .posts
-            .createRandomPostWithAssert();
+            .createPost(newPost)
+            .as(PostResponseDto.class);
+
+        Assert.assertEquals(createdPost.getBody(), newPost.getBody(), "Check body content");
+        Assert.assertEquals(createdPost.getTitle(), newPost.getTitle(), "Check title");
+        Assert.assertEquals(createdPost.getUserId(), newPost.getUserId(), "Check userId");
+    }
+
+    private PostRequestDto generateRandomPost() {
+        return new PostRequestDto(Long.parseLong("1"), RandomStringUtils.random(25, true, false), RandomStringUtils.random(160, true, false));
     }
 }
 

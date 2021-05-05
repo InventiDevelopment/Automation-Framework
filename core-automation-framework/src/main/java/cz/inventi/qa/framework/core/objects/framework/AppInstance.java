@@ -26,7 +26,7 @@ public class AppInstance {
         languageManager = new LanguageManager(this);
         appManager = new AppManager(this);
         webDriverManager = new WebDriverManager(this);
-        reportManager = new ReportManager(this);
+        reportManager = ReportManager.getInstance();
     }
 
     public <T extends WebPage> T initWebApp(String browser, String environment, String language, Class<T> startingWebPage) {
@@ -35,7 +35,6 @@ public class AppInstance {
         languageManager.init(language);
         appManager.initWebApplication(startingWebPage);
         webDriverManager.init();
-        reportManager.init();
         applicationType = ApplicationType.WEB;
         return WebObjectFactory.initPage(startingWebPage, this);
     }
@@ -44,7 +43,6 @@ public class AppInstance {
         parametersManager.setApiParameters(environment,api);
         configManager.initApiConfigs();
         appManager.initApiApplication(api);
-        reportManager.init();
         applicationType = ApplicationType.API;
         return ApiObjectFactory.initApi(api, this);
     }

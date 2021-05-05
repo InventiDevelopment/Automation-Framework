@@ -1,6 +1,5 @@
 package cz.inventi.qa.framework.core.managers;
 
-import cz.inventi.qa.framework.core.Log;
 import cz.inventi.qa.framework.core.annotations.Application;
 import cz.inventi.qa.framework.core.data.app.Applications;
 import cz.inventi.qa.framework.core.data.enums.ApplicationType;
@@ -22,7 +21,6 @@ public class AppManager {
 
     public <T extends WebPage> void initWebApplication(Class<T> klass) {
         setCurrentApplication(klass, ApplicationType.WEB);
-
     }
 
     public <T extends Api> void initApiApplication(Class<T> klass) {
@@ -31,8 +29,8 @@ public class AppManager {
 
     private void setCurrentApplication(Class<?> klass, ApplicationType applicationType) {
         currentApplicationType = applicationType;
-        checkAppAnnotationPresent(klass);
-        initializeEnvironment(klass.getAnnotation(Application.class));
+        currentApplicationName = klass.getAnnotation(Application.class).name();
+        initializeEnvironment();
     }
 
     @SuppressWarnings("unchecked")
@@ -53,16 +51,7 @@ public class AppManager {
         }
     }
 
-    private void checkAppAnnotationPresent(Class<?> klass) {
-        Application applicationAnnotation = klass.getAnnotation(Application.class);
-
-        if (applicationAnnotation == null) {
-            Log.fail("@Application() annotation is not set on your initial class '" + klass.getName() + "'");
-        }
-        currentApplicationName = applicationAnnotation.name();
-    }
-
-    private void initializeEnvironment (Application applicationAnnotation) {
+    private void initializeEnvironment () {
         String environment = appInstance.getParametersManager().getCommonParameters().getEnvironment();
         Map<String, String> currentAppEnvironments = getCurrentApplication().getEnvironments();
 

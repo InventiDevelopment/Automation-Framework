@@ -4,19 +4,22 @@ import cz.inventi.qa.framework.core.data.enums.ApplicationType;
 import cz.inventi.qa.framework.core.objects.framework.AppInstance;
 import cz.inventi.qa.framework.core.objects.parameters.ApiAppParameters;
 import cz.inventi.qa.framework.core.objects.parameters.CommonParameters;
+import cz.inventi.qa.framework.core.objects.parameters.TestSuiteParameters;
 import cz.inventi.qa.framework.core.objects.parameters.WebAppParameters;
 import cz.inventi.qa.framework.core.objects.api.Api;
 import cz.inventi.qa.framework.core.objects.web.WebPage;
 
 public class ParametersManager {
+    private final TestSuiteParameters testSuiteParameters;
+    private final AppInstance appInstance;
+    private CommonParameters commonParameters;
     private ApiAppParameters<?> apiAppParameters;
     private WebAppParameters<?> webAppParameters;
-    private CommonParameters commonParameters;
     private ApplicationType applicationType;
-    private AppInstance appInstance;
 
     public ParametersManager(AppInstance appInstance) {
         this.appInstance = appInstance;
+        testSuiteParameters = TestSuiteParameters.getInstance();
     }
 
     public <T extends Api> void setApiParameters(String environment, Class<T> api) {
@@ -49,11 +52,19 @@ public class ParametersManager {
         return (WebAppParameters<T>) webAppParameters;
     }
 
+    public TestSuiteParameters getTestSuiteParameters() {
+        return testSuiteParameters;
+    }
+
     public CommonParameters getCommonParameters() {
         return commonParameters;
     }
 
     public ApplicationType getApplicationType() {
         return applicationType;
+    }
+
+    public AppInstance getAppInstance() {
+        return appInstance;
     }
 }

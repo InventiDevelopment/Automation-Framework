@@ -1,10 +1,10 @@
 package cz.inventi.qa.framework.tests.unit.config;
 
-import cz.inventi.qa.framework.tests.core.CustomConfigTestCase;
+import cz.inventi.qa.framework.tests.core.CustomConfigTest;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class CustomAppConfigTests extends CustomConfigTestCase {
+public class CustomAppConfigTests extends CustomConfigTest {
 
     @Test
     public void isCustomConfigApplied () {

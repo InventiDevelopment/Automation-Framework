@@ -1,11 +1,12 @@
 package cz.inventi.qa.framework.tests.unit.config;
 
 import cz.inventi.qa.framework.core.data.web.GeneralSettings;
-import cz.inventi.qa.framework.tests.core.WebTestCase;
+import cz.inventi.qa.framework.core.objects.test.TestBase;
+import cz.inventi.qa.framework.core.objects.test.WebFlow;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class AppConfigTests extends WebTestCase {
+public class AppConfigTests extends TestBase {
 
     public GeneralSettings getGeneralSettings () {
         return getConfigManager().getWebDriverConfigData().getGeneralSettings();

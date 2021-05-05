@@ -56,4 +56,5 @@ public abstract class BaseTest {
     public ParametersManager getParametersManager() {
         return appInstance.getParametersManager();
     }
+
 }
