@@ -31,6 +31,9 @@
                     <suiteXmlFiles>
                         <suiteXmlFile>./src/test/resources/testsets/unitTests.xml</suiteXmlFile>
                     </suiteXmlFiles>
+                    <systemPropertyVariables>
+                        <runMode>${runMode}</runMode>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
             <plugin>

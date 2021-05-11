@@ -33,8 +33,8 @@ public class Api extends ApiObject {
 
     public void setAuthToken(String authToken) {
         getAppInstance()
-                .getParametersManager()
-                .getApiAppParameters()
+                .getTestVariablesManager()
+                .getApiAppVariables()
                 .getAuthParameters()
                 .setAuthToken(authToken);
     }

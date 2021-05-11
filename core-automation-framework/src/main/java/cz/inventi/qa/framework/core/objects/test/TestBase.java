@@ -1,8 +1,9 @@
 package cz.inventi.qa.framework.core.objects.test;
 
+import cz.inventi.qa.framework.core.managers.FrameworkManager;
 import cz.inventi.qa.framework.core.objects.parameters.TestSuiteParameters;
 import org.testng.ITestContext;
-import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.*;
 import org.testng.xml.XmlTest;
 
 import java.util.Map;
@@ -14,7 +15,7 @@ public abstract class TestBase {
      * @param context TestNG context
      */
     @BeforeSuite
-    public void loadTestSuiteParameters(ITestContext context) {
+    public static void loadTestSuiteParameters(ITestContext context) {
         XmlTest currentTest = context.getCurrentXmlTest();
         Map<String, String> parameters = currentTest.getAllParameters();
 
@@ -25,7 +26,24 @@ public abstract class TestBase {
                 parameters.put(key, newValue);
             }
         }
-
         TestSuiteParameters.setParameters(parameters);
     }
+
+    /**
+     * Quit framework and all related instances after
+     * test class run.
+     */
+    @AfterClass(alwaysRun = true)
+    public static void quit() {
+        FrameworkManager.quit();
+    }
+
+    /**
+     * Has to be called after the loadTestSuiteParameters()
+     * method. Initialize steps needed for your tests here.
+     * These steps will have access to the TestNG
+     * parameters.
+     */
+    @BeforeClass
+    public abstract void initSteps();
 }

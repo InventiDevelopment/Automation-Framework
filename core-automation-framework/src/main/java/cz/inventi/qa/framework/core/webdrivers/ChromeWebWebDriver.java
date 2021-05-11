@@ -32,7 +32,6 @@ public class ChromeWebWebDriver extends WebDriverWrapper {
                     .getChrome()
                     .getArguments()
             );
-
         options.setCapability(CapabilityType.LOGGING_PREFS, getLoggingPreferences());
     }
 

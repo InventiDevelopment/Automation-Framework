@@ -1,21 +1,17 @@
 package cz.inventi.qa.framework.core.managers;
 
-import cz.inventi.qa.framework.core.Log;
 import cz.inventi.qa.framework.core.annotations.Application;
-import cz.inventi.qa.framework.core.annotations.ConfigFiles;
+import cz.inventi.qa.framework.core.data.enums.ApplicationType;
 import cz.inventi.qa.framework.core.data.enums.RunMode;
-import cz.inventi.qa.framework.core.data.enums.api.ApiMandatoryParameters;
-import cz.inventi.qa.framework.core.data.enums.web.WebMandatoryParameters;
-import cz.inventi.qa.framework.core.factories.api.ApiObjectFactory;
-import cz.inventi.qa.framework.core.factories.web.webobject.WebObjectFactory;
 import cz.inventi.qa.framework.core.objects.api.Api;
 import cz.inventi.qa.framework.core.objects.framework.AppInstance;
-import cz.inventi.qa.framework.core.objects.parameters.TestSuiteParameters;
+import cz.inventi.qa.framework.core.objects.framework.Log;
 import cz.inventi.qa.framework.core.objects.web.WebPage;
 
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FrameworkManager {
     private final Map<String, AppInstance> appInstances;
@@ -23,9 +19,21 @@ public class FrameworkManager {
     private static RunMode runMode;
 
     public FrameworkManager() {
-        Log.info("Loading Inventi Automation Framework");
         this.appInstances = new HashMap<>();
+        Log.info("Loading Inventi Automation Framework");
         setRunMode();
+    }
+
+    public <T extends WebPage> T initWebAppAt(Class<T> webPage) {
+        return getOrInitializeAppInstance(webPage).initWebPage(webPage);
+    }
+
+    public <T extends Api> T initApiAppAt(Class<T> api) {
+        return getOrInitializeAppInstance(api).initApi(api);
+    }
+
+    public static Map<String, AppInstance> getAppInstances() {
+        return getInstance().appInstances;
     }
 
     public static FrameworkManager getInstance() {
@@ -33,35 +41,21 @@ public class FrameworkManager {
         return frameworkManager;
     }
 
-    public <T extends WebPage> T initWebAppInstance(Class<T> startingWebPage, ConfigFiles configFiles) {
-        checkMandatoryParametersAreSet(WebMandatoryParameters.class);
-        AppInstance initializedApp = getAppInstance(validateAndGetAppName(startingWebPage));
-        if (initializedApp == null) {
-            return createNewAppInstance(startingWebPage, configFiles)
-                    .initWebApp(
-                            TestSuiteParameters.getParameter("browser"),
-                            TestSuiteParameters.getParameter("environment"),
-                            TestSuiteParameters.getParameter("language"),
-                            startingWebPage
-                    );
-        } else {
-            return WebObjectFactory.initPage(startingWebPage, initializedApp);
-        }
+    public static void quitAppInstances() {
+        ArrayList<String> appNamesToQuit = new ArrayList<>();
+        getAppInstances().forEach((appName, appInstance) -> appNamesToQuit.add(appName));
+        appNamesToQuit.forEach(FrameworkManager::quitAppInstance);
     }
 
-    public <T extends Api> T initApiAppInstance(Class<T> api, ConfigFiles configFiles) {
-        checkMandatoryParametersAreSet(ApiMandatoryParameters.class);
-        AppInstance initializedApp = getAppInstance(validateAndGetAppName(api));
-        if (initializedApp == null) {
-            return createNewAppInstance(api, configFiles)
-                    .initApiApp(TestSuiteParameters.getParameter("environment"), api);
-        } else {
-            return ApiObjectFactory.initApi(api, initializedApp);
-        }
+    public static void quitAppInstance(String appName) {
+        Log.info("Quiting application instance of '" + appName + "'");
+        getAppInstance(appName).quit();
+        getAppInstances().remove(appName);
     }
 
-    public Map<String, AppInstance> getAppInstances() {
-        return appInstances;
+    public static void quit() {
+        Log.info("Quitting Inventi Automation Framework");
+        quitAppInstances();
     }
 
     public static RunMode getRunMode() {
@@ -81,51 +75,48 @@ public class FrameworkManager {
                         "' is not supported. Supported values are: '" + Arrays.asList(RunMode.values()) + "'");
             }
         }
-        Log.debug("Setting framework's run mode to '" + runMode + "'");
+        Log.info("Setting framework's run mode to '" + runMode + "'");
         Log.setLogLevel(runMode);
     }
 
-    private AppInstance createNewAppInstance(Class<?> startingAppClass, ConfigFiles configFiles) {
-        AppInstance appInstance = new AppInstance();
-        String appName = validateAndGetAppName(startingAppClass);
-
-        Log.debug("Creating new application instance of '" + startingAppClass + "'");
-
-        if (configFiles != null && !"".equals(configFiles.appsConfig())) {
-            appInstance.getConfigManager().setCustomAppConfigPath(configFiles.appsConfig());
+    private AppInstance getOrInitializeAppInstance(Class<?> appClass) {
+        String appName = validateAndGetAppName(appClass);
+        AppInstance existingAppInstance = getAppInstance(appName);
+        if (existingAppInstance == null) {
+            existingAppInstance = new AppInstance(getApplicationType(appClass), appName);
+            appInstances.put(appName, existingAppInstance);
+            return existingAppInstance;
+        } else {
+            return existingAppInstance;
         }
-
-        if (configFiles != null && !"".equals(configFiles.driverConfig())) {
-            appInstance.getConfigManager().setCustomWebDriverConfigPath(configFiles.driverConfig());
-        }
-
-        appInstances.put(appName, appInstance);
-        return appInstance;
     }
 
-    private void checkMandatoryParametersAreSet(Class<? extends Enum<?>> mandatoryParamsEnum) {
-        List<String> mandatoryParameters = Stream
-                .of(mandatoryParamsEnum.getEnumConstants())
-                .map(Enum::name)
-                .collect(Collectors.toList());
+    private ApplicationType getApplicationType(Class<?> startingAppClass) {
+        if (Api.class.isAssignableFrom(startingAppClass)) {
+            return ApplicationType.API;
+        }
+        if (WebPage.class.isAssignableFrom(startingAppClass)) {
+            return ApplicationType.WEB;
+        }
+        return null;
+    }
 
-        for (String mandatoryParameter : mandatoryParameters) {
-            if (TestSuiteParameters.getParameter(mandatoryParameter.toLowerCase()) == null) {
-                throw new RuntimeException("Parameter '" + mandatoryParameter.toLowerCase() + "' has to be supplied " +
-                        "either in the TestNG suite or as a Maven parameter to start this type of application.");
+    private static AppInstance getAppInstance(String appName) {
+        return getAppInstances().getOrDefault(appName, null);
+    }
+
+    private static String validateAndGetAppName(Class<?> appClass) {
+        Class<?> currentClass = appClass;
+
+        while (!currentClass.equals(Object.class)) {
+            Application applicationAnnotation = currentClass.getDeclaredAnnotation(Application.class);
+            if (applicationAnnotation != null) {
+                return applicationAnnotation.name();
             }
+            currentClass = currentClass.getSuperclass();
         }
-    }
 
-    private AppInstance getAppInstance(String appName) {
-        return appInstances.getOrDefault(appName, null);
-    }
-
-    private String validateAndGetAppName(Class<?> appClass) {
-        Application applicationAnnotation = appClass.getDeclaredAnnotation(Application.class);
-        if (applicationAnnotation == null) {
-            throw new RuntimeException("@Application() annotation is not set on your initial class '" + appClass.getName() + "'");
-        }
-        return applicationAnnotation.name();
+        throw new RuntimeException("@Application(\"YOUR_APP_NAME\") annotation is not set anywhere on supplied" +
+                " class '" + appClass.getName() + "' or its ancestors");
     }
 }

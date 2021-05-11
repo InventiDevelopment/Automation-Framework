@@ -19,5 +19,4 @@ public class ContactUsPage extends BasePage<ContactUsPage> {
     public ContactUsPage(WOProps props) {
         super(props);
     }
-
 }

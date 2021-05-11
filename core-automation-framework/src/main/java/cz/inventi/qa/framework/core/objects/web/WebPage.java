@@ -1,5 +1,6 @@
 package cz.inventi.qa.framework.core.objects.web;
 
+import cz.inventi.qa.framework.core.utils.WebUtils;
 import org.testng.Assert;
 
 public abstract class WebPage extends WebObject {
@@ -11,7 +12,7 @@ public abstract class WebPage extends WebObject {
 
     public void waitUntilPageLoaded() {
         if (getAppInstance().getConfigManager().getWebDriverConfigData().waitsAutomatically()) {
-            webUtils().waitUntilDocumentReady(getAppInstance());
+            WebUtils.waitUntilDocumentReady(getAppInstance());
         }
     }
 

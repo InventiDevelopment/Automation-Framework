@@ -2,11 +2,11 @@ package cz.inventi.qa.framework.core.managers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import cz.inventi.qa.framework.core.Log;
-import cz.inventi.qa.framework.core.WebUtils;
+import cz.inventi.qa.framework.core.objects.framework.Log;
+import cz.inventi.qa.framework.core.utils.WebUtils;
 import cz.inventi.qa.framework.core.data.config.LanguageData;
 import cz.inventi.qa.framework.core.data.enums.Language;
-import cz.inventi.qa.framework.core.objects.framework.AppInstance;
+import cz.inventi.qa.framework.core.objects.parameters.TestSuiteParameters;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,33 +15,29 @@ import java.util.Objects;
 
 public class LanguageManager {
     private static final String LANGUAGE_DIRECTORY = "lang/";
-    private final ObjectMapper mapper;
-    private final AppInstance appInstance;
+    private static LanguageManager languageManager;
     private Language currentLanguage;
     private String languageFile;
     private LanguageData languageData;
     private Map<String, String> dictionary;
 
-    public LanguageManager(AppInstance appInstance) {
-        this(appInstance, Language.NONE);
+    public static LanguageManager getInstance() {
+        if (languageManager == null) languageManager = new LanguageManager();
+        return languageManager;
     }
 
-    public LanguageManager(AppInstance appInstance, Language language) {
-        this.appInstance = appInstance;
-        currentLanguage = language;
-        mapper = new ObjectMapper(new YAMLFactory());
-        languageFile = loadLanguageFile();
+    public LanguageManager() {
+        init(TestSuiteParameters.getParameter("language"));
     }
 
     public void init(Language language) {
-        appInstance.getParametersManager().getCommonParameters().setLanguage(language);
         languageFile = loadLanguageFile();
         currentLanguage = language;
 
-        if (!currentLanguage.equals(Language.NONE)) {
+        if (!Language.NONE.equals(currentLanguage)) {
             try {
                 Log.debug("Loading '" + currentLanguage + "' language YAML dictionary file: '" + languageFile + "'");
-                languageData = mapper.readValue(new File(languageFile), LanguageData.class);
+                languageData = new ObjectMapper(new YAMLFactory()).readValue(new File(languageFile), LanguageData.class);
                 dictionary = languageData.getDictionary();
                 Log.debug("YAML language dictionary successfully loaded");
             } catch (IOException e) {
@@ -81,15 +77,15 @@ public class LanguageManager {
         try {
             return dictionary.get(index.toString());
         } catch (NullPointerException e) {
-            throw new RuntimeException("Given '" + index +  "' key has not been found in the dictionary file.");
+            throw new RuntimeException("Given '" + index +  "' key has not been found in the dictionary file");
         }
     }
 
     public Language getLanguage(String language) {
         try {
-            return Language.valueOf(language);
+            return Language.valueOf(language.toUpperCase());
         } catch (Exception e) {
-            throw new RuntimeException("Language '" + language + "' could not be found, please enter correct value according to ISO 639-1.");
+            throw new RuntimeException("Language '" + language + "' could not be found, please enter correct value according to ISO 639-1");
         }
     }
 

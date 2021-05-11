@@ -1,12 +1,12 @@
 package cz.inventi.qa.framework.core.objects.parameters;
 
-import cz.inventi.qa.framework.core.Log;
+import cz.inventi.qa.framework.core.objects.framework.Log;
 
 import java.util.Map;
 
 /**
  * Class dedicated primarily to hold all the current TestNG parameters.
- * Should be thread-safe singleton class.
+ * Should be thread-safe singleton class shared during the run.
  */
 public class TestSuiteParameters {
     private static Map<String, String> parameters;
@@ -29,6 +29,6 @@ public class TestSuiteParameters {
     }
 
     public static String getParameter(String parameterName) {
-        return parameters.get(parameterName);
+        return parameters.get(parameterName.toLowerCase());
     }
 }

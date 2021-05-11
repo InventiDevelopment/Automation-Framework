@@ -1,8 +1,10 @@
 package cz.inventi.qa.framework.core.webdrivers;
 
-import cz.inventi.qa.framework.core.data.enums.web.WindowSize;
+import cz.inventi.qa.framework.core.data.enums.web.WindowSizeType;
 import cz.inventi.qa.framework.core.data.web.GeneralSettings;
+import cz.inventi.qa.framework.core.data.web.WindowSizeDimensions;
 import cz.inventi.qa.framework.core.objects.framework.AppInstance;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
@@ -13,9 +15,9 @@ import java.util.logging.Level;
 
 public abstract class WebDriverWrapper {
     private final AppInstance appInstance;
+    private final GeneralSettings generalSettings;
     private WebDriver driver;
     private WebDriverWait wait;
-    private GeneralSettings generalSettings;
     private LoggingPreferences loggingPreferences;
 
     public WebDriverWrapper(AppInstance appInstance) {
@@ -53,11 +55,16 @@ public abstract class WebDriverWrapper {
     }
 
     private void setWindowSize() {
-        String windowSize = appInstance.getConfigManager().getWebDriverConfigData().getGeneralSettings().getWindowSize();
-        if (windowSize != null) {
-            if (windowSize.toUpperCase().equals(WindowSize.MAXIMIZED.toString())) {
+        GeneralSettings generalSettings = appInstance.getConfigManager().getWebDriverConfigData().getGeneralSettings();
+        WindowSizeType windowSizeType = generalSettings.getWindowSize().getSizeType();
+        WindowSizeDimensions windowSizeDimensions = generalSettings.getWindowSize().getDimensions();
+
+        if (windowSizeType != null) {
+            if (WindowSizeType.MAXIMIZED.equals(windowSizeType)) {
                 driver.manage().window().maximize();
             }
+        } else if (windowSizeDimensions != null) {
+            driver.manage().window().setSize(new Dimension(windowSizeDimensions.getWidth(), windowSizeDimensions.getHeight()));
         }
     }
 

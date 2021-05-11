@@ -1,6 +1,6 @@
 package cz.inventi.qa.framework.core.objects.api.filters;
 
-import cz.inventi.qa.framework.core.Log;
+import cz.inventi.qa.framework.core.objects.framework.Log;
 import io.restassured.filter.Filter;
 import io.restassured.filter.FilterContext;
 import io.restassured.response.Response;

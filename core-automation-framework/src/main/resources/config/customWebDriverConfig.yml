@@ -1,12 +1,12 @@
 generalSettings:
-  windowSize: maximized
+  windowSize:
+    dimensions:
+      width: 1920
+      height: 1080
   customTargetPath: "~/.m2/repository/webdriver"
+  takeScreenshots: true
   wait:
     waitsAutomatically: false
-    timeouts:
-      min: 5000
-      mid: 20000
-      max: 30000
 
 chrome:
   arguments: []

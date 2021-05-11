@@ -3,13 +3,17 @@ package cz.inventi.qa.framework.core.data.web;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Timeouts {
-
-    @JsonProperty
     private int min;
-    @JsonProperty
     private int mid;
-    @JsonProperty
     private int max;
+
+    public Timeouts(@JsonProperty("min") int min,
+                    @JsonProperty("mid") int mid,
+                    @JsonProperty("max") int max) {
+        this.min = min;
+        this.mid = mid;
+        this.max = max;
+    }
 
     public int getMin() {
         return min;

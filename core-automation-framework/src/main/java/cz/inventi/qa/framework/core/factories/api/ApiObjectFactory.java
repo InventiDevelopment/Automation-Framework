@@ -1,6 +1,6 @@
 package cz.inventi.qa.framework.core.factories.api;
 
-import cz.inventi.qa.framework.core.Log;
+import cz.inventi.qa.framework.core.objects.framework.Log;
 import cz.inventi.qa.framework.core.annotations.api.ApiAuth;
 import cz.inventi.qa.framework.core.annotations.api.EndpointSpecs;
 import cz.inventi.qa.framework.core.data.app.ApiApplication;
@@ -94,10 +94,11 @@ public class ApiObjectFactory {
     }
 
     public static <T extends Api> T initApi (Class<T> apiClass, AppInstance appInstance) {
-        AOProps aoProps = new AOProps(appInstance.getAppManager().getAppUrl(), apiClass, null, appInstance, getAuthMethod(apiClass));
-        ApiApplication apiApplication = appInstance.getConfigManager().getAppsConfigData().getApplications().getApi().get(appInstance.getAppManager().getCurrentApplicationName());
+        String appUrl = appInstance.getConfigManager().getCurrentApplicationEnvironmentUrl();
+        AOProps aoProps = new AOProps(appUrl, apiClass, null, appInstance, getAuthMethod(apiClass));
+        ApiApplication apiApplication = appInstance.getConfigManager().getAppsConfigData().getApplications().getApi().get(appInstance.getApplicationName());
         T api = reflectionInitAOClass(apiClass, new Class[] {AOProps.class}, new Object[] {aoProps});
-        api.setBaseUrl(appInstance.getAppManager().getAppUrl());
+        api.setBaseUrl(appUrl);
         api.setApiProtocolType(apiApplication.getProtocol());
         return api;
     }

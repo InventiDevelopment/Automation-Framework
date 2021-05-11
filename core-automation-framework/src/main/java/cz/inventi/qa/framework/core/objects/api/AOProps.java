@@ -1,6 +1,6 @@
 package cz.inventi.qa.framework.core.objects.api;
 
-import cz.inventi.qa.framework.core.Log;
+import cz.inventi.qa.framework.core.objects.framework.Log;
 import cz.inventi.qa.framework.core.data.enums.api.ApiAuthMethod;
 import cz.inventi.qa.framework.core.objects.framework.AppInstance;
 import cz.inventi.qa.framework.core.objects.parameters.AuthParameters;
@@ -84,13 +84,15 @@ public class AOProps {
 
     public AuthParameters getAuthParameters() {
         return appInstance
-                .getParametersManager()
-                .getApiAppParameters()
+                .getTestVariablesManager()
+                .getApiAppVariables()
                 .getAuthParameters();
     }
 
     public String getAppUrl() {
-        return appInstance.getAppManager().getAppUrl();
+        return appInstance
+                .getConfigManager()
+                .getCurrentApplicationEnvironmentUrl();
     }
 
     public String getBasePath() {
@@ -104,7 +106,6 @@ public class AOProps {
         while (currentProps != null) {
             if (currentProps.isParameter()) {
                 String parameterValue = currentProps.getParameterValue().toLowerCase();
-
                 if ("".equals(parameterValue)) {
                     Log.warn("Endpoint '" + currentProps.endpointUrl + "' is parametrized, but no parameter value has been supplied");
                 }

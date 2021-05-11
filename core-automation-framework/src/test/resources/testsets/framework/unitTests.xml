@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Unit Tests" parallel="true">
+    <parameter name="environment" value="PROD"/>
+    <parameter name="language" value="EN"/>
+    <parameter name="browser" value="CHROME"/>
+    <suite-files>
+        <suite-file path="unitTestsWithWait.xml"/>
+        <suite-file path="unitTestsNoWait.xml"/>
+    </suite-files>
+</suite> <!-- Suite -->

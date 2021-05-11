@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<suite name="Unit Tests Without Automatic Wait">
+    <parameter name="appsconfig" value="customAppsConfig.yml"/>
+    <parameter name="webdriverconfig" value="customWebDriverConfig.yml"/>
+    <test name="Core Components Tests">
+        <classes>
+            <class name="cz.inventi.qa.framework.tests.framework.web.webdriver.WebDriverTest"/>
+        </classes>
+    </test>
+    <test name="Config Tests">
+        <classes>
+            <class name="cz.inventi.qa.framework.tests.framework.config.ConfigurationTests">
+                <methods>
+                    <exclude name="checkWebDriverConfigurationIsInitialized"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+    <test name="WebObject Related Tests">
+        <classes>
+            <class name="cz.inventi.qa.framework.tests.framework.web.webobjects.WebElementTests">
+                <methods>
+                    <exclude name="waitRelatedBasicWebElementActionsTests"/>
+                </methods>
+            </class>
+            <class name="cz.inventi.qa.framework.tests.framework.web.webobjects.WebPageTests"/>
+            <class name="cz.inventi.qa.framework.tests.framework.web.webobjects.WebComponentsTests"/>
+        </classes>
+    </test>
+</suite> <!-- Suite -->

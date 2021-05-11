@@ -5,6 +5,9 @@ import org.openqa.selenium.support.How;
 
 import java.lang.annotation.Annotation;
 
+/**
+ * Handler for FindBy annotation.
+ */
 public class FindByHandler implements FindBy {
 
     private String xpath;

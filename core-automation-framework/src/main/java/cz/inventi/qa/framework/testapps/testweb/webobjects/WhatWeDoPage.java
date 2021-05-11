@@ -21,18 +21,13 @@ public class WhatWeDoPage extends BasePage<WhatWeDoPage> {
         super(props);
     }
 
-    public WhatWeDoPage clickAppendContent () {
+    public WhatWeDoPage clickAppendContent() {
         appendContentBtn.click();
-        appendedContent.waitUntilDisplayed();
+        appendedContent.waitUntilIsDisplayed();
         return this;
     }
 
-    public WhatWeDoPage clickAppendContentWithoutWait () {
-        appendContentBtn.click();
-        return this;
-    }
-
-    public WhatWeDoPage clickRefreshAppendedContent () {
+    public WhatWeDoPage clickRefreshAppendedContent() {
         refreshContentBtn.click();
         return this;
     }

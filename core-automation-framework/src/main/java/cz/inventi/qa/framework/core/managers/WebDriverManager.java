@@ -1,6 +1,7 @@
 package cz.inventi.qa.framework.core.managers;
 
-import cz.inventi.qa.framework.core.Log;
+import cz.inventi.qa.framework.core.data.web.Timeouts;
+import cz.inventi.qa.framework.core.objects.framework.Log;
 import cz.inventi.qa.framework.core.data.enums.web.Browser;
 import cz.inventi.qa.framework.core.objects.framework.AppInstance;
 import cz.inventi.qa.framework.core.webdrivers.ChromeWebWebDriver;
@@ -21,7 +22,7 @@ public class WebDriverManager {
     }
 
     public void init() {
-        Browser currentBrowser = appInstance.getParametersManager().getWebAppParameters().getBrowser();
+        Browser currentBrowser = appInstance.getTestVariablesManager().getWebAppVariables().getBrowser();
         switch (currentBrowser) {
             case CHROME:
                 webDriverWrapper = new ChromeWebWebDriver(appInstance);
@@ -29,18 +30,18 @@ public class WebDriverManager {
             default:
                 Log.fail("Browser '" + currentBrowser + "' support currently not implemented.");
         }
-        initializeWebDriver(appInstance.getAppManager().getAppUrl());
+        initializeWebDriver(appInstance.getConfigManager().getCurrentApplicationEnvironmentUrl());
     }
 
-    private void initializeWebDriver (String appUrl) {
+    private void initializeWebDriver(String appUrl) {
         try {
-            getDriver().get(formatResourcesURL(appUrl));
+            getDriver().get(formatLocalResourcesURL(appUrl));
         } catch (Exception e) {
             Log.fail("Unable to get url: '" + appUrl + "'. Please check that url is valid.");
         }
     }
 
-    private String formatResourcesURL (String appUrl) {
+    private String formatLocalResourcesURL(String appUrl) {
         if (appUrl.contains("test://") || appUrl.contains("main://")) {
             String[] resourcePackage = appUrl.split("://");
             return new File(Paths.get("src",resourcePackage[0], "resources") + "/" + resourcePackage[1]).getAbsolutePath();
@@ -58,5 +59,19 @@ public class WebDriverManager {
 
     public void cleanDriver() {
         webDriverWrapper.getDriver().quit();
+    }
+
+    public Timeouts getTimeouts() {
+        Timeouts configTimeouts = appInstance.getConfigManager().getWebDriverConfigData().getGeneralSettings().getWait().getTimeouts();
+        boolean waitAutomatically = appInstance.getConfigManager().getWebDriverConfigData().getGeneralSettings().getWait().waitsAutomatically();
+        if (configTimeouts == null) {
+            if (waitAutomatically) {
+                return new Timeouts(5000,10000,20000);
+            } else {
+                return new Timeouts(0,0,0);
+            }
+        } else {
+            return configTimeouts;
+        }
     }
 }

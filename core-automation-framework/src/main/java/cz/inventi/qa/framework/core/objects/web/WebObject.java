@@ -1,6 +1,5 @@
 package cz.inventi.qa.framework.core.objects.web;
 
-import cz.inventi.qa.framework.core.WebUtils;
 import cz.inventi.qa.framework.core.annotations.web.FindElement;
 import cz.inventi.qa.framework.core.annotations.web.handlers.FindElementHandler;
 import cz.inventi.qa.framework.core.factories.web.PageBuilder;
@@ -36,10 +35,6 @@ public abstract class WebObject {
 
     public <T extends WebPage> T initPage(Class<T> webPageClass) {
         return WebObjectFactory.initPage(webPageClass, getProps().getAppInstance());
-    }
-
-    public WebUtils webUtils() {
-        return getAppInstance().getWebUtils();
     }
 
     public WebDriver getDriver() {

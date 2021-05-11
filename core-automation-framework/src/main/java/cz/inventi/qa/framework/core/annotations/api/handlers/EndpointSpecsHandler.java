@@ -4,6 +4,9 @@ import cz.inventi.qa.framework.core.annotations.api.EndpointSpecs;
 
 import java.lang.annotation.Annotation;
 
+/**
+ * Handler for EndpointSpecs annotation.
+ */
 public class EndpointSpecsHandler implements EndpointSpecs {
     private String url;
     private boolean parameter;
@@ -15,11 +18,6 @@ public class EndpointSpecsHandler implements EndpointSpecs {
 
     @Override
     public String url() {
-        return null;
-    }
-
-    @Override
-    public String fullUrl() {
         return null;
     }
 

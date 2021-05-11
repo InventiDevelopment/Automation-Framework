@@ -1,5 +1,8 @@
 package cz.inventi.qa.framework.core.objects.parameters;
 
+/**
+ * Class to store authorization parameters.
+ */
 public class AuthParameters {
     private String username;
     private String password;

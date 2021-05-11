@@ -43,7 +43,6 @@ public class WebElementLocator implements ElementLocator {
                 return FindElement.class;
             }
         };
-
         xpath = PageBuilder.generateIndexedXpath(elementAnnotation.xpath(), elementAnnotation.index());
     }
 

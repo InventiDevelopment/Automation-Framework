@@ -1,11 +1,10 @@
 package cz.inventi.qa.framework.core.objects.web;
 
-import cz.inventi.qa.framework.core.Log;
 import cz.inventi.qa.framework.core.data.web.Timeouts;
 import cz.inventi.qa.framework.core.factories.web.webelement.WebElementLocator;
-import cz.inventi.qa.framework.core.managers.ConfigManager;
-import cz.inventi.qa.framework.core.managers.WebDriverManager;
+import cz.inventi.qa.framework.core.managers.ReportManager;
 import cz.inventi.qa.framework.core.objects.framework.AppInstance;
+import cz.inventi.qa.framework.core.objects.framework.Log;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -21,8 +20,8 @@ public class WebElement implements org.openqa.selenium.WebElement {
     private final JavascriptExecutor jsExec;
     private final WebElementLocator webElementLocator;
     private final Actions actions;
-    private final Timeouts timeouts;
     private final AppInstance appInstance;
+    private final Timeouts timeouts;
     private org.openqa.selenium.WebElement selWebElement;
 
     public WebElement(org.openqa.selenium.WebElement selWebElement, WebElementLocator webElementLocator, AppInstance appInstance) {
@@ -32,7 +31,7 @@ public class WebElement implements org.openqa.selenium.WebElement {
         driver = appInstance.getWebDriverManager().getDriver();
         jsExec = (JavascriptExecutor) driver;
         actions = new Actions(driver);
-        timeouts = appInstance.getConfigManager().getWebDriverConfigData().getGeneralSettings().getWait().getTimeouts();
+        timeouts = appInstance.getWebDriverManager().getTimeouts();
     }
 
     public String getXpath () {
@@ -103,7 +102,6 @@ public class WebElement implements org.openqa.selenium.WebElement {
 
     @Override
     public String getAttribute(String name) {
-        printAction();
         checkElementState();
         return selWebElement.getAttribute(name);
     }
@@ -143,48 +141,56 @@ public class WebElement implements org.openqa.selenium.WebElement {
         printAction(findElementsXpath);
 
         for (org.openqa.selenium.WebElement selElement : selWebElement.findElements(By.xpath(findElementsXpath))) {
-            webElements.add(new WebElement(selWebElement, new WebElementLocator(getXpath() + findElementsXpath, 0, appInstance), appInstance));
+            webElements.add(new WebElement(selWebElement,
+                    new WebElementLocator(getXpath() + findElementsXpath, 0, appInstance), appInstance));
         }
         return webElements;
     }
 
     public WebElement findElement(String findElementXpath) {
         printAction(findElementXpath);
-        return new WebElement(selWebElement.findElement(By.xpath(findElementXpath)), new WebElementLocator(getXpath() + findElementXpath, 0, appInstance), appInstance);
+        return new WebElement(selWebElement.findElement(By.xpath(findElementXpath)),
+                new WebElementLocator(getXpath() + findElementXpath, 0, appInstance), appInstance);
     }
 
     @Override
     public boolean isDisplayed() {
+        printAction();
         checkElementState();
         return selWebElement.isDisplayed();
     }
 
     @Override
     public Point getLocation() {
+        printAction();
         checkElementState();
         return selWebElement.getLocation();
     }
 
     @Override
     public Dimension getSize() {
+        printAction();
         checkElementState();
         return selWebElement.getSize();
     }
 
     @Override
     public Rectangle getRect() {
+        printAction();
         checkElementState();
         return selWebElement.getRect();
     }
 
     @Override
     public String getCssValue(String propertyName) {
+        printAction();
         checkElementState();
         return selWebElement.getCssValue(propertyName);
     }
 
     @Override
     public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
+        printAction();
         return selWebElement.getScreenshotAs(target);
     }
 
@@ -212,7 +218,7 @@ public class WebElement implements org.openqa.selenium.WebElement {
 
     public void waitUntilClickable () {
         printAction();
-        waitUntilDisplayed();
+        waitUntilIsDisplayed();
         if (!isClickable()) {
             getFluentWait(timeouts.getMin())
                     .withMessage("WebElement " + getXpath() + " is not clickable.")
@@ -247,7 +253,7 @@ public class WebElement implements org.openqa.selenium.WebElement {
         }
     }
 
-    public void waitUntilDisplayed () {
+    public void waitUntilIsDisplayed() {
         printAction();
         if (!isDisplayed()) {
             scrollTo();
@@ -257,7 +263,7 @@ public class WebElement implements org.openqa.selenium.WebElement {
         }
     }
 
-    public void waitUntilNotDisplayed () {
+    public void waitUntilIsNotDisplayed() {
         printAction();
         if (isDisplayed()) {
             getFluentWait(timeouts.getMid())
@@ -267,11 +273,15 @@ public class WebElement implements org.openqa.selenium.WebElement {
     }
 
     private void printAction() {
-        Log.debug("Performing '" + Thread.currentThread().getStackTrace()[2].getMethodName() + "' action on element with XPATH: '" + getXpath() + "'");
+        String actionName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        Log.debug("Performing '" + actionName + "' action on element with XPATH: '" + getXpath() + "'");
+        ReportManager.addWebAppScreenshot("Action " + actionName, webElementLocator, appInstance);
     }
 
     private void printAction(String inputValue) {
-        Log.debug("Performing '" + Thread.currentThread().getStackTrace()[2].getMethodName() + "' action with input value '" + inputValue + "' on element with XPATH: '" + getXpath() + "'");
+        String actionName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        Log.debug("Performing '" + actionName + "' action with input value '" + inputValue + "' on element with XPATH: '" + getXpath() + "'");
+        ReportManager.addWebAppScreenshot("Action " + actionName, webElementLocator, appInstance);
     }
 
     private void refreshElement() {

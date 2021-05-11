@@ -16,5 +16,4 @@ public class Wait {
     public Timeouts getTimeouts() {
         return timeouts;
     }
-
 }

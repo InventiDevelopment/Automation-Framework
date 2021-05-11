@@ -4,6 +4,9 @@ import cz.inventi.qa.framework.core.annotations.web.FindElement;
 
 import java.lang.annotation.Annotation;
 
+/**
+ * Handler for FindElement annotation.
+ */
 public class FindElementHandler implements FindElement {
     private int index;
     private String xpath;

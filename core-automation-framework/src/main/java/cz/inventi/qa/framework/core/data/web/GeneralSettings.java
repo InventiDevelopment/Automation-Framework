@@ -4,11 +4,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class GeneralSettings extends WebDriverSetting {
     private Wait wait;
+    private WindowSize windowSize;
 
     @JsonProperty
     private String customTargetPath;
     @JsonProperty
-    private String windowSize;
+    private boolean takeScreenshots;
 
     public Wait getWait() {
         return wait;
@@ -18,8 +19,11 @@ public class GeneralSettings extends WebDriverSetting {
         return customTargetPath;
     }
 
-    public String getWindowSize() {
+    public WindowSize getWindowSize() {
         return windowSize;
     }
 
+    public boolean takeScreenshots() {
+        return takeScreenshots;
+    }
 }

@@ -1,6 +1,6 @@
 package cz.inventi.qa.framework.testapps.testapi.endpoints.posts;
 
-import cz.inventi.qa.framework.core.ApiUtils;
+import cz.inventi.qa.framework.core.utils.ApiUtils;
 import cz.inventi.qa.framework.core.annotations.api.EndpointSpecs;
 import cz.inventi.qa.framework.core.objects.api.AOProps;
 import cz.inventi.qa.framework.core.objects.api.RestEndpoint;

@@ -1,5 +1,8 @@
 package cz.inventi.qa.framework.core.data.enums;
 
+/**
+ * Language identification codes mostly in ISO 639-1.
+ */
 public enum Language {
     AF,
     AF_ZA,
