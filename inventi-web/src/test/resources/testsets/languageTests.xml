@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
-<suite name="Language Tests">
-    <test name="Change Language">
-        <classes>
-            <class name="cz.inventi.qa.inventiweb.frontend.tests.someTestPackage.ChangeLanguageTest"/>
-        </classes>
-    </test>
-</suite> <!-- Suite -->

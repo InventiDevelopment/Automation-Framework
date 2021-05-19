@@ -11,7 +11,7 @@
 
     <modules>
         <module>core-automation-framework</module>
-		<module>inventi-web</module>
+		<module>sample-application</module>
     </modules>
 
    <properties>
