@@ -1,17 +1,11 @@
 package cz.inventi.qa.framework.core.objects.test.assertions;
 
-import cz.inventi.qa.framework.core.managers.ConfigManager;
-import cz.inventi.qa.framework.core.managers.FrameworkManager;
-import cz.inventi.qa.framework.core.objects.framework.AppInstance;
 import io.qameta.allure.Allure;
 import io.qameta.allure.model.Status;
 import io.qameta.allure.model.StepResult;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.openqa.selenium.TakesScreenshot;
 
-import java.io.ByteArrayInputStream;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 /**
  * Decorator for TestNG assert so that steps can be recorded
@@ -23,7 +17,7 @@ public class Assert {
         try {
             org.testng.Assert.assertEquals(object1, object2);
             createStepWithStatus(name, Status.PASSED);
-        } catch (Exception e) {
+        } catch (AssertionError e) {
             createStepWithStatus(name, Status.FAILED);
             throw new RuntimeException(e);
         }
@@ -33,7 +27,7 @@ public class Assert {
         try {
             org.testng.Assert.assertNotEquals(object1, object2);
             createStepWithStatus(name, Status.PASSED);
-        } catch (Exception e) {
+        } catch (AssertionError e) {
             createStepWithStatus(name, Status.FAILED);
             throw new RuntimeException(e);
         }
@@ -41,9 +35,9 @@ public class Assert {
 
     public static void assertTrue(boolean condition, String name) {
         try {
-            org.testng.Assert.assertTrue(condition);
+            org.testng.Assert.assertTrue(condition, name);
             createStepWithStatus(name,  Status.PASSED);
-        } catch (Exception e) {
+        } catch (AssertionError e) {
             createStepWithStatus(name, Status.FAILED);
             throw new RuntimeException(e);
         }
@@ -53,7 +47,7 @@ public class Assert {
         try {
             org.testng.Assert.assertFalse(condition);
             createStepWithStatus(name, Status.PASSED);
-        } catch (Exception e) {
+        } catch (AssertionError e) {
             createStepWithStatus(name, Status.FAILED);
             throw new RuntimeException(e);
         }
@@ -63,7 +57,7 @@ public class Assert {
         try {
             org.testng.Assert.assertNotNull(object);
             createStepWithStatus(name, Status.PASSED);
-        } catch (Exception e) {
+        } catch (AssertionError e) {
             createStepWithStatus(name, Status.FAILED);
             throw new RuntimeException(e);
         }
@@ -73,7 +67,7 @@ public class Assert {
         try {
             org.testng.Assert.assertNull(object);
             createStepWithStatus(name, Status.PASSED);
-        } catch (Exception e) {
+        } catch (AssertionError e) {
             createStepWithStatus(name, Status.FAILED);
             throw new RuntimeException(e);
         }
@@ -82,7 +76,7 @@ public class Assert {
     private static StepResult createStepWithStatus(String stepName, Status status, Object... comparedItems) {
         Optional<String> parentStep = Allure.getLifecycle().getCurrentTestCaseOrStep();
         StepResult stepResult = new StepResult();
-        stepResult.setName(stepName);
+        stepResult.setName(stepName + " (assertion)");
         Allure.getLifecycle().startStep(parentStep.orElseThrow(), RandomStringUtils.randomAlphanumeric(120), stepResult);
         stepResult.setStatus(status);
         Allure.getLifecycle().stopStep();

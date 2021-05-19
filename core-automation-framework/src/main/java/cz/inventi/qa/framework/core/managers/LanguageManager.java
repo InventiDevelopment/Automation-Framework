@@ -54,7 +54,7 @@ public class LanguageManager {
     }
 
     private String loadLanguageFile() {
-        if (!currentLanguage.equals(Language.NONE)) {
+        if (!Language.NONE.equals(currentLanguage)) {
             return WebUtils
                     .getFilePathDecoded(
                             Objects.requireNonNull(LanguageManager.class
@@ -82,10 +82,14 @@ public class LanguageManager {
     }
 
     public Language getLanguage(String language) {
-        try {
-            return Language.valueOf(language.toUpperCase());
-        } catch (Exception e) {
-            throw new RuntimeException("Language '" + language + "' could not be found, please enter correct value according to ISO 639-1");
+        if (language == null || "".equals(language)) {
+            return Language.NONE;
+        } else {
+            try {
+                return Language.valueOf(language.toUpperCase());
+            } catch (Exception e) {
+                throw new RuntimeException("Language '" + language + "' could not be found, please enter correct value according to ISO 639-1");
+            }
         }
     }
 

@@ -14,6 +14,10 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Custom decorator for Selenium WebElement to provide
+ * custom actions.
+ */
 public class WebElement implements org.openqa.selenium.WebElement {
     private static final int MAX_RETRIES = 5;
     private final WebDriver driver;
@@ -42,6 +46,7 @@ public class WebElement implements org.openqa.selenium.WebElement {
         printAction();
         checkElementState();
         jsExec.executeScript("arguments[0].click();", webElementLocator.findElement());
+        afterAction(true);
     }
 
     public void hover() {
@@ -51,12 +56,14 @@ public class WebElement implements org.openqa.selenium.WebElement {
             .moveToElement(selWebElement)
             .build()
             .perform();
+        afterAction(true);
     }
 
     public void scrollTo() {
         printAction();
         checkElementState();
         jsExec.executeScript("arguments[0].scrollIntoView(true);", webElementLocator.findElement());
+        afterAction(true);
     }
 
     @Override
@@ -68,6 +75,7 @@ public class WebElement implements org.openqa.selenium.WebElement {
             selWebElement.click();
             return true;
         });
+        afterAction(true);
     }
 
     @Override
@@ -75,6 +83,7 @@ public class WebElement implements org.openqa.selenium.WebElement {
         printAction();
         checkElementState();
         selWebElement.submit();
+        afterAction(true);
     }
 
     @Override
@@ -84,6 +93,7 @@ public class WebElement implements org.openqa.selenium.WebElement {
         waitUntilClickable();
         click();
         selWebElement.sendKeys();
+        afterAction(false);
     }
 
     @Override
@@ -92,6 +102,7 @@ public class WebElement implements org.openqa.selenium.WebElement {
         checkElementState();
         waitUntilClickable();
         selWebElement.clear();
+        afterAction(false);
     }
 
     @Override
@@ -121,29 +132,35 @@ public class WebElement implements org.openqa.selenium.WebElement {
     public String getText() {
         printAction();
         checkElementState();
-        return selWebElement.getText();
+        String elementText = selWebElement.getText();
+        afterAction(true);
+        return elementText;
     }
 
     @Override
     public List<org.openqa.selenium.WebElement> findElements(By by) {
         printAction(by.toString());
-        return selWebElement.findElements(By.xpath(by.toString()));
+        List<org.openqa.selenium.WebElement> foundElements = selWebElement.findElements(By.xpath(by.toString()));
+        afterAction(true);
+        return foundElements;
     }
 
     @Override
     public org.openqa.selenium.WebElement findElement(By by) {
         printAction(by.toString());
-        return selWebElement.findElement(By.xpath(by.toString()));
+        org.openqa.selenium.WebElement foundElement = selWebElement.findElement(By.xpath(by.toString()));
+        afterAction(true);
+        return foundElement;
     }
 
     public List<WebElement> findElements(String findElementsXpath) {
         List<WebElement> webElements = new ArrayList<>();
         printAction(findElementsXpath);
-
         for (org.openqa.selenium.WebElement selElement : selWebElement.findElements(By.xpath(findElementsXpath))) {
             webElements.add(new WebElement(selWebElement,
                     new WebElementLocator(getXpath() + findElementsXpath, 0, appInstance), appInstance));
         }
+        afterAction(true);
         return webElements;
     }
 
@@ -157,41 +174,53 @@ public class WebElement implements org.openqa.selenium.WebElement {
     public boolean isDisplayed() {
         printAction();
         checkElementState();
-        return selWebElement.isDisplayed();
+        boolean isDisplayed = selWebElement.isDisplayed();
+        afterAction(true);
+        return isDisplayed;
     }
 
     @Override
     public Point getLocation() {
         printAction();
         checkElementState();
-        return selWebElement.getLocation();
+        Point point = selWebElement.getLocation();
+        afterAction(true);
+        return point;
     }
 
     @Override
     public Dimension getSize() {
         printAction();
         checkElementState();
-        return selWebElement.getSize();
+        Dimension dimension = selWebElement.getSize();
+        afterAction(false);
+        return dimension;
     }
 
     @Override
     public Rectangle getRect() {
         printAction();
         checkElementState();
-        return selWebElement.getRect();
+        Rectangle rect = selWebElement.getRect();
+        afterAction(false);
+        return rect;
     }
 
     @Override
     public String getCssValue(String propertyName) {
         printAction();
         checkElementState();
-        return selWebElement.getCssValue(propertyName);
+        String cssValue = selWebElement.getCssValue(propertyName);
+        afterAction(false);
+        return cssValue;
     }
 
     @Override
     public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
         printAction();
-        return selWebElement.getScreenshotAs(target);
+        X screenShot = selWebElement.getScreenshotAs(target);
+        afterAction(false);
+        return screenShot;
     }
 
     public org.openqa.selenium.WebElement getSelWebElement() {
@@ -224,6 +253,7 @@ public class WebElement implements org.openqa.selenium.WebElement {
                     .withMessage("WebElement " + getXpath() + " is not clickable.")
                     .until(webDriver -> isClickable());
         }
+        afterAction(true);
     }
 
     public void waitUntilIsEnabled () {
@@ -233,6 +263,7 @@ public class WebElement implements org.openqa.selenium.WebElement {
                     .withMessage("WebElement " + getXpath() + " is not enabled.")
                     .until(webDriver -> isEnabled());
         }
+        afterAction(true);
     }
 
     public void waitUntilIsDisabled () {
@@ -242,6 +273,7 @@ public class WebElement implements org.openqa.selenium.WebElement {
                     .withMessage("WebElement " + getXpath() + " is still enabled.")
                     .until(webDriver -> !isEnabled());
         }
+        afterAction(true);
     }
 
     public void waitUntilNotClickable () {
@@ -251,6 +283,7 @@ public class WebElement implements org.openqa.selenium.WebElement {
                     .withMessage("WebElement " + getXpath() + " is still clickable.")
                     .until(webDriver -> !isClickable());
         }
+        afterAction(true);
     }
 
     public void waitUntilIsDisplayed() {
@@ -261,6 +294,7 @@ public class WebElement implements org.openqa.selenium.WebElement {
                     .withMessage("WebElement " + getXpath() + " is not displayed.")
                     .until(webDriver -> isDisplayed());
         }
+        afterAction(true);
     }
 
     public void waitUntilIsNotDisplayed() {
@@ -270,18 +304,25 @@ public class WebElement implements org.openqa.selenium.WebElement {
                     .withMessage("WebElement " + getXpath() + " is still displayed.")
                     .until(webDriver -> !isDisplayed());
         }
+        afterAction(true);
     }
 
     private void printAction() {
         String actionName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        Log.debug("Performing '" + actionName + "' action on element with XPATH: '" + getXpath() + "'");
-        ReportManager.addWebAppScreenshot("Action " + actionName, webElementLocator, appInstance);
+        Log.debug("Trying to do '" + actionName + "' action on element with XPATH: '" + getXpath() + "'");
     }
 
     private void printAction(String inputValue) {
         String actionName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        Log.debug("Performing '" + actionName + "' action with input value '" + inputValue + "' on element with XPATH: '" + getXpath() + "'");
-        ReportManager.addWebAppScreenshot("Action " + actionName, webElementLocator, appInstance);
+        Log.debug("Trying to do '" + actionName + "' action with input value '" + inputValue + "' on element with XPATH: '" + getXpath() + "'");
+    }
+
+    private void afterAction(boolean takeScreenshot) {
+        String actionName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        Log.debug("Performed '" + actionName + "' action on element with XPATH: '" + getXpath() + "'");
+        if (takeScreenshot) {
+            ReportManager.addWebAppScreenshot("Action " + actionName, webElementLocator, appInstance);
+        }
     }
 
     private void refreshElement() {

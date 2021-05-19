@@ -3,9 +3,13 @@ package cz.inventi.qa.framework.tests.framework.web.webobjects;
 import cz.inventi.qa.framework.core.objects.test.TestBase;
 import cz.inventi.qa.framework.testapps.framework.steps.WebComponentsTestSteps;
 import cz.inventi.qa.framework.testapps.testweb.webobjects.SideInfo;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Story;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+@Epic("Framework Unit Tests")
+@Story("Test WebComponent Object")
 public class WebComponentsTests extends TestBase {
     private WebComponentsTestSteps webComponentsTestSteps;
 

@@ -2,11 +2,15 @@ package cz.inventi.qa.framework.tests.jsonplaceholder;
 
 import cz.inventi.qa.framework.core.objects.test.TestBase;
 import cz.inventi.qa.framework.testapps.testapi.steps.JsonPlaceHolderSteps;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Story;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
+@Epic("Provide Sample API Application Tests")
+@Story("Test JsonPlaceholder Application")
 public class SampleJsonPlaceHolderTests extends TestBase {
     private JsonPlaceHolderSteps jsonPlaceHolderSteps;
 
@@ -16,13 +20,13 @@ public class SampleJsonPlaceHolderTests extends TestBase {
         jsonPlaceHolderSteps = new JsonPlaceHolderSteps();
     }
 
-    @Test(description = "Get Post by ID ('{postId}')")
+    @Test(description = "Get Post by ID")
     @Parameters({ "postId" })
     public void getPostByIdTest(@Optional("2") String postId) {
         jsonPlaceHolderSteps.getPostById(postId);
     }
 
-    @Test(description = "Get Post's ('{postId}') Comments")
+    @Test(description = "Get Post's Comments")
     @Parameters({ "postId" })
     public void getPostCommentsTest(@Optional("2") String postId) {
         jsonPlaceHolderSteps.getPostComments(postId);

@@ -48,27 +48,16 @@ public class ConfigManager {
                 .forEach(this::initConfig);
     }
 
-    private String getCustomPackageConfigPath(String configFileName) {
-        File customConfigFile = new File(CONFIG_DIRECTORY + configFileName);
-        Log.debug("Trying to retrieve supplied custom config file '" + configFileName + '"');
-        try {
-            return Objects.requireNonNull(customConfigFile.getAbsolutePath());
-        } catch (NullPointerException e) {
-            Log.fail("Not possible to read from a custom yml file '" + configFileName + "' at '" + customConfigFile.getAbsolutePath() + "'. Check that the '" + configFileName + "' file " +
-                    "is created in resources folder in the package you are launching test from.\nStacktrace: " + e);
-        }
-        return null;
-    }
-
     public void initConfig(ConfigFile configFile) {
         Class<?> configClass = configFile.getConfigClass();
         String configFileName = getConfigDefaultFileName(configClass);
-        String configPath = new File(CONFIG_DIRECTORY + configFileName).getAbsolutePath();
         String customConfigPath = TestSuiteParameters.getParameter(configFile.name().toLowerCase());
 
         if (customConfigPath != null) {
-            configPath = getCustomPackageConfigPath(customConfigPath);
+            configFileName = customConfigPath;
         }
+
+        String configPath = new File(CONFIG_DIRECTORY + configFileName).getAbsolutePath();
 
         try {
             Log.debug("Loading " + configFile + " YAML configuration file: '" + configPath + "'");
@@ -76,7 +65,8 @@ public class ConfigManager {
             Log.debug(configFile + " YAML configuration files successfully loaded");
             Log.debug(configFile + " YAML config content:\n" + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(configFiles.get(configFile)));
         } catch (IOException e) {
-            Log.fail("Not possible to read from " + configFile + " YML file. Check that file is accessible at following location: '" + customConfigPath + "'\n", e);
+
+            Log.fail("Not possible to read from " + configFile + " YML file. Check that file is accessible at following location: '" + configPath + "'", e);
         }
     }
 
@@ -97,6 +87,7 @@ public class ConfigManager {
         return (AppsConfigData) configFiles.get(ConfigFile.APPSCONFIG);
     }
 
+    @SuppressWarnings("unchecked")
     public <T extends Application> T getCurrentApplicationConfig() {
         Applications applications = getAppsConfigData().getApplications();
         String currentApplicationName = appInstance.getApplicationName();

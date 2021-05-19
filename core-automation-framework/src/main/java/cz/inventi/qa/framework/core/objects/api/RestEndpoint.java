@@ -107,7 +107,6 @@ public abstract class RestEndpoint<T> extends Endpoint<T> {
                     .log()
                     .all();
         }
-
         return requestSpecification;
     }
 }

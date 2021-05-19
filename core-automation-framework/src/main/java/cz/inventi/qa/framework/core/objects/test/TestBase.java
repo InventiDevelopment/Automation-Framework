@@ -14,7 +14,7 @@ public abstract class TestBase {
      * or Maven command to the TestSuiteParameters class.
      * @param context TestNG context
      */
-    @BeforeSuite
+    @BeforeSuite(alwaysRun = true)
     public static void loadTestSuiteParameters(ITestContext context) {
         XmlTest currentTest = context.getCurrentXmlTest();
         Map<String, String> parameters = currentTest.getAllParameters();

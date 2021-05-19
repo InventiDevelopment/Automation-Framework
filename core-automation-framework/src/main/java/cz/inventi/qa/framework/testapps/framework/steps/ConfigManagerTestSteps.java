@@ -5,7 +5,7 @@ import cz.inventi.qa.framework.core.data.config.WebDriverConfigData;
 import cz.inventi.qa.framework.core.data.enums.web.WindowSizeType;
 import cz.inventi.qa.framework.core.data.web.WindowSizeDimensions;
 import cz.inventi.qa.framework.core.managers.ConfigManager;
-import cz.inventi.qa.framework.core.objects.test.StepsBase;
+import cz.inventi.qa.framework.core.objects.test.steps.StepsBase;
 import cz.inventi.qa.framework.core.objects.test.assertions.Assert;
 import cz.inventi.qa.framework.testapps.testapi.JsonPlaceHolderApi;
 import cz.inventi.qa.framework.testapps.testweb.webobjects.HomePage;

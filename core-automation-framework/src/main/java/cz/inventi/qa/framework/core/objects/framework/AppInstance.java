@@ -42,6 +42,7 @@ public class AppInstance {
         switch (applicationType) {
             case API:
                 mandatoryParamsEnum = ApiMandatoryParameters.class;
+                break;
             case WEB:
                 mandatoryParamsEnum = WebMandatoryParameters.class;
                 break;

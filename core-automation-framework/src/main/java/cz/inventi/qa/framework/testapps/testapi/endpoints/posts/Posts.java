@@ -18,17 +18,14 @@ public class Posts extends RestEndpoint<Posts> {
         super(props);
     }
 
-    @Step("Get All Posts")
     public Response getPosts() {
         return callGet();
     }
 
-    @Step("Create New Post")
     public Response createPost(PostRequestDto postRequestDto) {
         return createRequest().body(ApiUtils.convertToJson(postRequestDto)).post();
     }
 
-    @Step("Create a Random Post")
     public Response createRandomPost() {
         PostRequestDto newPost = generateRandomPost();
         return createRequest()

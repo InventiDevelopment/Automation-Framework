@@ -24,13 +24,11 @@ public class WebUtils {
 
     public static void waitUntilDocumentReady(AppInstance appInstance) {
         Log.debug("Waiting for document load and JS actions to finish");
-
         new FluentWait<>(appInstance.getWebDriverManager().getDriver())
                 .withTimeout(Duration.ofMillis(appInstance.getConfigManager().getWebDriverConfigData().getTimeouts().getMid()))
                 .pollingEvery(Duration.ofMillis(100))
                 .withMessage("JavaScript operations still not finished - document not ready")
                 .until(webDriver -> ((JavascriptExecutor) webDriver).executeScript("return document.readyState").equals("complete"));
-
         Log.debug("Document finished loading");
     }
 }

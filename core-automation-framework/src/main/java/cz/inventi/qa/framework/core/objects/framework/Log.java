@@ -5,6 +5,9 @@ import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import java.util.Arrays;
+import java.util.Enumeration;
+
 public class Log {
     public static final String LOGGER_NAME = "cz.inventi.qa.framework";
 
@@ -38,14 +41,17 @@ public class Log {
         return LogManager.getLogger(LOGGER_NAME);
     }
 
-    public static void setLogLevel(RunMode runMode) {
+    public static void setGlobalLogLevel(RunMode runMode) {
         Level logLevel = Level.ERROR;
         switch (runMode) {
             case DEBUG:
                 logLevel = Level.DEBUG;
+                break;
             case NORMAL:
                 logLevel = Level.ERROR;
+                break;
         }
-        getLogger().setLevel(logLevel);
+        Log.info("Setting global log level to '" + logLevel + "'");
+        LogManager.getRootLogger().setLevel(logLevel);
     }
 }

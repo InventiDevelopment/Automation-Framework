@@ -2,9 +2,13 @@ package cz.inventi.qa.framework.tests.framework.logger;
 
 import cz.inventi.qa.framework.core.objects.framework.Log;
 import cz.inventi.qa.framework.core.objects.test.TestBase;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Story;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+@Epic("Framework Unit Tests")
+@Story("Test Logging Possibilities")
 public class LoggerTests extends TestBase {
 
     @BeforeClass

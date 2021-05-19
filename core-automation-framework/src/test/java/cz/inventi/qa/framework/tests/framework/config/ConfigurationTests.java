@@ -3,9 +3,13 @@ package cz.inventi.qa.framework.tests.framework.config;
 import cz.inventi.qa.framework.core.data.enums.web.WindowSizeType;
 import cz.inventi.qa.framework.core.objects.test.TestBase;
 import cz.inventi.qa.framework.testapps.framework.steps.ConfigManagerTestSteps;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Story;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+@Epic("Framework Unit Tests")
+@Story("Test Configuration of the Framework")
 public class ConfigurationTests extends TestBase {
     private ConfigManagerTestSteps configManagerTestSteps;
 

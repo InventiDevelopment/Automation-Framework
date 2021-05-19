@@ -65,7 +65,7 @@ public class FrameworkManager {
     private static void setRunMode() {
         String runModeParam = System.getProperty("runMode");
 
-        if (runModeParam == null) {
+        if (runModeParam == null || "".equals(runModeParam)) {
             runMode = RunMode.NORMAL;
         } else {
             try {
@@ -76,7 +76,7 @@ public class FrameworkManager {
             }
         }
         Log.info("Setting framework's run mode to '" + runMode + "'");
-        Log.setLogLevel(runMode);
+        Log.setGlobalLogLevel(runMode);
     }
 
     private AppInstance getOrInitializeAppInstance(Class<?> appClass) {

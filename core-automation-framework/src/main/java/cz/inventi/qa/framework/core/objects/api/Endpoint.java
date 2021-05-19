@@ -59,5 +59,4 @@ public abstract class Endpoint<T> extends ApiObject {
     public abstract Object createRequest();
 
     public abstract Object createRequestWithAuth();
-
 }
