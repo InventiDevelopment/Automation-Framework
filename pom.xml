@@ -14,7 +14,7 @@
 		<module>sample-application</module>
     </modules>
 
-   <properties>
+    <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.jar.plugin.version>3.2.0</maven.jar.plugin.version>
         <maven.compiler.source>15</maven.compiler.source>
