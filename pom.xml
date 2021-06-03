@@ -33,7 +33,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven.version}</version>
                 <configuration>
-                    <outputDirectory>${basedir}/target/surefire-reports</outputDirectory>
+                    <reportsDirectory>../target/surefire-reports</reportsDirectory>
                     <testFailureIgnore>false</testFailureIgnore>
                     <trimStackTrace>false</trimStackTrace>
                     <suiteXmlFiles>
