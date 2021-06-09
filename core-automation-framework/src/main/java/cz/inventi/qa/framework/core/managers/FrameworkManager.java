@@ -1,7 +1,9 @@
 package cz.inventi.qa.framework.core.managers;
 
 import cz.inventi.qa.framework.core.annotations.Application;
+import cz.inventi.qa.framework.core.data.config.ProxySettings;
 import cz.inventi.qa.framework.core.data.enums.ApplicationType;
+import cz.inventi.qa.framework.core.data.enums.ProxyScheme;
 import cz.inventi.qa.framework.core.data.enums.RunMode;
 import cz.inventi.qa.framework.core.objects.api.Api;
 import cz.inventi.qa.framework.core.objects.framework.AppInstance;
@@ -17,11 +19,30 @@ public class FrameworkManager {
     private final Map<String, AppInstance> appInstances;
     private static FrameworkManager frameworkManager = null;
     private static RunMode runMode;
+    private static ProxySettings proxySettings;
 
     public FrameworkManager() {
         this.appInstances = new HashMap<>();
         Log.info("Loading Inventi Automation Framework");
+        setProxy();
         setRunMode();
+    }
+
+    /**
+     * Creates proxy settings if supplied in Maven command.
+     */
+    private void setProxy() {
+        String proxyServer = System.getProperty("proxyServer");
+        String proxyPort = System.getProperty("proxyPort");
+
+        if (proxyServer != null && proxyPort != null) {
+            proxySettings = new ProxySettings(
+                    System.getProperty("proxyUser"),
+                    System.getProperty("proxyPass"),
+                    proxyServer,
+                    Integer.parseInt(proxyPort),
+                    ProxyScheme.fromString(System.getProperty("proxyScheme")));
+        }
     }
 
     public <T extends WebPage> T initWebAppAt(Class<T> webPage) {
@@ -118,5 +139,9 @@ public class FrameworkManager {
 
         throw new RuntimeException("@Application(\"YOUR_APP_NAME\") annotation is not set anywhere on supplied" +
                 " class '" + appClass.getName() + "' or its ancestors");
+    }
+
+    public static ProxySettings getProxySettings() {
+        return proxySettings;
     }
 }

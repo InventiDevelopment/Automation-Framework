@@ -1,5 +1,6 @@
 package cz.inventi.qa.framework.core.managers;
 
+import cz.inventi.qa.framework.core.data.enums.ProxyScheme;
 import cz.inventi.qa.framework.core.data.web.Timeouts;
 import cz.inventi.qa.framework.core.objects.framework.Log;
 import cz.inventi.qa.framework.core.data.enums.web.Browser;
@@ -11,6 +12,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
 import java.nio.file.Paths;
+import java.util.Locale;
 
 
 public class WebDriverManager {
@@ -23,6 +25,7 @@ public class WebDriverManager {
 
     public void init() {
         Browser currentBrowser = appInstance.getTestVariablesManager().getWebAppVariables().getBrowser();
+        setWebDriverProxyVariables();
         switch (currentBrowser) {
             case CHROME:
                 webDriverWrapper = new ChromeWebWebDriver(appInstance);
@@ -31,6 +34,23 @@ public class WebDriverManager {
                 Log.fail("Browser '" + currentBrowser + "' support currently not implemented.");
         }
         initializeWebDriver(appInstance.getConfigManager().getCurrentApplicationEnvironmentUrl());
+    }
+
+    /**
+     * Sets global proxy variables, if they are received in
+     * Maven command. WebDriverManager collects them automatically.
+     */
+    private void setWebDriverProxyVariables() {
+        String proxyServer = FrameworkManager.getProxySettings().getProxyServer();
+        String proxyUser = FrameworkManager.getProxySettings().getProxyUser();
+        String proxyPass = FrameworkManager.getProxySettings().getProxyPass();
+        ProxyScheme proxyScheme = FrameworkManager.getProxySettings().getProxyScheme();
+
+        System.setProperty(proxyScheme + "_PROXY", proxyServer);
+        if (proxyUser != null && proxyPass != null) {
+            System.setProperty(proxyScheme + "_PROXY", proxyUser);
+            System.setProperty(proxyScheme + "_PROXY", proxyPass);
+        }
     }
 
     private void initializeWebDriver(String appUrl) {
