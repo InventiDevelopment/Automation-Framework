@@ -1,5 +1,6 @@
 package cz.inventi.qa.framework.core.objects.framework;
 
+import cz.inventi.qa.framework.core.data.app.ApiApplication;
 import cz.inventi.qa.framework.core.data.enums.ApplicationType;
 import cz.inventi.qa.framework.core.data.enums.api.ApiMandatoryParameters;
 import cz.inventi.qa.framework.core.data.enums.web.WebMandatoryParameters;

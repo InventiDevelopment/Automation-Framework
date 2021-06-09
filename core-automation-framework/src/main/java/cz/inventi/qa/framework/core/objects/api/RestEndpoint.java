@@ -5,6 +5,7 @@ import cz.inventi.qa.framework.core.data.enums.api.ApiAuthMethod;
 import cz.inventi.qa.framework.core.managers.FrameworkManager;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import io.restassured.specification.ProxySpecification;
 import io.restassured.specification.RequestSpecification;
 
 import java.util.Map;
@@ -103,10 +104,16 @@ public abstract class RestEndpoint<T> extends Endpoint<T> {
                 .pathParams(getProps().getPathParams());
 
         if (FrameworkManager.getRunMode().equals(RunMode.DEBUG)) {
-            requestSpecification
+            requestSpecification = requestSpecification
                     .log()
-                    .all();
+                    .all()
+                    .request();
         }
-        return requestSpecification;
+
+        if (getProps().getAppInstance().getConfigManager().getCurrentApiAppConfig().isRelaxedHttpsValidation()) {
+            requestSpecification = requestSpecification.relaxedHTTPSValidation();
+        }
+
+        return requestSpecification.when();
     }
 }

@@ -5,8 +5,7 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import cz.inventi.qa.framework.core.annotations.ConfigFileSpecs;
-import cz.inventi.qa.framework.core.data.app.Application;
-import cz.inventi.qa.framework.core.data.app.Applications;
+import cz.inventi.qa.framework.core.data.app.*;
 import cz.inventi.qa.framework.core.data.config.AppsConfigData;
 import cz.inventi.qa.framework.core.data.config.WebDriverConfigData;
 import cz.inventi.qa.framework.core.data.enums.ConfigFile;
@@ -87,20 +86,35 @@ public class ConfigManager {
         return (AppsConfigData) configFiles.get(ConfigFile.APPSCONFIG);
     }
 
-    @SuppressWarnings("unchecked")
-    public <T extends Application> T getCurrentApplicationConfig() {
+    public WebApplication getCurrentWebAppConfig() {
+        return getAppsConfigData().getApplications().getWeb().get(appInstance.getApplicationName());
+    }
+
+    public ApiApplication getCurrentApiAppConfig() {
+        return getAppsConfigData().getApplications().getApi().get(appInstance.getApplicationName());
+    }
+
+    public MobileApplication getCurrentMobileAppConfig() {
+        return getAppsConfigData().getApplications().getMobile().get(appInstance.getApplicationName());
+    }
+
+    public DesktopApplication getCurrentDesktopAppConfig() {
+        return getAppsConfigData().getApplications().getDesktop().get(appInstance.getApplicationName());
+    }
+
+    public Application getCurrentAppGeneralConfig() {
         Applications applications = getAppsConfigData().getApplications();
         String currentApplicationName = appInstance.getApplicationName();
 
         switch (appInstance.getApplicationType()) {
             case API:
-                return (T) applications.getApi().get(currentApplicationName);
+                return applications.getApi().get(currentApplicationName);
             case DESKTOP:
-                return (T) applications.getDesktop().get(currentApplicationName);
+                return applications.getDesktop().get(currentApplicationName);
             case MOBILE:
-                return (T) applications.getMobile().get(currentApplicationName);
+                return applications.getMobile().get(currentApplicationName);
             case WEB:
-                return (T) applications.getWeb().get(currentApplicationName);
+                return applications.getWeb().get(currentApplicationName);
             default:
                 return null;
         }
@@ -108,7 +122,7 @@ public class ConfigManager {
 
     public String getCurrentApplicationEnvironmentUrl() {
         String environment = TestSuiteParameters.getParameter("environment");
-        return getCurrentApplicationConfig()
+        return getCurrentAppGeneralConfig()
                 .getEnvironments()
                 .entrySet()
                 .stream()

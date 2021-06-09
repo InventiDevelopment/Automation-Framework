@@ -15,7 +15,7 @@ public abstract class TestBase {
      * @param context TestNG context
      */
     @BeforeSuite(alwaysRun = true)
-    public static void loadTestSuiteParameters(ITestContext context) {
+    public void loadTestSuiteParameters(ITestContext context) {
         XmlTest currentTest = context.getCurrentXmlTest();
         Map<String, String> parameters = currentTest.getAllParameters();
 
@@ -34,7 +34,7 @@ public abstract class TestBase {
      * test class run.
      */
     @AfterClass(alwaysRun = true)
-    public static void quit() {
+    public void quit() {
         FrameworkManager.quit();
     }
 
