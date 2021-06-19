@@ -1,9 +1,13 @@
 package cz.inventi.qa.framework.core.objects.api;
 
 import cz.inventi.qa.framework.core.objects.framework.AppInstance;
+import cz.inventi.qa.framework.core.objects.framework.Log;
+import cz.inventi.qa.framework.core.objects.variables.api.ApiAppVariables;
+import cz.inventi.qa.framework.core.utils.Utils;
 
 public class Api extends ApiObject {
     private String baseUrl;
+    private ApiAppVariables apiAppVariables;
 
     public Api(AOProps props) {
         super(props);
@@ -22,6 +26,10 @@ public class Api extends ApiObject {
     }
 
     public void setAuthToken(String authToken) {
+        Log.info("Setting API level access token for application '"
+                + getAppInstance().getApplicationName() + "'"
+                + " executed by '" + Utils.getCallerTestClassName() + "'"
+        );
         getAppInstance()
                 .getTestVariablesManager()
                 .getApiAppVariables()

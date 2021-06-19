@@ -7,17 +7,17 @@ import cz.inventi.qa.framework.core.data.enums.ProxyScheme;
 import cz.inventi.qa.framework.core.data.enums.RunMode;
 import cz.inventi.qa.framework.core.objects.api.Api;
 import cz.inventi.qa.framework.core.objects.framework.AppInstance;
+import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
 import cz.inventi.qa.framework.core.objects.framework.Log;
 import cz.inventi.qa.framework.core.objects.web.WebPage;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 public class FrameworkManager {
-    private final Map<String, AppInstance> appInstances;
-    private static FrameworkManager frameworkManager = null;
+    private final Map<String, Map<String, AppInstance>> appInstances;
+    private volatile static FrameworkManager frameworkManager = null;
     private static RunMode runMode;
     private static ProxySettings proxySettings;
 
@@ -45,38 +45,29 @@ public class FrameworkManager {
         }
     }
 
-    public <T extends WebPage> T initWebAppAt(Class<T> webPage) {
-        return getOrInitializeAppInstance(webPage).initWebPage(webPage);
+    public <T extends WebPage> T initWebAppAt(Class<T> webPage, String identifier) {
+        return retrieveOrInitializeAppInstance(webPage, identifier).initWebPage(webPage);
     }
 
-    public <T extends Api> T initApiAppAt(Class<T> api) {
-        return getOrInitializeAppInstance(api).initApi(api);
+    public <T extends Api> T initApiAppAt(Class<T> api, String identifier) {
+        return retrieveOrInitializeAppInstance(api, identifier).initApi(api);
     }
 
-    public static Map<String, AppInstance> getAppInstances() {
+    public static Map<String, Map<String, AppInstance>> getAppInstances() {
         return getInstance().appInstances;
     }
 
-    public static FrameworkManager getInstance() {
+    synchronized public static FrameworkManager getInstance() {
         if (frameworkManager == null) frameworkManager = new FrameworkManager();
         return frameworkManager;
     }
 
-    public static void quitAppInstances() {
-        ArrayList<String> appNamesToQuit = new ArrayList<>();
-        getAppInstances().forEach((appName, appInstance) -> appNamesToQuit.add(appName));
-        appNamesToQuit.forEach(FrameworkManager::quitAppInstance);
-    }
-
-    public static void quitAppInstance(String appName) {
-        Log.info("Quiting application instance of '" + appName + "'");
-        getAppInstance(appName).quit();
-        getAppInstances().remove(appName);
-    }
-
-    public static void quit() {
-        Log.info("Quitting Inventi Automation Framework");
-        quitAppInstances();
+    public static void quitTestAppInstances(String testClassName) {
+        Log.info("Quitting AppInstances for test of '" + testClassName + "'");
+        Map<String, Map<String, AppInstance>> appInstances = getAppInstances();
+        appInstances.get(testClassName).forEach((appName, appInstance) -> appInstance.quit());
+        appInstances.remove(testClassName);
+        if (getAppInstances().size() == 0) Log.info("No AppInstances left running in the stack");
     }
 
     public static RunMode getRunMode() {
@@ -85,14 +76,13 @@ public class FrameworkManager {
 
     private static void setRunMode() {
         String runModeParam = System.getProperty("runMode");
-
         if (runModeParam == null || "".equals(runModeParam)) {
             runMode = RunMode.NORMAL;
         } else {
             try {
                 runMode = RunMode.valueOf(runModeParam.toUpperCase());
             } catch (Exception e) {
-                throw new RuntimeException("Given runMode parameter '" + runModeParam.toUpperCase() +
+                throw new FrameworkException("Given runMode parameter '" + runModeParam.toUpperCase() +
                         "' is not supported. Supported values are: '" + Arrays.asList(RunMode.values()) + "'");
             }
         }
@@ -100,16 +90,15 @@ public class FrameworkManager {
         Log.setGlobalLogLevel(runMode);
     }
 
-    private AppInstance getOrInitializeAppInstance(Class<?> appClass) {
+    private AppInstance retrieveOrInitializeAppInstance(Class<?> appClass, String testClassName) {
         String appName = validateAndGetAppName(appClass);
-        AppInstance existingAppInstance = getAppInstance(appName);
-        if (existingAppInstance == null) {
-            existingAppInstance = new AppInstance(getApplicationType(appClass), appName);
-            appInstances.put(appName, existingAppInstance);
-            return existingAppInstance;
-        } else {
-            return existingAppInstance;
+        if (appInstances.get(testClassName) == null) appInstances.put(testClassName, Map.of());
+        AppInstance appInstance = appInstances.get(testClassName).get(appName);
+        if (appInstance == null) {
+            appInstance = new AppInstance(getApplicationType(appClass), appName);
+            appInstances.put(testClassName, Map.of(appName, appInstance));
         }
+        return appInstance;
     }
 
     private ApplicationType getApplicationType(Class<?> startingAppClass) {
@@ -122,13 +111,8 @@ public class FrameworkManager {
         return null;
     }
 
-    private static AppInstance getAppInstance(String appName) {
-        return getAppInstances().getOrDefault(appName, null);
-    }
-
     private static String validateAndGetAppName(Class<?> appClass) {
         Class<?> currentClass = appClass;
-
         while (!currentClass.equals(Object.class)) {
             Application applicationAnnotation = currentClass.getDeclaredAnnotation(Application.class);
             if (applicationAnnotation != null) {
@@ -136,8 +120,7 @@ public class FrameworkManager {
             }
             currentClass = currentClass.getSuperclass();
         }
-
-        throw new RuntimeException("@Application(\"YOUR_APP_NAME\") annotation is not set anywhere on supplied" +
+        throw new FrameworkException("@Application(\"YOUR_APP_NAME\") annotation is not set anywhere on supplied" +
                 " class '" + appClass.getName() + "' or its ancestors");
     }
 

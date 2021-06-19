@@ -1,8 +1,8 @@
 package cz.inventi.qa.framework.core.managers;
 
-import cz.inventi.qa.framework.core.objects.variables.ApiAppVariables;
+import cz.inventi.qa.framework.core.objects.variables.api.ApiAppVariables;
 import cz.inventi.qa.framework.core.objects.parameters.TestSuiteParameters;
-import cz.inventi.qa.framework.core.objects.variables.WebAppVariables;
+import cz.inventi.qa.framework.core.objects.variables.web.WebAppVariables;
 
 /**
  * Class allowing setting variables bound to current

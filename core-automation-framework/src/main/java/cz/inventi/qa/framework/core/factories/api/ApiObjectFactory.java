@@ -10,6 +10,7 @@ import cz.inventi.qa.framework.core.objects.api.Api;
 import cz.inventi.qa.framework.core.objects.api.ApiObject;
 import cz.inventi.qa.framework.core.objects.api.Endpoint;
 import cz.inventi.qa.framework.core.objects.framework.AppInstance;
+import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
 import cz.inventi.qa.framework.core.objects.framework.Log;
 import io.restassured.RestAssured;
 import io.restassured.specification.ProxySpecification;
@@ -18,7 +19,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.util.Locale;
 import java.util.Objects;
 
 public class ApiObjectFactory {
@@ -51,7 +51,7 @@ public class ApiObjectFactory {
             childAOField.setAccessible(true);
             childAOField.set(parentApiObject, childApiObject);
         } catch (IllegalAccessException e) {
-            Log.fail("Could not assign ApiObject field object '" + childAOField.getType().getName() + "'.", e);
+            throw new FrameworkException("Could not assign ApiObject field object '" + childAOField.getType().getName() + "'.", e);
         }
     }
 
@@ -75,7 +75,7 @@ public class ApiObjectFactory {
             EndpointSpecs endpointSpecs = f.getType().getAnnotation(EndpointSpecs.class);
 
             if (endpointSpecs == null) {
-                Log.fail("Class '" + f.getType() + "' is missing @EndpointSpecs annotation");
+                throw new FrameworkException("Class '" + f.getType() + "' is missing @EndpointSpecs annotation");
             }
             return Objects.requireNonNull(endpointSpecs).url();
         }
@@ -142,7 +142,7 @@ public class ApiObjectFactory {
             klassConstructor.setAccessible(true);
             return (T) klassConstructor.newInstance(constructorParams);
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException("Could not reflectively initialize " + klass + ".\n" + e);
+            throw new FrameworkException("Could not reflectively initialize " + klass + ".\n", e);
         }
     }
 

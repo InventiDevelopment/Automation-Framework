@@ -1,11 +1,12 @@
 package cz.inventi.qa.framework.core.objects.api;
 
-import cz.inventi.qa.framework.core.objects.framework.Log;
 import cz.inventi.qa.framework.core.data.enums.api.ApiAuthMethod;
 import cz.inventi.qa.framework.core.objects.framework.AppInstance;
+import cz.inventi.qa.framework.core.objects.framework.Log;
 import cz.inventi.qa.framework.core.objects.parameters.AuthParameters;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 public class AOProps {
@@ -41,12 +42,7 @@ public class AOProps {
 
     private boolean checkIfAOIsParameter(String url) {
         Pattern pattern = Pattern.compile("\\{.*}", Pattern.CASE_INSENSITIVE);
-
-        if (pattern.matcher(url).find()) {
-            this.parameter = true;
-        } else {
-            this.parameter = false;
-        }
+        this.parameter = pattern.matcher(url).find();
         return parameter;
     }
 
@@ -100,7 +96,7 @@ public class AOProps {
     }
 
     public String getFullUrlWithParams() {
-        String fullUrlWithParams = "";
+        StringBuilder fullUrlWithParams = new StringBuilder();
         AOProps currentProps = this;
 
         while (currentProps != null) {
@@ -109,13 +105,13 @@ public class AOProps {
                 if ("".equals(parameterValue)) {
                     Log.warn("Endpoint '" + currentProps.endpointUrl + "' is parametrized, but no parameter value has been supplied");
                 }
-                fullUrlWithParams = parameterValue + "/" + fullUrlWithParams;
+                fullUrlWithParams.insert(0, parameterValue + "/");
             } else {
-                fullUrlWithParams = currentProps.endpointUrl + "/" + fullUrlWithParams;
+                fullUrlWithParams.insert(0, currentProps.endpointUrl + "/");
             }
             currentProps = currentProps.parentProps;
         }
-        return fullUrlWithParams;
+        return fullUrlWithParams.toString();
     }
 
     public Map<String, Object> getPathParams() {
@@ -124,10 +120,12 @@ public class AOProps {
 
         while (currentProps != null) {
             if (currentProps.isParameter()) {
-                String parameterValue = currentProps.getParameterValue().toLowerCase();
+                String parameterValue = currentProps.getParameterValue();
 
-                if ("".equals(parameterValue)) {
+                if ("".equals(parameterValue) || parameterValue == null) {
                     Log.warn("Endpoint '" + currentProps.endpointUrl + "' is parametrized, but no parameter value has been supplied");
+                } else {
+                    parameterValue = parameterValue.toLowerCase();
                 }
 
                 String strippedEndpointUrl = currentProps.endpointUrl

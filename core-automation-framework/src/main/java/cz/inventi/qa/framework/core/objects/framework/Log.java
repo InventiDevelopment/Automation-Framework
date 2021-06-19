@@ -5,9 +5,6 @@ import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import java.util.Arrays;
-import java.util.Enumeration;
-
 public class Log {
     public static final String LOGGER_NAME = "cz.inventi.qa.framework";
 
@@ -19,20 +16,6 @@ public class Log {
         getLogger().warn(text);
     }
 
-    public static void fail(String text, Throwable e)  {
-        getLogger().error(text);
-        fail(e);
-    }
-
-    public static void fail(Throwable e) {
-        getLogger().error("Test failed, please see stacktrace: ");
-        throw new RuntimeException(e);
-    }
-
-    public static void fail(String text) {
-        fail(text, new RuntimeException(text));
-    }
-
     public static void debug(String text) {
         getLogger().debug(text);
     }
@@ -42,15 +25,11 @@ public class Log {
     }
 
     public static void setGlobalLogLevel(RunMode runMode) {
-        Level logLevel = Level.ERROR;
-        switch (runMode) {
-            case DEBUG:
-                logLevel = Level.DEBUG;
-                break;
-            case NORMAL:
-                logLevel = Level.ERROR;
-                break;
-        }
+        Level logLevel = switch (runMode) {
+            case DEBUG -> Level.DEBUG;
+            case NORMAL -> Level.ERROR;
+            default -> Level.ERROR;
+        };
         Log.info("Setting global log level to '" + logLevel + "'");
         LogManager.getRootLogger().setLevel(logLevel);
     }

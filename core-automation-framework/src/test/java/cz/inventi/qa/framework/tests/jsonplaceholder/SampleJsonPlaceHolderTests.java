@@ -39,7 +39,7 @@ public class SampleJsonPlaceHolderTests extends TestBase {
 
     @Test(description = "Create New Post")
     public void createNewPostTest() {
-        jsonPlaceHolderSteps.createNewPost();
+        jsonPlaceHolderSteps.createNewPost(1);
     }
 }
 

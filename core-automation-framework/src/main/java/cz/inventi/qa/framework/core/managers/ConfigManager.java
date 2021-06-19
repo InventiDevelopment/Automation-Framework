@@ -10,6 +10,7 @@ import cz.inventi.qa.framework.core.data.config.AppsConfigData;
 import cz.inventi.qa.framework.core.data.config.WebDriverConfigData;
 import cz.inventi.qa.framework.core.data.enums.ConfigFile;
 import cz.inventi.qa.framework.core.objects.framework.AppInstance;
+import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
 import cz.inventi.qa.framework.core.objects.framework.Log;
 import cz.inventi.qa.framework.core.objects.parameters.TestSuiteParameters;
 
@@ -65,7 +66,7 @@ public class ConfigManager {
             Log.debug(configFile + " YAML config content:\n" + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(configFiles.get(configFile)));
         } catch (IOException e) {
 
-            Log.fail("Not possible to read from " + configFile + " YML file. Check that file is accessible at following location: '" + configPath + "'", e);
+            throw new FrameworkException("Not possible to read from " + configFile + " YML file. Check that file is accessible at following location: '" + configPath + "'", e);
         }
     }
 
@@ -74,7 +75,7 @@ public class ConfigManager {
         if (configFileSpecsAnnotation != null) {
             return configFileSpecsAnnotation.name();
         } else {
-            throw new RuntimeException("Given config file class '" + configClass + "' has no defined @ConfigFile annotation");
+            throw new FrameworkException("Given config file class '" + configClass + "' has no defined @ConfigFile annotation");
         }
     }
 
@@ -106,18 +107,13 @@ public class ConfigManager {
         Applications applications = getAppsConfigData().getApplications();
         String currentApplicationName = appInstance.getApplicationName();
 
-        switch (appInstance.getApplicationType()) {
-            case API:
-                return applications.getApi().get(currentApplicationName);
-            case DESKTOP:
-                return applications.getDesktop().get(currentApplicationName);
-            case MOBILE:
-                return applications.getMobile().get(currentApplicationName);
-            case WEB:
-                return applications.getWeb().get(currentApplicationName);
-            default:
-                return null;
-        }
+        return switch (appInstance.getApplicationType()) {
+            case API -> applications.getApi().get(currentApplicationName);
+            case DESKTOP -> applications.getDesktop().get(currentApplicationName);
+            case MOBILE -> applications.getMobile().get(currentApplicationName);
+            case WEB -> applications.getWeb().get(currentApplicationName);
+            default -> null;
+        };
     }
 
     public String getCurrentApplicationEnvironmentUrl() {

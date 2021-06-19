@@ -1,5 +1,7 @@
 package cz.inventi.qa.framework.core.objects.api;
 
+import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
+
 import java.util.Map;
 
 public abstract class SoapEndpoint<T> extends Endpoint<T> {
@@ -10,61 +12,61 @@ public abstract class SoapEndpoint<T> extends Endpoint<T> {
 
     @Override
     public Object callGet() {
-        throw new RuntimeException("GET method not supported for SOAP API calls");
+        throw new FrameworkException("GET method not supported for SOAP API calls");
     }
 
     @Override
     public Object callPost(String body) {
-        throw new RuntimeException("POST method not supported for SOAP API calls");
+        throw new FrameworkException("POST method not supported for SOAP API calls");
     }
 
     @Override
     public Object callHead() {
-        throw new RuntimeException("HEAD method not supported for SOAP API calls");
+        throw new FrameworkException("HEAD method not supported for SOAP API calls");
     }
 
     @Override
     public Object callDelete() {
-        throw new RuntimeException("DELETE method not supported for SOAP API calls");
+        throw new FrameworkException("DELETE method not supported for SOAP API calls");
     }
 
     @Override
     public Object callOptions() {
-        throw new RuntimeException("OPTIONS method not supported for SOAP API calls");
+        throw new FrameworkException("OPTIONS method not supported for SOAP API calls");
     }
 
     @Override
     public Object callTrace() {
-        throw new RuntimeException("TRACE method not supported for SOAP API calls");
+        throw new FrameworkException("TRACE method not supported for SOAP API calls");
     }
 
     @Override
     public Object callConnect() {
-        throw new RuntimeException("CONNECT method not supported for SOAP API calls");
+        throw new FrameworkException("CONNECT method not supported for SOAP API calls");
     }
 
     @Override
     public Object callGet(Map<String, Object> queryParams) {
-        throw new RuntimeException("GET method not supported for SOAP API calls");
+        throw new FrameworkException("GET method not supported for SOAP API calls");
     }
 
     @Override
     public Object callPut(String body) {
-        throw new RuntimeException("PUT method not supported for SOAP API calls");
+        throw new FrameworkException("PUT method not supported for SOAP API calls");
     }
 
     @Override
     public Object callPatch(String body) {
-        throw new RuntimeException("PATCH method not supported for SOAP API calls");
+        throw new FrameworkException("PATCH method not supported for SOAP API calls");
     }
 
     @Override
     public Object createRequest() {
-        throw new RuntimeException("Creating request not implemented for SOAP API calls");
+        throw new FrameworkException("Creating request not implemented for SOAP API calls");
     }
 
     @Override
     public Object createRequestWithAuth() {
-        throw new RuntimeException("Creating request with auth not implemented for SOAP API calls");
+        throw new FrameworkException("Creating request with auth not implemented for SOAP API calls");
     }
 }

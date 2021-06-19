@@ -2,6 +2,7 @@ package cz.inventi.qa.framework.core.factories.web.webobject;
 
 import cz.inventi.qa.framework.core.factories.web.PageBuilder;
 import cz.inventi.qa.framework.core.objects.framework.AppInstance;
+import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
 import cz.inventi.qa.framework.core.objects.web.WOProps;
 import cz.inventi.qa.framework.core.objects.web.WebObject;
 import cz.inventi.qa.framework.core.objects.framework.Log;
@@ -47,7 +48,7 @@ public class WebObjectFactory {
             childComponentField.setAccessible(true);
             childComponentField.set(parentWebObject, childWebComponent);
         } catch (IllegalAccessException e) {
-            Log.fail("Could not assign WebObject field object '" + childComponentField.getType().getName() + "'.", e);
+            throw new FrameworkException("Could not assign WebObject field object '" + childComponentField.getType().getName() + "'.", e);
         }
     }
 
@@ -88,7 +89,7 @@ public class WebObjectFactory {
             klassConstructor.setAccessible(true);
             return (T) klassConstructor.newInstance(constructorParams);
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException("Could not reflectively initialize " + klass + ". Please check that all web components extend WebComponent<T> and have generic <T extends WebObject> type defined.\n" + e.getCause());
+            throw new FrameworkException("Could not reflectively initialize " + klass + ". Please check that all web components extend WebComponent<T> and have generic <T extends WebObject> type defined.\n" + e.getCause());
         }
     }
 

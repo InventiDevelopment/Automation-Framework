@@ -1,11 +1,9 @@
 package cz.inventi.qa.framework.core.objects.api;
 
-import cz.inventi.qa.framework.core.data.enums.RunMode;
 import cz.inventi.qa.framework.core.data.enums.api.ApiAuthMethod;
-import cz.inventi.qa.framework.core.managers.FrameworkManager;
+import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import io.restassured.specification.ProxySpecification;
 import io.restassured.specification.RequestSpecification;
 
 import java.util.Map;
@@ -67,12 +65,12 @@ public abstract class RestEndpoint<T> extends Endpoint<T> {
 
     @Override
     public Response callTrace() {
-        throw new RuntimeException("TRACE method not supported for REST API calls");
+        throw new FrameworkException("TRACE method not supported for REST API calls");
     }
 
     @Override
     public Response callConnect() {
-        throw new RuntimeException("CONNECT method not supported for REST API calls");
+        throw new FrameworkException("CONNECT method not supported for REST API calls");
     }
 
     @Override
@@ -86,30 +84,28 @@ public abstract class RestEndpoint<T> extends Endpoint<T> {
 
     @Override
     public RequestSpecification createRequestWithAuth() {
-        switch (getAuthMethod()) {
-            case OAUTH2:
-                return prepareRequest()
-                        .auth()
-                        .oauth2(getAuthParameters().getAuthToken());
-            default:
-                return prepareRequest();
-        }
+        return switch (getAuthMethod()) {
+            case OAUTH2 -> prepareRequest()
+                    .header("Authorization", "Bearer " + getAuthParameters().getAuthToken());
+            case SAML, OAUTH1, OPENID, HTTPAUTH -> throw new FrameworkException("Auth method currently not supported.");
+            default -> prepareRequest();
+        };
     }
 
+    /**
+     * Prepare RA RequestSpecification with URL, path parameters
+     * and other options.
+     * @return Rest Assured RequestSpecification
+     */
     private RequestSpecification prepareRequest() {
+        /* Prepare request URL and fetch path parameters */
         RequestSpecification requestSpecification = RestAssured
                 .given()
                 .baseUri(getProps().getAppUrl())
                 .basePath(getProps().getBasePath())
                 .pathParams(getProps().getPathParams());
 
-        if (FrameworkManager.getRunMode().equals(RunMode.DEBUG)) {
-            requestSpecification = requestSpecification
-                    .log()
-                    .all()
-                    .request();
-        }
-
+        /* Set relaxed HTTPS validation according to API settings */
         if (getProps().getAppInstance().getConfigManager().getCurrentApiAppConfig().isRelaxedHttpsValidation()) {
             requestSpecification = requestSpecification.relaxedHTTPSValidation();
         }

@@ -1,5 +1,6 @@
 package cz.inventi.qa.framework.tests.framework.logger;
 
+import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
 import cz.inventi.qa.framework.core.objects.framework.Log;
 import cz.inventi.qa.framework.core.objects.test.TestBase;
 import io.qameta.allure.Epic;
@@ -28,17 +29,17 @@ public class LoggerTests extends TestBase {
 
     @Test(expectedExceptions = RuntimeException.class)
     public void testFailTextException() {
-        Log.fail("Test fail with text and exception", new RuntimeException("Test RuntimeException"));
+        throw new FrameworkException("Test fail with text and exception", new RuntimeException("Test RuntimeException"));
     }
 
     @Test(expectedExceptions = RuntimeException.class)
     public void testTestFailException() {
-       Log.fail(new RuntimeException("Test RuntimeException"));
+       throw new FrameworkException(new RuntimeException("Test RuntimeException"));
     }
 
     @Test(expectedExceptions = RuntimeException.class)
     public void testFailText() {
-       Log.fail("Test fail with text");
+       throw new FrameworkException("Test fail with text");
     }
 
     @Test

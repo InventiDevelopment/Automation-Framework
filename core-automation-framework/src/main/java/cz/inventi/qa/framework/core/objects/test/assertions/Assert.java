@@ -1,5 +1,7 @@
 package cz.inventi.qa.framework.core.objects.test.assertions;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
 import io.qameta.allure.Allure;
 import io.qameta.allure.model.Status;
 import io.qameta.allure.model.StepResult;
@@ -13,23 +15,23 @@ import java.util.Optional;
  */
 public class Assert {
 
-    public static void assertEquals(Object object1, Object object2, String name) {
+    public static void assertEquals(Object actual, Object expected, String name) {
         try {
-            org.testng.Assert.assertEquals(object1, object2);
+            org.testng.Assert.assertEquals(actual, expected);
             createStepWithStatus(name, Status.PASSED);
         } catch (AssertionError e) {
             createStepWithStatus(name, Status.FAILED);
-            throw new RuntimeException(e);
+            throw new FrameworkException(e);
         }
     }
 
-    public static void assertNotEquals(Object object1, Object object2, String name) {
+    public static void assertNotEquals(Object actual, Object expected, String name) {
         try {
-            org.testng.Assert.assertNotEquals(object1, object2);
+            org.testng.Assert.assertNotEquals(actual, expected);
             createStepWithStatus(name, Status.PASSED);
         } catch (AssertionError e) {
             createStepWithStatus(name, Status.FAILED);
-            throw new RuntimeException(e);
+            throw new FrameworkException(e);
         }
     }
 
@@ -39,7 +41,7 @@ public class Assert {
             createStepWithStatus(name,  Status.PASSED);
         } catch (AssertionError e) {
             createStepWithStatus(name, Status.FAILED);
-            throw new RuntimeException(e);
+            throw new FrameworkException(e);
         }
     }
 
@@ -49,7 +51,7 @@ public class Assert {
             createStepWithStatus(name, Status.PASSED);
         } catch (AssertionError e) {
             createStepWithStatus(name, Status.FAILED);
-            throw new RuntimeException(e);
+            throw new FrameworkException(e);
         }
     }
 
@@ -59,7 +61,7 @@ public class Assert {
             createStepWithStatus(name, Status.PASSED);
         } catch (AssertionError e) {
             createStepWithStatus(name, Status.FAILED);
-            throw new RuntimeException(e);
+            throw new FrameworkException(e);
         }
     }
 
@@ -69,7 +71,24 @@ public class Assert {
             createStepWithStatus(name, Status.PASSED);
         } catch (AssertionError e) {
             createStepWithStatus(name, Status.FAILED);
-            throw new RuntimeException(e);
+            throw new FrameworkException(e);
+        }
+    }
+
+    /**
+     * Compares equality of objects in serialized JSON format.
+     * @param actual Dto of the first object
+     * @param expected Dto of the second object
+     * @param <T> Type of the Dto
+     */
+    public static <T> void assertJsonEquals(T actual, T expected) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            String serializedObject1 = mapper.writeValueAsString(actual);
+            String serializedObject2 = mapper.writeValueAsString(expected);
+            assertEquals(serializedObject1, serializedObject2, "Compare two JSON objects of '" + actual.getClass() + "'");
+        } catch (Exception e) {
+            throw new FrameworkException("Could not serialize objects to JSON for comparison", e);
         }
     }
 
@@ -83,5 +102,3 @@ public class Assert {
         return stepResult;
     }
 }
-
-

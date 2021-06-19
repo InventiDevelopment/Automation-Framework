@@ -41,7 +41,7 @@ Other artifacts supplied along this project are meant for framework's usage demo
 All of these parts need to be installed and correctly set in the system/user environment variables list:
 - **[JDK SE](https://www.oracle.com/java/technologies/javase-downloads.html)** 15+
 - **[Maven](https://maven.apache.org/download.cgi)** 3.5+
-- **[Allure Framework](https://docs.qameta.io/allure)** 2.14.0+
+- **[Allure Framework](https://docs.qameta.io/allure)** 2.13.7+
 
 ### Installation
 Download resources and change the Maven project name appropriately to your project (not mandatory). Be sure to check all the corresponding POM files to correctly set up the project parent/child structure.
@@ -62,9 +62,6 @@ Before you begin a development to test your own application, it is necessary to 
 - WebDriver configuration YAML file
 
 All this configuration files are loaded from module's **main** `resources/config` folder. By default, `appsConfig.yml` and `webDriverConfig.yml` from `core-automation-framework` module are used and you should provide them into every of your Maven module. You can also provide more of your own configuration files by putting them in the same resources folder and supplying their name in `appconfig` and `webdriverconfig` parameters in your TestNG suite (or Maven command).
-
-### Proxy Configuration
-To use proxy for all of your internet requests, parameters `proxyServer`, `proxyPort`, and `proxyScheme` have to be supplied as Maven command parameters. To use proxy with authorization, add `proxyUser` and `proxyPass` parameters similarly. Currently supported `proxyScheme` values are `http` and `https`.
 
 ### Multi-Language Setup
 If you want to test in multiple languages, you should provide a `language` parameter to the Maven when running tests. Along with parameter there is a need to set up YAML dictionaries for given languages to the **main** `resources/lang` folder (samples can be seen in `core-automation-framework`'s `resources/lang` folder). Dictionary file names have to be corresponding to given language by the ISO 639-1.
@@ -106,3 +103,6 @@ All tests' results are being recorded for Allure report. To display results prop
 ```
 allure serve
 ```
+
+### Parallelization
+By default, framework allows parallelization on the level of TestNG's `classes` level and above in the case of using the `TestBase.class` and `StepsBase.class` pattern.

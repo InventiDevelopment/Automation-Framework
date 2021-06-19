@@ -1,8 +1,8 @@
 package cz.inventi.qa.framework.core.factories.web.webelement;
 
 import cz.inventi.qa.framework.core.annotations.web.FindElement;
-import cz.inventi.qa.framework.core.managers.WebDriverManager;
 import cz.inventi.qa.framework.core.objects.framework.AppInstance;
+import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
 import org.openqa.selenium.support.pagefactory.ElementLocator;
 import org.openqa.selenium.support.pagefactory.ElementLocatorFactory;
 
@@ -20,7 +20,7 @@ public class WebElementLocatorFactory implements ElementLocatorFactory {
         if (field.isAnnotationPresent(FindElement.class)) {
             return new WebElementLocator(field, appInstance);
         } else {
-            throw new RuntimeException("Cannot process WebElement object with no @FindElement annotation. Please check that all the WebElement objects have correctly defined @FindElement annotation.");
+            throw new FrameworkException("Cannot process WebElement object with no @FindElement annotation. Please check that all the WebElement objects have correctly defined @FindElement annotation.");
         }
     }
 }
