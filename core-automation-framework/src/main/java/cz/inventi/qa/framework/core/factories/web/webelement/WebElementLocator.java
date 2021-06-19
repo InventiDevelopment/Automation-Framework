@@ -1,10 +1,10 @@
 package cz.inventi.qa.framework.core.factories.web.webelement;
 
 import cz.inventi.qa.framework.core.annotations.web.FindElement;
-import cz.inventi.qa.framework.core.factories.web.PageBuilder;
 import cz.inventi.qa.framework.core.data.web.GeneralSettings;
-import cz.inventi.qa.framework.core.managers.ConfigManager;
+import cz.inventi.qa.framework.core.factories.web.PageBuilder;
 import cz.inventi.qa.framework.core.objects.framework.AppInstance;
+import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.pagefactory.ElementLocator;
 import org.openqa.selenium.support.ui.FluentWait;
@@ -54,7 +54,7 @@ public class WebElementLocator implements ElementLocator {
             }
             return driver.findElement(By.xpath(xpath));
         } catch (TimeoutException e) {
-            throw new RuntimeException("Could not find WebElement with xpath: '" + xpath + "'");
+            throw new FrameworkException("Could not find WebElement with xpath: '" + xpath + "'");
         }
     }
 
@@ -66,7 +66,7 @@ public class WebElementLocator implements ElementLocator {
             }
             return driver.findElements(By.xpath(xpath));
         } catch (TimeoutException e) {
-            throw new RuntimeException("Could not find WebElements group with xpath: '" + xpath + "'");
+            throw new FrameworkException("Could not find WebElements group with xpath: '" + xpath + "'");
         }
     }
 

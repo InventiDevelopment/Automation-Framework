@@ -9,20 +9,24 @@ public class AuthParameters {
     private String authToken;
     private String apiKey;
 
-    public void setUsername(String username) {
+    public AuthParameters setUsername(String username) {
         this.username = username;
+        return this;
     }
 
-    public void setPassword(String password) {
+    public AuthParameters setPassword(String password) {
         this.password = password;
+        return this;
     }
 
-    public void setAuthToken(String authToken) {
+    public AuthParameters setAuthToken(String authToken) {
         this.authToken = authToken;
+        return this;
     }
 
-    public void setApiKey(String apiKey) {
+    public AuthParameters setApiKey(String apiKey) {
         this.apiKey = apiKey;
+        return this;
     }
 
     public String getUsername() {

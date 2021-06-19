@@ -1,7 +1,10 @@
 package cz.inventi.qa.framework.core.objects.framework;
 
-import cz.inventi.qa.framework.core.data.app.ApiApplication;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.inventi.qa.framework.core.data.enums.ApplicationType;
+import cz.inventi.qa.framework.core.data.enums.RunMode;
 import cz.inventi.qa.framework.core.data.enums.api.ApiMandatoryParameters;
 import cz.inventi.qa.framework.core.data.enums.web.WebMandatoryParameters;
 import cz.inventi.qa.framework.core.factories.api.ApiObjectFactory;
@@ -12,6 +15,9 @@ import cz.inventi.qa.framework.core.objects.parameters.TestSuiteParameters;
 import cz.inventi.qa.framework.core.objects.web.WebPage;
 import cz.inventi.qa.framework.core.utils.ApiUtils;
 import cz.inventi.qa.framework.core.utils.WebUtils;
+import io.restassured.RestAssured;
+import io.restassured.config.ObjectMapperConfig;
+import io.restassured.config.RestAssuredConfig;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,17 +45,11 @@ public class AppInstance {
     }
 
     private void checkMandatoryParametersAreSet() {
-        Class<? extends Enum<?>> mandatoryParamsEnum;
-        switch (applicationType) {
-            case API:
-                mandatoryParamsEnum = ApiMandatoryParameters.class;
-                break;
-            case WEB:
-                mandatoryParamsEnum = WebMandatoryParameters.class;
-                break;
-            default:
-                throw new RuntimeException("Could not find mandatory parameters for given application type");
-        }
+        Class<? extends Enum<?>> mandatoryParamsEnum = switch (applicationType) {
+            case API -> ApiMandatoryParameters.class;
+            case WEB -> WebMandatoryParameters.class;
+            default -> throw new FrameworkException("Could not find mandatory parameters for given application type");
+        };
 
         List<String> mandatoryParameters = Stream
                 .of(mandatoryParamsEnum.getEnumConstants())
@@ -58,7 +58,7 @@ public class AppInstance {
 
         for (String mandatoryParameter : mandatoryParameters) {
             if (TestSuiteParameters.getParameters() == null || TestSuiteParameters.getParameter(mandatoryParameter.toLowerCase()) == null) {
-                throw new RuntimeException("Parameter '" + mandatoryParameter.toLowerCase() + "' has to be supplied " +
+                throw new FrameworkException("Parameter '" + mandatoryParameter.toLowerCase() + "' has to be supplied " +
                         "either in the TestNG suite or as a Maven parameter to start this type of application");
             }
         }
@@ -70,7 +70,27 @@ public class AppInstance {
     }
 
     public <T extends Api> T initApi(Class<T> api) {
+        setRestAssuredConfiguration();
         return ApiObjectFactory.initApi(api, this);
+    }
+
+    private void setRestAssuredConfiguration() {
+        /* Set Jackson mapping options for Rest Assured */
+        RestAssured.config = RestAssuredConfig.config().objectMapperConfig(
+                new ObjectMapperConfig().jackson2ObjectMapperFactory(
+                    (cls, charset) ->
+                        new ObjectMapper().findAndRegisterModules()
+                            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                            .configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS, true)
+                ));
+
+        /* Set logging for debug mode */
+        if (FrameworkManager.getRunMode().equals(RunMode.DEBUG)) {
+            RestAssured.requestSpecification = RestAssured.requestSpecification
+                    .log()
+                    .all()
+                    .request();
+        }
     }
 
     public WebDriverManager getWebDriverManager() {

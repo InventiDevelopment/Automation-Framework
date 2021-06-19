@@ -2,6 +2,7 @@ package cz.inventi.qa.framework.core.managers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
 import cz.inventi.qa.framework.core.objects.framework.Log;
 import cz.inventi.qa.framework.core.utils.WebUtils;
 import cz.inventi.qa.framework.core.data.config.LanguageData;
@@ -41,7 +42,7 @@ public class LanguageManager {
                 dictionary = languageData.getDictionary();
                 Log.debug("YAML language dictionary successfully loaded");
             } catch (IOException e) {
-                Log.fail("Not possible to read from language YML files. Check that files are accessible on following locations:\n '" + languageFile + "'", e);
+                throw new FrameworkException("Not possible to read from language YML files. Check that files are accessible on following locations:\n '" + languageFile + "'", e);
             }
         } else {
             Log.debug("No language parameter acquired, skipping translation file lookup");
@@ -77,7 +78,7 @@ public class LanguageManager {
         try {
             return dictionary.get(index.toString());
         } catch (NullPointerException e) {
-            throw new RuntimeException("Given '" + index +  "' key has not been found in the dictionary file");
+            throw new FrameworkException("Given '" + index +  "' key has not been found in the dictionary file");
         }
     }
 
@@ -88,7 +89,7 @@ public class LanguageManager {
             try {
                 return Language.valueOf(language.toUpperCase());
             } catch (Exception e) {
-                throw new RuntimeException("Language '" + language + "' could not be found, please enter correct value according to ISO 639-1");
+                throw new FrameworkException("Language '" + language + "' could not be found, please enter correct value according to ISO 639-1");
             }
         }
     }

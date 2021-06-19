@@ -1,4 +1,4 @@
-package cz.inventi.qa.framework.core.objects.variables;
+package cz.inventi.qa.framework.core.objects.variables.api;
 
 import cz.inventi.qa.framework.core.data.enums.api.ApiMandatoryParameters;
 import cz.inventi.qa.framework.core.objects.parameters.AuthParameters;

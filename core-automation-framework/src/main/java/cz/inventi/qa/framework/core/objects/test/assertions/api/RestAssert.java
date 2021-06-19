@@ -1,5 +1,6 @@
 package cz.inventi.qa.framework.core.objects.test.assertions.api;
 
+import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
 import cz.inventi.qa.framework.core.objects.test.assertions.Assert;
 import io.restassured.response.Response;
 
@@ -11,15 +12,25 @@ import java.util.regex.Pattern;
 public class RestAssert {
 
     public static Response assertStatusPassed(Response response) {
-        Assert.assertTrue(Pattern.compile("2\\d\\d")
-                .matcher(Integer.toString(response.getStatusCode())).matches(), "Status code is 2XX");
-        return response;
+        return assertStatusRegex(response,"2\\d\\d");
     }
 
     public static Response assertStatusFailed(Response response) {
-        Assert.assertTrue(Pattern.compile("(4\\d\\d|5\\d\\d)")
-                .matcher(Integer.toString(response.getStatusCode())).matches(), "Status code is 4XX or 5XX");
-        return response;
+        return assertStatusRegex(response,"(4\\d\\d|5\\d\\d)");
+    }
+
+    public static Response assertStatusRegex(Response response, String statusPattern) {
+        try {
+            Assert.assertTrue(Pattern.compile(statusPattern)
+                    .matcher(Integer.toString(response.getStatusCode())).matches(),
+                    "Status code conforms regex '" + statusPattern + "'"
+            );
+            return response;
+        } catch (FrameworkException e) {
+            throw new FrameworkException("Unexpected status returned in response!\n" + response.statusLine() + "\n\n"
+                    + "Headers:\n" + response.headers().toString() + "\n\n"
+                    + "Body:\n" + response.asPrettyString(), e);
+        }
     }
 
     public static Response assertStatusIs(int status, Response response) {

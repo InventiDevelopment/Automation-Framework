@@ -1,10 +1,11 @@
 package cz.inventi.qa.framework.core.factories.web;
 
-import cz.inventi.qa.framework.core.objects.web.WOProps;
-import cz.inventi.qa.framework.core.objects.web.WebObject;
 import cz.inventi.qa.framework.core.annotations.web.FindElement;
 import cz.inventi.qa.framework.core.factories.web.webelement.WebElementFactory;
 import cz.inventi.qa.framework.core.factories.web.webobject.WebObjectFactory;
+import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
+import cz.inventi.qa.framework.core.objects.web.WOProps;
+import cz.inventi.qa.framework.core.objects.web.WebObject;
 
 public class PageBuilder {
 
@@ -17,7 +18,7 @@ public class PageBuilder {
         if (index > 0) {
             return "(" + xpath + ")[" + index + "]";
         } else if(index < 0) {
-            throw new RuntimeException("index in method is not correct. Has to be higher than 0");
+            throw new FrameworkException("Index in method is not correct - should be higher than 0");
         }
         return xpath;
     }

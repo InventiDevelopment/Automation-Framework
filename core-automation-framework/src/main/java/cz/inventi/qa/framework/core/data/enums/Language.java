@@ -1,5 +1,7 @@
 package cz.inventi.qa.framework.core.data.enums;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 /**
  * Language identification codes mostly in ISO 639-1.
  */
@@ -233,4 +235,9 @@ public enum Language {
     ZU,
     ZU_ZA,
     NONE;
+
+    @JsonValue
+    public String forJackson() {
+        return name().toLowerCase();
+    }
 }

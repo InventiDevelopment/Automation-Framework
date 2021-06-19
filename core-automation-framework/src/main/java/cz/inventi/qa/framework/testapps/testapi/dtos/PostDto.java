@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
 @Getter
-public class PostResponseDto {
+public class PostDto {
 
     @JsonProperty
     long userId;

@@ -1,4 +1,4 @@
-package cz.inventi.qa.framework.core.objects.variables;
+package cz.inventi.qa.framework.core.objects.variables.web;
 
 import cz.inventi.qa.framework.core.data.enums.Language;
 import cz.inventi.qa.framework.core.data.enums.web.Browser;
