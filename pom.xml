@@ -26,24 +26,6 @@
         <aspectj.version>1.9.6</aspectj.version>
     </properties>
 
-    <profiles>
-                 <profile>
-                     <id>QA</id>
-                     <activation>
-                         <activeByDefault>true</activeByDefault>
-                     </activation>
-                     <properties>
-                         <demo.automation.environment>QA</demo.automation.environment>
-                     </properties>
-                 </profile>
-                 <profile>
-                     <id>DEV</id>
-                     <properties>
-                         <demo.automation.environment>DEV</demo.automation.environment>
-                     </properties>
-                 </profile>
-             </profiles>
-
     <build>
         <plugins>
             <plugin>
