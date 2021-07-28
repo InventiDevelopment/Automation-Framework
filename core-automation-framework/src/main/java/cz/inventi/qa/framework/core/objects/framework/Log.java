@@ -27,7 +27,7 @@ public class Log {
     public static void setGlobalLogLevel(RunMode runMode) {
         Level logLevel = switch (runMode) {
             case DEBUG -> Level.DEBUG;
-            case NORMAL -> Level.ERROR;
+            case NORMAL -> Level.INFO;
             default -> Level.ERROR;
         };
         Log.info("Setting global log level to '" + logLevel + "'");

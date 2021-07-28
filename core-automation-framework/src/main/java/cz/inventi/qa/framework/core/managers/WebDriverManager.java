@@ -5,6 +5,7 @@ import cz.inventi.qa.framework.core.data.enums.web.Browser;
 import cz.inventi.qa.framework.core.data.web.Timeouts;
 import cz.inventi.qa.framework.core.objects.framework.AppInstance;
 import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
+import cz.inventi.qa.framework.core.objects.framework.Log;
 import cz.inventi.qa.framework.core.webdrivers.ChromeWebWebDriver;
 import cz.inventi.qa.framework.core.webdrivers.WebDriverWrapper;
 import org.openqa.selenium.WebDriver;
@@ -35,20 +36,29 @@ public class WebDriverManager {
     /**
      * Sets global proxy variables, if they are received in
      * Maven command. WebDriverManager collects them automatically.
+     * ProxyScheme variable sets HTTP protocol type and projects
+     * into created variables' names.
      */
     private void setWebDriverProxyVariables() {
-        String proxyServer = FrameworkManager.getProxySettings().getProxyServer();
-        String proxyUser = FrameworkManager.getProxySettings().getProxyUser();
-        String proxyPass = FrameworkManager.getProxySettings().getProxyPass();
-        ProxyScheme proxyScheme = FrameworkManager.getProxySettings().getProxyScheme();
+        if (FrameworkManager.getProxySettings() != null) {
+            Log.info("Selenium WebDriver's proxy variables set");
+            String proxyServer = FrameworkManager.getProxySettings().getProxyServer();
+            String proxyUser = FrameworkManager.getProxySettings().getProxyUser();
+            String proxyPass = FrameworkManager.getProxySettings().getProxyPass();
+            ProxyScheme proxyScheme = FrameworkManager.getProxySettings().getProxyScheme();
 
-        System.setProperty(proxyScheme + "_PROXY", proxyServer);
-        if (proxyUser != null && proxyPass != null) {
-            System.setProperty(proxyScheme + "_PROXY", proxyUser);
-            System.setProperty(proxyScheme + "_PROXY", proxyPass);
+            System.setProperty(proxyScheme + "_PROXY", proxyServer);
+            if (proxyUser != null && proxyPass != null) {
+                System.setProperty(proxyScheme + "_PROXY", proxyUser);
+                System.setProperty(proxyScheme + "_PROXY", proxyPass);
+            }
         }
     }
 
+    /**
+     * Initializes WebDriver redirected to given URL.
+     * @param appUrl URL
+     */
     private void initializeWebDriver(String appUrl) {
         try {
             getDriver().get(formatLocalResourcesURL(appUrl));
@@ -57,6 +67,12 @@ public class WebDriverManager {
         }
     }
 
+    /**
+     * Mainly for testing purposes of the framework. Formats URL
+     * to access local directory in the project.
+     * @param appUrl URL with "test://" or "main://" keywords
+     * @return Path to the local directory
+     */
     private String formatLocalResourcesURL(String appUrl) {
         if (appUrl.contains("test://") || appUrl.contains("main://")) {
             String[] resourcePackage = appUrl.split("://");
@@ -65,18 +81,35 @@ public class WebDriverManager {
         return appUrl;
     }
 
+    /**
+     * Retrieve current wrapper's WebDriver instance.
+     * @return WebDriver
+     */
     public WebDriver getDriver() {
         return webDriverWrapper.getDriver();
     }
 
+    /**
+     * Retrieve current wrapper's WebDriverWait instance.
+     * @return WebDriverWait
+     */
     public WebDriverWait getWait() {
         return webDriverWrapper.getWait();
     }
 
-    public void cleanDriver() {
+    /**
+     * Quits web driver.
+     */
+    public void quitDriver() {
         webDriverWrapper.getDriver().quit();
     }
 
+    /**
+     * Returns WebDriver timeouts either according to the
+     * values defined in the WebDriver config file, or,
+     * if found none, default hardcoded values.
+     * @return Timeouts object with defined values
+     */
     public Timeouts getTimeouts() {
         Timeouts configTimeouts = appInstance.getConfigManager().getWebDriverConfigData().getGeneralSettings().getWait().getTimeouts();
         boolean waitAutomatically = appInstance.getConfigManager().getWebDriverConfigData().getGeneralSettings().getWait().waitsAutomatically();

@@ -82,16 +82,33 @@ public class Assert {
      * @param <T> Type of the Dto
      */
     public static <T> void assertJsonEquals(T actual, T expected) {
+        assertJsonEquals(actual, expected, "Compare two JSON objects of '" + actual.getClass() + "'");
+    }
+
+    /**
+     * Compares equality of objects in serialized JSON format.
+     * @param actual Dto of the first object
+     * @param expected Dto of the second object
+     * @param <T> Type of the Dto
+     */
+    public static <T> void assertJsonEquals(T actual, T expected, String name) {
         ObjectMapper mapper = new ObjectMapper();
         try {
             String serializedObject1 = mapper.writeValueAsString(actual);
             String serializedObject2 = mapper.writeValueAsString(expected);
-            assertEquals(serializedObject1, serializedObject2, "Compare two JSON objects of '" + actual.getClass() + "'");
+            assertEquals(serializedObject1, serializedObject2, name);
         } catch (Exception e) {
             throw new FrameworkException("Could not serialize objects to JSON for comparison", e);
         }
     }
 
+    /**
+     * Creates step in Allure report for assertion.
+     * @param stepName Name of the step
+     * @param status Status of the step
+     * @param comparedItems Items to be compared
+     * @return Allure StepResult
+     */
     private static StepResult createStepWithStatus(String stepName, Status status, Object... comparedItems) {
         Optional<String> parentStep = Allure.getLifecycle().getCurrentTestCaseOrStep();
         StepResult stepResult = new StepResult();

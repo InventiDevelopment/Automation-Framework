@@ -26,7 +26,7 @@ public class Api extends ApiObject {
     }
 
     public void setAuthToken(String authToken) {
-        Log.info("Setting API level access token for application '"
+        Log.debug("Setting API level access token for application '"
                 + getAppInstance().getApplicationName() + "'"
                 + " executed by '" + Utils.getCallerTestClassName() + "'"
         );

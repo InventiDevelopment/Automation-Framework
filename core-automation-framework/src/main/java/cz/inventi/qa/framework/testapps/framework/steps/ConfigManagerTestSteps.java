@@ -40,7 +40,7 @@ public class ConfigManagerTestSteps extends StepsBase {
         return this;
     }
 
-    @Step("Check Application Configuration Contains Applications '{applicationName}'")
+    @Step("Check Application Configuration Contains Applications ({applicationName})")
     public ConfigManagerTestSteps checkApplicationConfigurationContainsWebApp(String applicationName) {
             Assert.assertTrue(appsConfigData.getApplications().getWeb().containsKey(applicationName),
                     "Application '" + applicationName + "' found in app config");

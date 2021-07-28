@@ -51,7 +51,7 @@ public class ConfigManager {
     public void initConfig(ConfigFile configFile) {
         Class<?> configClass = configFile.getConfigClass();
         String configFileName = getConfigDefaultFileName(configClass);
-        String customConfigPath = TestSuiteParameters.getParameter(configFile.name().toLowerCase());
+        String customConfigPath = TestSuiteParameters.getParameter(configFile.getConfigParamName());
 
         if (customConfigPath != null) {
             configFileName = customConfigPath;
@@ -63,10 +63,14 @@ public class ConfigManager {
             Log.debug("Loading " + configFile + " YAML configuration file: '" + configPath + "'");
             configFiles.put(configFile, mapper.readValue(new File(Objects.requireNonNull(configPath)), configClass));
             Log.debug(configFile + " YAML configuration files successfully loaded");
-            Log.debug(configFile + " YAML config content:\n" + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(configFiles.get(configFile)));
+            Log.debug(configFile + " YAML config content:\n"
+                    + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(configFiles.get(configFile)));
         } catch (IOException e) {
-
-            throw new FrameworkException("Not possible to read from " + configFile + " YML file. Check that file is accessible at following location: '" + configPath + "'", e);
+            throw new FrameworkException(
+                    "Not possible to read from " + configFile + " YML file. Check that file is" +
+                    " accessible at following location: '" + configPath + "'",
+                    e
+            );
         }
     }
 
@@ -75,16 +79,18 @@ public class ConfigManager {
         if (configFileSpecsAnnotation != null) {
             return configFileSpecsAnnotation.name();
         } else {
-            throw new FrameworkException("Given config file class '" + configClass + "' has no defined @ConfigFile annotation");
+            throw new FrameworkException(
+                    "Given config file class '" + configClass + "' has no defined @ConfigFile annotation"
+            );
         }
     }
 
     public WebDriverConfigData getWebDriverConfigData() {
-        return (WebDriverConfigData) configFiles.get(ConfigFile.WEBDRIVERCONFIG);
+        return (WebDriverConfigData) configFiles.get(ConfigFile.WEB_DRIVER_CONFIG);
     }
 
     public AppsConfigData getAppsConfigData() {
-        return (AppsConfigData) configFiles.get(ConfigFile.APPSCONFIG);
+        return (AppsConfigData) configFiles.get(ConfigFile.APPS_CONFIG);
     }
 
     public WebApplication getCurrentWebAppConfig() {
@@ -112,7 +118,6 @@ public class ConfigManager {
             case DESKTOP -> applications.getDesktop().get(currentApplicationName);
             case MOBILE -> applications.getMobile().get(currentApplicationName);
             case WEB -> applications.getWeb().get(currentApplicationName);
-            default -> null;
         };
     }
 
@@ -125,8 +130,11 @@ public class ConfigManager {
                 .filter(map -> map.getKey().toLowerCase().equals(environment.toLowerCase()))
                 .map(Map.Entry::getValue)
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("URL of application: '" +
+                .orElseThrow(() -> new RuntimeException(
+                        "URL of application: '" +
                         appInstance.getApplicationName() + "' with env: '" + environment + "'" +
-                        " could not be found in YAML. Please check config and definition of init class."));
+                        " could not be found in YAML. Please check config and definition of init class."
+                    )
+                );
     }
 }

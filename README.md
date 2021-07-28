@@ -33,7 +33,7 @@ This project is a Maven configuration using multiple third-party libraries for c
 - **[WebDriverManager](https://github.com/bonigarcia/webdrivermanager)** (Apache License 2.0)
 
 ### Framework License
-The **Inventi Automation Framework** solution (`core-automation-framework` artifact) is distributed under **Apache License 2.0**. See attached **[NOTICE](NOTICE)** and **[LICENSE](LICENSE)** files located at the `core-automation-framework` folder for more information.
+The **Inventi Automation Framework** solution (`core-automation-framework` module artifact) is distributed under **Apache License 2.0**. See attached **[NOTICE](NOTICE)** and **[LICENSE](LICENSE)** files located at the `core-automation-framework` folder for more information.
 
 Other artifacts supplied along this project are meant for framework's usage demonstration purposes.
 
@@ -69,6 +69,9 @@ If you want to test in multiple languages, you should provide a `language` param
 ### Allure Reports Configuration
 You can create your own Allure report templates and put them in the `src/main/resources/tpl` folder. More information can be found in Allure's documentation (link above).
 
+### Test Resources
+There is a possibility to use `test-resources` folder in the project root folder to save data needed for your tests in one place. You can adjust path to this folder in the project's global POM file at `test.resources.directory` property. Calling `Utils.getTestResourcesFolder()` will give you Path to the folder.
+
 ## Running Tests
 
 ### Basic Test Run
@@ -97,12 +100,19 @@ mvn --projects core-automation-framework clean test -DsuiteXmlFile=framework/uni
 ### Framework Run Mode
 You can set up framework run modes (**NORMAL**, **DEBUG**) adding `-DrunMode` Maven parameter to command with selected mode value. Run mode affects mainly log information that is being displayed in the console output. By default, **NORMAL** run mode is applied.
 
-### Generate Allure Test Report
+### Allure Test Results
+Test results files are saved by default to the directory `test-results/allure-results` in the project's root folder. You can change this folder in the global **[POM configuration file](pom.xml)** of the project.
+
+#### Generate Allure Test Report
 All tests' results are being recorded for Allure report. To display results properly on a local web server, type command:
 
 ```
 allure serve
 ```
+
+#### Masking sensitive data in reports
+There is a possibility to mask sensitive data in Allure's results files and Allure reports - by default all TestNG input parameters' values that have name containing _"password"_ or _"secret"_ are masked with `[**MASKED**]`. Their values will be hidden only if other than `DEBUG` framework run mode is used. This solution should be reworked in the future to use `@Secret` annotation and AspectJ or Allure native solution.
+
 
 ### Parallelization
 By default, framework allows parallelization on the level of TestNG's `classes` level and above in the case of using the `TestBase.class` and `StepsBase.class` pattern.

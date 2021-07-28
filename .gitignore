@@ -9,3 +9,6 @@
 *.iml
 /*/target/
 *.log
+/test-results
+/test-resources
+*/.idea
