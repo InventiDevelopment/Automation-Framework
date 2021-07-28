@@ -1,9 +1,9 @@
 package cz.inventi.qa.framework.core.managers;
 
+import cz.inventi.qa.framework.core.allure.AllureRestAssured;
 import cz.inventi.qa.framework.core.factories.web.webelement.WebElementLocator;
 import cz.inventi.qa.framework.core.objects.framework.AppInstance;
 import io.qameta.allure.Allure;
-import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import org.openqa.selenium.OutputType;
@@ -22,12 +22,30 @@ public class ReportManager {
 
     public static void init() {
         reportManager = new ReportManager();
-        RestAssured.requestSpecification = new RequestSpecBuilder().build().filter(new AllureRestAssured());
+        RestAssured.requestSpecification = new RequestSpecBuilder()
+                .build()
+                .filter(new AllureRestAssured());
     }
 
-    public static void addWebAppScreenshot(String description, WebElementLocator webElementLocator, AppInstance appInstance) {
-        boolean shouldTakeScreenshots = appInstance.getConfigManager().getWebDriverConfigData().getGeneralSettings().takeScreenshots();
+    /**
+     * Adds web page screenshot attachment to the Allure report.
+     * @param description Description for the screenshot
+     * @param webElementLocator Locator for web page element
+     * @param appInstance AppInstance
+     */
+    public static void addWebAppScreenshot(
+            String description,
+            WebElementLocator webElementLocator,
+            AppInstance appInstance
+    ) {
+        boolean shouldTakeScreenshots = appInstance
+                .getConfigManager()
+                .getWebDriverConfigData()
+                .getGeneralSettings()
+                .takeScreenshots();
+
         WebDriver driver = appInstance.getWebDriverManager().getDriver();
+
         if (shouldTakeScreenshots) {
             Allure.addAttachment(description + " '" + webElementLocator.getXpath() + "'",
                     new ByteArrayInputStream(((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES)));

@@ -35,10 +35,20 @@ public abstract class RestEndpoint<T> extends Endpoint<T> {
     }
 
     @Override
+    public Response callPost() {
+        return createRequest().post();
+    }
+
+    @Override
     public Response callPut(String body) {
         return createRequest()
                 .body(body)
                 .put();
+    }
+
+    @Override
+    public Response callPut() {
+        return createRequest().put();
     }
 
     @Override
@@ -51,6 +61,11 @@ public abstract class RestEndpoint<T> extends Endpoint<T> {
         return createRequest()
                 .body(body)
                 .patch();
+    }
+
+    @Override
+    public Response callPatch() {
+        return createRequest().patch();
     }
 
     @Override

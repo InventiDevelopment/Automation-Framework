@@ -10,6 +10,7 @@ import cz.inventi.qa.framework.core.objects.framework.AppInstance;
 import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
 import cz.inventi.qa.framework.core.objects.framework.Log;
 import cz.inventi.qa.framework.core.objects.web.WebPage;
+import cz.inventi.qa.framework.core.utils.Utils;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -41,7 +42,8 @@ public class FrameworkManager {
                     System.getProperty("proxyPass"),
                     proxyServer,
                     Integer.parseInt(proxyPort),
-                    ProxyScheme.fromString(System.getProperty("proxyScheme")));
+                    Utils.getEnum(ProxyScheme.class, System.getProperty("proxyScheme"))
+            );
         }
     }
 
@@ -63,7 +65,7 @@ public class FrameworkManager {
     }
 
     public static void quitTestAppInstances(String testClassName) {
-        Log.info("Quitting AppInstances for test of '" + testClassName + "'");
+        Log.info("Quitting all AppInstances created by test '" + testClassName + "'");
         Map<String, Map<String, AppInstance>> appInstances = getAppInstances();
         appInstances.get(testClassName).forEach((appName, appInstance) -> appInstance.quit());
         appInstances.remove(testClassName);
@@ -95,8 +97,10 @@ public class FrameworkManager {
         if (appInstances.get(testClassName) == null) appInstances.put(testClassName, Map.of());
         AppInstance appInstance = appInstances.get(testClassName).get(appName);
         if (appInstance == null) {
+            Log.info("Creating AppInstance (" + appClass.getName() + ") for test '" + testClassName + "'");
             appInstance = new AppInstance(getApplicationType(appClass), appName);
             appInstances.put(testClassName, Map.of(appName, appInstance));
+            Log.info("Successfully created new AppInstance for test (" + appClass.getName() + ")");
         }
         return appInstance;
     }

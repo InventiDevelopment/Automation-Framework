@@ -26,6 +26,24 @@
         <aspectj.version>1.9.6</aspectj.version>
     </properties>
 
+    <profiles>
+                 <profile>
+                     <id>QA</id>
+                     <activation>
+                         <activeByDefault>true</activeByDefault>
+                     </activation>
+                     <properties>
+                         <demo.automation.environment>QA</demo.automation.environment>
+                     </properties>
+                 </profile>
+                 <profile>
+                     <id>DEV</id>
+                     <properties>
+                         <demo.automation.environment>DEV</demo.automation.environment>
+                     </properties>
+                 </profile>
+             </profiles>
+
     <build>
         <plugins>
             <plugin>
@@ -33,7 +51,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven.version}</version>
                 <configuration>
-                    <reportsDirectory>../target/surefire-reports</reportsDirectory>
+                    <reportsDirectory>../test-results/surefire-reports</reportsDirectory>
                     <testFailureIgnore>false</testFailureIgnore>
                     <trimStackTrace>false</trimStackTrace>
                     <suiteXmlFiles>
@@ -43,16 +61,10 @@
                         -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
                     </argLine>
                     <systemPropertyVariables>
-                        <allure.results.directory>../target/allure-results</allure.results.directory>
+                        <test.resources.directory>../test-resources</test.resources.directory>
+                        <allure.results.directory>../test-results/allure-results</allure.results.directory>
                     </systemPropertyVariables>
                 </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.aspectj</groupId>
-                        <artifactId>aspectjweaver</artifactId>
-                        <version>${aspectj.version}</version>
-                    </dependency>
-                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -104,6 +116,21 @@
             <artifactId>log4j-slf4j-impl</artifactId>
             <version>2.14.1</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>${aspectj.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+            <version>1.8.9</version>
+        </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>4.3.3</version>
         </dependency>
     </dependencies>
 </project>

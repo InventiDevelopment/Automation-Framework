@@ -4,6 +4,7 @@ import cz.inventi.qa.framework.core.data.enums.Language;
 import cz.inventi.qa.framework.core.data.enums.web.Browser;
 import cz.inventi.qa.framework.core.data.enums.web.WebMandatoryParameters;
 import cz.inventi.qa.framework.core.objects.parameters.TestSuiteParameters;
+import cz.inventi.qa.framework.core.utils.Utils;
 
 /**
  * Class to store parameters designed solely for web tests runs.
@@ -12,14 +13,20 @@ import cz.inventi.qa.framework.core.objects.parameters.TestSuiteParameters;
 public class WebAppVariables {
 
     public String getEnvironment() {
-        return TestSuiteParameters.getParameter(WebMandatoryParameters.ENVIRONMENT.name());
+        return TestSuiteParameters.getParameter(WebMandatoryParameters.ENVIRONMENT.name().toLowerCase());
     }
 
     public Language getLanguage() {
-        return Language.valueOf(TestSuiteParameters.getParameter(WebMandatoryParameters.LANGUAGE.name()).toUpperCase());
+        return Utils.getEnum(
+                Language.class,
+                TestSuiteParameters.getParameter(WebMandatoryParameters.LANGUAGE.name().toLowerCase())
+        );
     }
 
     public Browser getBrowser() {
-        return Browser.valueOf(TestSuiteParameters.getParameter(WebMandatoryParameters.BROWSER.name()).toUpperCase());
+        return Utils.getEnum(
+                Browser.class,
+                TestSuiteParameters.getParameter(WebMandatoryParameters.BROWSER.name().toLowerCase())
+        );
     }
 }

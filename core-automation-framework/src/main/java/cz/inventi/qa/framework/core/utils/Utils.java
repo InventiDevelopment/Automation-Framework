@@ -1,8 +1,12 @@
 package cz.inventi.qa.framework.core.utils;
 
 import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
+import cz.inventi.qa.framework.core.objects.framework.Log;
 import cz.inventi.qa.framework.core.objects.test.TestBase;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 
 public class Utils {
@@ -29,6 +33,27 @@ public class Utils {
             } catch (ClassNotFoundException e) {
                 throw new FrameworkException("Could not find TestBase calling class", e);
             }
+        }
+        return null;
+    }
+
+    /**
+     * Retrieves path to given file in global project test resources folder.
+     * Folder is created if it does not exist.
+     * @return Path to the file inside test resources folder
+     */
+    public static Path getTestResourcesFolder() {
+        File testResourcesFolder = new File(
+                Paths.get("").toAbsolutePath() + "/" + System.getProperty("test.resources.directory")
+        );
+        if (!testResourcesFolder.exists()) {
+            if (testResourcesFolder.mkdirs()) {
+                Log.info("Created test-resources (" + testResourcesFolder.toPath() + ") directory");
+            } else {
+                throw new FrameworkException("Cannot create test resources directory");
+            }
+        } else {
+            return testResourcesFolder.toPath().toAbsolutePath();
         }
         return null;
     }
