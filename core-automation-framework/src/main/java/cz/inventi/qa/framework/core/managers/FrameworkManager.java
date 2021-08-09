@@ -94,12 +94,13 @@ public class FrameworkManager {
 
     private AppInstance retrieveOrInitializeAppInstance(Class<?> appClass, String testClassName) {
         String appName = validateAndGetAppName(appClass);
-        if (appInstances.get(testClassName) == null) appInstances.put(testClassName, Map.of());
-        AppInstance appInstance = appInstances.get(testClassName).get(appName);
+        appInstances.computeIfAbsent(testClassName, k -> new HashMap<>());
+        Map<String, AppInstance> testAppInstances = appInstances.get(testClassName);
+        AppInstance appInstance = testAppInstances.get(appName);
         if (appInstance == null) {
             Log.info("Creating AppInstance (" + appClass.getName() + ") for test '" + testClassName + "'");
             appInstance = new AppInstance(getApplicationType(appClass), appName);
-            appInstances.put(testClassName, Map.of(appName, appInstance));
+            testAppInstances.put(appName, appInstance);
             Log.info("Successfully created new AppInstance for test (" + appClass.getName() + ")");
         }
         return appInstance;

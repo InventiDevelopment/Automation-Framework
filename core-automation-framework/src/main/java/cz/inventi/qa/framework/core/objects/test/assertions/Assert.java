@@ -1,7 +1,9 @@
 package cz.inventi.qa.framework.core.objects.test.assertions;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import cz.inventi.qa.framework.core.objects.framework.FrameworkAssertionException;
 import io.qameta.allure.Allure;
 import io.qameta.allure.model.Status;
 import io.qameta.allure.model.StepResult;
@@ -15,23 +17,33 @@ import java.util.Optional;
  */
 public class Assert {
 
+    public static void assertEqualsIgnoreCase(String actual, String expected, String name) {
+        try {
+            org.testng.Assert.assertEquals(actual.toLowerCase(), expected.toLowerCase());
+            createStepWithStatus(name, Status.PASSED);
+        } catch (AssertionError e) {
+            createStepWithStatus(name, Status.FAILED);
+            throw new FrameworkAssertionException(e);
+        }
+    }
+
     public static void assertEquals(Object actual, Object expected, String name) {
         try {
             org.testng.Assert.assertEquals(actual, expected);
             createStepWithStatus(name, Status.PASSED);
         } catch (AssertionError e) {
             createStepWithStatus(name, Status.FAILED);
-            throw new FrameworkException(e);
+            throw new FrameworkAssertionException(e);
         }
     }
 
-    public static void assertNotEquals(Object actual, Object expected, String name) {
+    public static void assertNotEquals(Object actual, Object notEqualTo, String name) {
         try {
-            org.testng.Assert.assertNotEquals(actual, expected);
+            org.testng.Assert.assertNotEquals(actual, notEqualTo);
             createStepWithStatus(name, Status.PASSED);
         } catch (AssertionError e) {
             createStepWithStatus(name, Status.FAILED);
-            throw new FrameworkException(e);
+            throw new FrameworkAssertionException(e);
         }
     }
 
@@ -41,7 +53,7 @@ public class Assert {
             createStepWithStatus(name,  Status.PASSED);
         } catch (AssertionError e) {
             createStepWithStatus(name, Status.FAILED);
-            throw new FrameworkException(e);
+            throw new FrameworkAssertionException(e);
         }
     }
 
@@ -51,7 +63,7 @@ public class Assert {
             createStepWithStatus(name, Status.PASSED);
         } catch (AssertionError e) {
             createStepWithStatus(name, Status.FAILED);
-            throw new FrameworkException(e);
+            throw new FrameworkAssertionException(e);
         }
     }
 
@@ -61,7 +73,7 @@ public class Assert {
             createStepWithStatus(name, Status.PASSED);
         } catch (AssertionError e) {
             createStepWithStatus(name, Status.FAILED);
-            throw new FrameworkException(e);
+            throw new FrameworkAssertionException(e);
         }
     }
 
@@ -71,7 +83,7 @@ public class Assert {
             createStepWithStatus(name, Status.PASSED);
         } catch (AssertionError e) {
             createStepWithStatus(name, Status.FAILED);
-            throw new FrameworkException(e);
+            throw new FrameworkAssertionException(e);
         }
     }
 
@@ -92,13 +104,17 @@ public class Assert {
      * @param <T> Type of the Dto
      */
     public static <T> void assertJsonEquals(T actual, T expected, String name) {
-        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = new ObjectMapper().configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
+        String serializedObject1 = null;
+        String serializedObject2 = null;
         try {
-            String serializedObject1 = mapper.writeValueAsString(actual);
-            String serializedObject2 = mapper.writeValueAsString(expected);
+            serializedObject1 = mapper.writeValueAsString(actual);
+            serializedObject2 = mapper.writeValueAsString(expected);
+        } catch (JsonProcessingException e) {
+            throw new FrameworkAssertionException("Could not serialize objects to JSON for comparison", e);
+        }
+        if (serializedObject1 != null && serializedObject2 != null) {
             assertEquals(serializedObject1, serializedObject2, name);
-        } catch (Exception e) {
-            throw new FrameworkException("Could not serialize objects to JSON for comparison", e);
         }
     }
 

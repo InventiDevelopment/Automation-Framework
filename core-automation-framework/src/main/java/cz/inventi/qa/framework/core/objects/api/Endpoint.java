@@ -48,6 +48,21 @@ public abstract class Endpoint<T> extends ApiObject {
         }
     }
 
+    /**
+     * Shorthand call to set up AuthParameters of endpoint.
+     * @param authParameters AuthParameters object
+     */
+    public void setEndpointAuthParameters(AuthParameters authParameters) {
+        endpointVariables.setAuthParameters(authParameters);
+    }
+
+    /**
+     * Removes endpoint's AuthParameters.
+     */
+    public void removeEndpointAuthParameters() {
+        endpointVariables.setAuthParameters(null);
+    }
+
     @SuppressWarnings("unchecked")
     public T setUrlParameter(String urlParameter) {
         if (urlParameter != null) urlParameter = URLEncoder.encode(urlParameter, StandardCharsets.UTF_8);

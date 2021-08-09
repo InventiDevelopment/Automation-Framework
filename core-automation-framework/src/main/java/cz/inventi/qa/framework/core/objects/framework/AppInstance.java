@@ -13,8 +13,6 @@ import cz.inventi.qa.framework.core.managers.*;
 import cz.inventi.qa.framework.core.objects.api.Api;
 import cz.inventi.qa.framework.core.objects.parameters.TestSuiteParameters;
 import cz.inventi.qa.framework.core.objects.web.WebPage;
-import cz.inventi.qa.framework.core.utils.ApiUtils;
-import cz.inventi.qa.framework.core.utils.WebUtils;
 import io.restassured.RestAssured;
 import io.restassured.config.ObjectMapperConfig;
 import io.restassured.config.RestAssuredConfig;
@@ -31,8 +29,6 @@ public class AppInstance {
     private final ReportManager reportManager;
     private ApplicationType applicationType;
     private String applicationName;
-    private WebUtils webUtils;
-    private ApiUtils apiUtils;
 
     public AppInstance(ApplicationType applicationType, String applicationName) {
         setBasicAppInformation(applicationName, applicationType);
@@ -82,8 +78,8 @@ public class AppInstance {
                         new ObjectMapper().findAndRegisterModules()
                             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                             .configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS, true)
-                ));
-
+                )
+        );
         /* Set logging for debug mode */
         if (FrameworkManager.getRunMode().equals(RunMode.DEBUG)) {
             RestAssured.requestSpecification = RestAssured.requestSpecification
@@ -109,16 +105,8 @@ public class AppInstance {
         return languageManager;
     }
 
-    public WebUtils getWebUtils() {
-        return webUtils;
-    }
-
     public ReportManager getReportManager() {
         return reportManager;
-    }
-
-    public ApiUtils getApiUtils() {
-        return apiUtils;
     }
 
     public ApplicationType getApplicationType() {

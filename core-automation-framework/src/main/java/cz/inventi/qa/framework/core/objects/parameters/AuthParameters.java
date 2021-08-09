@@ -24,6 +24,14 @@ public class AuthParameters {
         return this;
     }
 
+    public AuthParameters clear() {
+        apiKey = null;
+        username = null;
+        password = null;
+        authToken = null;
+        return this;
+    }
+
     public AuthParameters setApiKey(String apiKey) {
         this.apiKey = apiKey;
         return this;

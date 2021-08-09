@@ -1,7 +1,7 @@
 package cz.inventi.qa.framework.core.utils;
 
-import cz.inventi.qa.framework.core.objects.framework.Log;
 import cz.inventi.qa.framework.core.objects.framework.AppInstance;
+import cz.inventi.qa.framework.core.objects.framework.Log;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.support.ui.FluentWait;
 
@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
 public class WebUtils {
+
     public static void waitFor (int millis, AppInstance appInstance) {
         try {
             appInstance.getWebDriverManager().getDriver().wait(millis);

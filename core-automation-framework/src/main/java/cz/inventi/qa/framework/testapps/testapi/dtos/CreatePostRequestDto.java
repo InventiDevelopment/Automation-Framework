@@ -1,7 +1,7 @@
 package cz.inventi.qa.framework.testapps.testapi.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import cz.inventi.qa.framework.core.data.enums.api.JsonDto;
+import cz.inventi.qa.framework.core.objects.api.JsonDto;
 import cz.inventi.qa.framework.core.objects.test.assertions.Assert;
 import lombok.Getter;
 import lombok.Setter;
