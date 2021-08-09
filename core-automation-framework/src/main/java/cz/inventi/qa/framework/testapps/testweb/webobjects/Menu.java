@@ -1,10 +1,10 @@
 package cz.inventi.qa.framework.testapps.testweb.webobjects;
 
-import cz.inventi.qa.framework.core.objects.web.WOProps;
-import cz.inventi.qa.framework.core.objects.web.WebObject;
 import cz.inventi.qa.framework.core.annotations.web.FindElement;
+import cz.inventi.qa.framework.core.objects.web.WOProps;
 import cz.inventi.qa.framework.core.objects.web.WebComponent;
 import cz.inventi.qa.framework.core.objects.web.WebElement;
+import cz.inventi.qa.framework.core.objects.web.WebObject;
 import lombok.Getter;
 
 import java.util.List;
@@ -23,7 +23,7 @@ public class Menu<T extends WebObject> extends WebComponent<T> {
 
     public WebElement getMenuLink (String name) {
         for (WebElement menuLink : menuLinks) {
-            if (menuLink.getText().toLowerCase().equals(name.toLowerCase())) {
+            if (menuLink.getText().equalsIgnoreCase(name)) {
                 return menuLink;
             }
         }

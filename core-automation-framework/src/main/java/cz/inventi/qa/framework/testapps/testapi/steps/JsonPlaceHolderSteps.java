@@ -20,7 +20,7 @@ public class JsonPlaceHolderSteps extends StepsBase {
         PostDto post = jsonPlaceHolderApi
                 .posts
                 .post
-                .getPost(postId);
+                .getPostMapped(postId);
 
         Assert.assertEquals(post.getId(), Long.parseLong(postId), "Post ID is equal");
         return post;
@@ -33,7 +33,7 @@ public class JsonPlaceHolderSteps extends StepsBase {
                 .post
                 .setUrlParameter(postId)
                 .comments
-                .getComments();
+                .getCommentsMapped();
 
         Assert.assertNotEquals(comments.size(), 0, "There is at least 1 comment");
         Assert.assertEquals(comments.get(0).getPostId(), Long.parseLong(postId), "Comment's post ID is correct");

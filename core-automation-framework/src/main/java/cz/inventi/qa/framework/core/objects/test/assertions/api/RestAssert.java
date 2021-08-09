@@ -1,6 +1,6 @@
 package cz.inventi.qa.framework.core.objects.test.assertions.api;
 
-import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
+import cz.inventi.qa.framework.core.objects.framework.FrameworkAssertionException;
 import cz.inventi.qa.framework.core.objects.test.assertions.Assert;
 import io.restassured.response.Response;
 
@@ -26,10 +26,13 @@ public class RestAssert {
                     "Status code conforms regex '" + statusPattern + "'"
             );
             return response;
-        } catch (FrameworkException e) {
-            throw new FrameworkException("Unexpected status returned in response!\n" + response.statusLine() + "\n\n"
+        } catch (FrameworkAssertionException e) {
+            throw new FrameworkAssertionException(
+                    "Unexpected status returned in response!\n" + response.statusLine() + "\n\n"
                     + "Headers:\n" + response.headers().toString() + "\n\n"
-                    + "Body:\n" + response.asPrettyString(), e);
+                    + "Body:\n" + response.asPrettyString(),
+                    e
+            );
         }
     }
 
@@ -42,5 +45,3 @@ public class RestAssert {
                 .response();
     }
 }
-
-

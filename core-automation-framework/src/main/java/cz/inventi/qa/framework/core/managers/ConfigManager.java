@@ -127,7 +127,7 @@ public class ConfigManager {
                 .getEnvironments()
                 .entrySet()
                 .stream()
-                .filter(map -> map.getKey().toLowerCase().equals(environment.toLowerCase()))
+                .filter(map -> map.getKey().equalsIgnoreCase(environment))
                 .map(Map.Entry::getValue)
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException(
