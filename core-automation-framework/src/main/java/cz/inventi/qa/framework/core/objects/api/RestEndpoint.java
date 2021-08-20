@@ -100,11 +100,15 @@ public abstract class RestEndpoint<T> extends Endpoint<T> {
     @Override
     public RequestSpecification createRequestWithAuth() {
         return switch (getAuthMethod()) {
-            case OAUTH2 -> prepareRequest()
-                    .header("Authorization", "Bearer " + getAuthParameters().getAuthToken());
+            case OAUTH2 -> createRequestWithAuthToken(getAuthParameters().getAuthToken());
             case SAML, OAUTH1, OPENID, HTTPAUTH -> throw new FrameworkException("Auth method currently not supported.");
             default -> prepareRequest();
         };
+    }
+
+    @Override
+    public RequestSpecification createRequestWithAuthToken(String authToken) {
+        return prepareRequest().with().auth().oauth2(authToken);
     }
 
     /**
@@ -114,8 +118,12 @@ public abstract class RestEndpoint<T> extends Endpoint<T> {
      */
     private RequestSpecification prepareRequest() {
         /* Prepare request URL and fetch path parameters */
+        RequestSpecification appSpecificRequestSpecification = getProps()
+                .getAppInstance()
+                .getRestAssuredManager()
+                .getRequestSpecification();
         RequestSpecification requestSpecification = RestAssured
-                .given()
+                .given(appSpecificRequestSpecification)
                 .baseUri(getProps().getAppUrl())
                 .basePath(getProps().getBasePath())
                 .pathParams(getProps().getPathParams());

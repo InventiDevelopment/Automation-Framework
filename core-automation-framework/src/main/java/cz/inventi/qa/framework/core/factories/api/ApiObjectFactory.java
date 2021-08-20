@@ -2,7 +2,6 @@ package cz.inventi.qa.framework.core.factories.api;
 
 import cz.inventi.qa.framework.core.annotations.api.ApiAuth;
 import cz.inventi.qa.framework.core.annotations.api.EndpointSpecs;
-import cz.inventi.qa.framework.core.data.app.ApiApplication;
 import cz.inventi.qa.framework.core.data.enums.api.ApiAuthMethod;
 import cz.inventi.qa.framework.core.managers.FrameworkManager;
 import cz.inventi.qa.framework.core.objects.api.AOProps;
@@ -11,7 +10,6 @@ import cz.inventi.qa.framework.core.objects.api.ApiObject;
 import cz.inventi.qa.framework.core.objects.api.Endpoint;
 import cz.inventi.qa.framework.core.objects.framework.AppInstance;
 import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
-import cz.inventi.qa.framework.core.objects.framework.Log;
 import io.restassured.RestAssured;
 import io.restassured.specification.ProxySpecification;
 
@@ -25,15 +23,18 @@ public class ApiObjectFactory {
 
     public static <T extends ApiObject> void initApiObjects(T apiObject, AOProps parentProps) {
         initParentApiObjectFields(apiObject, parentProps);
-        initApiObjects(apiObject.getClass(), apiObject, parentProps);
+        initChildApiObjects(apiObject.getClass(), apiObject, parentProps);
     }
 
-    private static <T extends ApiObject> void initApiObjects(Class<? extends ApiObject> parentEndpointClass, T apiObject, AOProps parentProps) {
+    private static <T extends ApiObject, Y extends ApiObject> void initChildApiObjects(
+            Class<Y> parentEndpointClass,
+            T apiObject,
+            AOProps parentProps
+    ) {
         for (Field childField : parentEndpointClass.getDeclaredFields()) {
             if (!Modifier.toString(childField.getModifiers()).equals("")) {
                 childField.setAccessible(true);
             }
-
             if (isRelatedAOField(childField)) {
                 assignChildAOField(childField, apiObject, parentProps);
             }
@@ -44,19 +45,39 @@ public class ApiObjectFactory {
         return Endpoint.class.isAssignableFrom(field.getType());
     }
 
-    private static <T extends ApiObject> void assignChildAOField(Field childAOField, T parentApiObject, AOProps parentProps) {
-        T childApiObject = ApiObjectFactory.reflectionInitAOClass((Class<T>) childAOField.getType(), new Class<?>[]{AOProps.class}, new Object[]{createAOProps(childAOField, parentApiObject, parentProps)});
-
+    private static <T extends ApiObject> void assignChildAOField(
+            Field childAOField,
+            T parentApiObject,
+            AOProps parentProps
+    ) {
+        T childApiObject = ApiObjectFactory.reflectionInitAOClass(
+                (Class<T>) childAOField.getType(),
+                new Class<?>[]{AOProps.class},
+                new Object[]{createAOProps(childAOField, parentApiObject, parentProps)}
+        );
         try {
             childAOField.setAccessible(true);
             childAOField.set(parentApiObject, childApiObject);
         } catch (IllegalAccessException e) {
-            throw new FrameworkException("Could not assign ApiObject field object '" + childAOField.getType().getName() + "'.", e);
+            throw new FrameworkException(
+                    "Could not assign ApiObject field object '" + childAOField.getType().getName() + "'.",
+                    e
+            );
         }
     }
 
-    private static <T extends ApiObject> AOProps createAOProps(Field f, T parentApiObject, AOProps parentProps) {
-        return new AOProps(getEndpointUrl(f), parentApiObject, parentProps, parentProps.getAppInstance(), getAuthMethod(f, parentProps));
+    private static <T extends ApiObject> AOProps createAOProps(
+            Field f,
+            T parentApiObject,
+            AOProps parentProps
+    ) {
+        return new AOProps(
+                getEndpointUrl(f),
+                parentApiObject,
+                parentProps,
+                parentProps.getAppInstance(),
+                getAuthMethod(f, parentProps)
+        );
     }
 
     private static <T extends ApiObject> ApiAuthMethod getAuthMethod(Field f, AOProps parentProps) {
@@ -90,7 +111,7 @@ public class ApiObjectFactory {
         if (Endpoint.class.isAssignableFrom(apiObject.getClass().getSuperclass())) {
             Class<T> parentClass = (Class<T>) apiObject.getClass().getSuperclass();
             while (!parentClass.equals(Api.class) && !parentClass.equals(Endpoint.class)) {
-                initApiObjects(parentClass, apiObject, parentProps);
+                initChildApiObjects(parentClass, apiObject, parentProps);
                 parentClass = (Class<T>) parentClass.getSuperclass();
             }
         }
@@ -98,8 +119,13 @@ public class ApiObjectFactory {
 
     public static <T extends Api> T initApi (Class<T> apiClass, AppInstance appInstance) {
         String appUrl = appInstance.getConfigManager().getCurrentApplicationEnvironmentUrl();
-        AOProps aoProps = new AOProps(appUrl, apiClass, null, appInstance, getAuthMethod(apiClass));
-        ApiApplication apiApplication = appInstance.getConfigManager().getAppsConfigData().getApplications().getApi().get(appInstance.getApplicationName());
+        AOProps aoProps = new AOProps(
+                appUrl,
+                null,
+                null,
+                appInstance,
+                getAuthMethod(apiClass)
+        );
         T api = reflectionInitAOClass(apiClass, new Class[] {AOProps.class}, new Object[] {aoProps});
         api.setBaseUrl(appUrl);
         setApiClientsProxy();
@@ -116,9 +142,13 @@ public class ApiObjectFactory {
             String proxyPass = FrameworkManager.getProxySettings().getProxyPass();
             String proxyScheme = FrameworkManager.getProxySettings().getProxyScheme().name().toLowerCase();
             int proxyPort = FrameworkManager.getProxySettings().getProxyPort();
-
-            ProxySpecification raProxySpecification = ProxySpecification.host(proxyServer).withPort(proxyPort).withScheme(proxyScheme);
-            if (proxyUser != null && proxyPass != null) raProxySpecification = raProxySpecification.withAuth(proxyUser, proxyPass);
+            ProxySpecification raProxySpecification = ProxySpecification
+                    .host(proxyServer)
+                    .withPort(proxyPort)
+                    .withScheme(proxyScheme);
+            if (proxyUser != null && proxyPass != null) {
+                raProxySpecification = raProxySpecification.withAuth(proxyUser, proxyPass);
+            }
             RestAssured.proxy(raProxySpecification);
         }
     }
@@ -133,15 +163,20 @@ public class ApiObjectFactory {
         }
     }
 
-    public static <T extends ApiObject> T reflectionInitAOClass(Class<T> klass, Class<?>[] constructorArgs, Object[] constructorParams) {
+    public static <T extends ApiObject> T reflectionInitAOClass(
+            Class<T> klass,
+            Class<?>[] constructorArgs,
+            Object[] constructorParams
+    ) {
         if (constructorParams == null) constructorParams = new Object[0];
         if (constructorArgs == null) constructorArgs = new Class<?>[0];
-
         try {
             Constructor<?> klassConstructor = klass.getConstructor(constructorArgs);
             klassConstructor.setAccessible(true);
             return (T) klassConstructor.newInstance(constructorParams);
-        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+        } catch (
+                NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e
+        ) {
             throw new FrameworkException("Could not reflectively initialize " + klass + ".\n", e);
         }
     }

@@ -1,5 +1,7 @@
 package cz.inventi.qa.framework.core.allure;
 
+import cz.inventi.qa.framework.core.allure.attachments.HttpRequestAttachment;
+import cz.inventi.qa.framework.core.allure.attachments.HttpResponseAttachment;
 import io.qameta.allure.attachment.DefaultAttachmentProcessor;
 import io.qameta.allure.attachment.FreemarkerAttachmentRenderer;
 import io.restassured.filter.FilterContext;

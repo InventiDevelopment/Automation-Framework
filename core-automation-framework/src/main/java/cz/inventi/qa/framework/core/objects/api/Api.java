@@ -28,12 +28,20 @@ public class Api extends ApiObject {
     public void setAuthToken(String authToken) {
         Log.debug("Setting API level access token for application '"
                 + getAppInstance().getApplicationName() + "'"
-                + " executed by '" + Utils.getCallerTestClassName() + "'"
+                + " executed by '" + Utils.getTestIdentifier() + "'"
         );
         getAppInstance()
                 .getTestVariablesManager()
                 .getApiAppVariables()
                 .getAuthParameters()
                 .setAuthToken(authToken);
+    }
+
+    /**
+     * Shorthand call for RestAssuredManager.
+     * @return RestAssuredManager
+     */
+    public RestAssuredManager getRestAssuredManager() {
+        return getAppInstance().getRestAssuredManager();
     }
 }

@@ -13,7 +13,7 @@ public class AppInstanceUtils {
      * @return Initialized Api for given AppInstance
      */
     public static <T extends Api> T getApiAppInstanceOf(Class<T> api) {
-        return FrameworkManager.getInstance().initApiAppAt(api, Utils.getCallerTestClassName());
+        return FrameworkManager.getInstance().initApiAppAt(api, Utils.getTestIdentifier());
     }
 
     /**
@@ -23,6 +23,6 @@ public class AppInstanceUtils {
      * @return Initialized WebPage for given AppInstance
      */
     public static <T extends WebPage> T getWebAppInstanceOf(Class<T> startingWebPage) {
-        return FrameworkManager.getInstance().initWebAppAt(startingWebPage, Utils.getCallerTestClassName());
+        return FrameworkManager.getInstance().initWebAppAt(startingWebPage, Utils.getTestIdentifier());
     }
 }

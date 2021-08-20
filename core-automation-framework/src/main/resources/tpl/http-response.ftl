@@ -1,5 +1,5 @@
 <html>
-    <#-- @ftlvariable name="data" type="cz.inventi.qa.framework.core.allure.HttpResponseAttachment" -->
+    <#-- @ftlvariable name="data" type="cz.inventi.qa.framework.core.allure.attachments.HttpResponseAttachment" -->
     <head>
         <meta http-equiv="content-type" content="text/html; charset = UTF-8">
         <style>
