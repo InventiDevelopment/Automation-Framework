@@ -1,5 +1,5 @@
 <html>
-<#-- @ftlvariable name="data" type="cz.inventi.qa.framework.core.allure.HttpRequestAttachment" -->
+<#-- @ftlvariable name="data" type="cz.inventi.qa.framework.core.allure.attachments.HttpRequestAttachment" -->
     <head>
         <meta http-equiv="content-type" content="text/html; charset = UTF-8">
         <style>
@@ -34,6 +34,15 @@
             <div>
                 <#list data.headers as nameAndValue>
                     <pre><code><b>${nameAndValue}</code></pre>
+                </#list>
+            </div>
+        </#if>
+
+        <#if (data.authentication.authenticationSpecs)?has_content>
+            <h4>Authentication (${data.authentication.authenticationName})</h4>
+            <div>
+                <#list data.authentication.authenticationSpecs as name, value>
+                    <pre><code><b>${name}</b>: ${value}</code></pre>
                 </#list>
             </div>
         </#if>

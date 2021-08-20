@@ -1,7 +1,7 @@
-package cz.inventi.qa.framework.core.allure;
+package cz.inventi.qa.framework.core.allure.attachments;
 
+import cz.inventi.qa.framework.core.allure.AllureRestAssured;
 import io.qameta.allure.attachment.AttachmentData;
-import io.restassured.authentication.AuthenticationScheme;
 import io.restassured.internal.support.Prettifier;
 import io.restassured.specification.FilterableRequestSpecification;
 
@@ -20,9 +20,9 @@ public class HttpRequestAttachment implements AttachmentData {
     private final String body;
     private final List<String> headers;
     private final Map<String, String> cookies;
-    private final AuthenticationScheme authenticationScheme;
     private final Map<String, String> formParams;
     private final Map<String, String> queryParams;
+    private AuthenticationSchemeParser authentication;
     private String curl;
 
     public HttpRequestAttachment(FilterableRequestSpecification requestSpec) {
@@ -30,7 +30,6 @@ public class HttpRequestAttachment implements AttachmentData {
         url = requestSpec.getURI();
         port = requestSpec.getPort();
         headers = AllureRestAssured.toListConverter(requestSpec.getHeaders());
-        authenticationScheme = requestSpec.getAuthenticationScheme();
         formParams = requestSpec.getFormParams();
         queryParams = requestSpec.getQueryParams();
         cookies = AllureRestAssured.toMapConverter(requestSpec.getCookies());
@@ -40,6 +39,7 @@ public class HttpRequestAttachment implements AttachmentData {
         } else {
             body = null;
         }
+        authentication = new AuthenticationSchemeParser(requestSpec);
     }
 
     @Override
@@ -71,15 +71,15 @@ public class HttpRequestAttachment implements AttachmentData {
         return cookies;
     }
 
-    public AuthenticationScheme getAuthenticationScheme() {
-        return authenticationScheme;
-    }
-
     public Map<String, String> getFormParams() {
         return formParams;
     }
 
     public Map<String, String> getQueryParams() {
         return queryParams;
+    }
+
+    public AuthenticationSchemeParser getAuthentication() {
+        return authentication;
     }
 }

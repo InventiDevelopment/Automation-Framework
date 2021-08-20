@@ -2,7 +2,6 @@ package cz.inventi.qa.framework.core.utils;
 
 import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
 import cz.inventi.qa.framework.core.objects.framework.Log;
-import cz.inventi.qa.framework.core.objects.test.TestBase;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -19,22 +18,11 @@ public class Utils {
     }
 
     /**
-     * Generates application instance unique identifier according to the name
-     * of TestBase class to allow multithreaded execution on the TestBase class
-     * level.
+     * Returns unique identifier for test application instance to
+     * allow multi-threaded execution.
      */
-    public static String getCallerTestClassName() {
-        for (StackTraceElement stackTraceElement :  Thread.currentThread().getStackTrace()) {
-            try {
-                Class<?> testClass = Class.forName(stackTraceElement.getClassName());
-                if (!testClass.equals(TestBase.class) && TestBase.class.isAssignableFrom(testClass)) {
-                    return stackTraceElement.getClassName();
-                }
-            } catch (ClassNotFoundException e) {
-                throw new FrameworkException("Could not find TestBase calling class", e);
-            }
-        }
-        return null;
+    public static String getTestIdentifier() {
+        return Thread.currentThread().getName();
     }
 
     /**
@@ -56,5 +44,17 @@ public class Utils {
             return testResourcesFolder.toPath().toAbsolutePath();
         }
         return null;
+    }
+
+    /**
+     * Starts thread sleep for given amount of time.
+     * @param milliseconds amount of milliseconds
+     */
+    public static void hardSleep(long milliseconds) {
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+            throw new FrameworkException("Exception raised while in sleep", e);
+        }
     }
 }

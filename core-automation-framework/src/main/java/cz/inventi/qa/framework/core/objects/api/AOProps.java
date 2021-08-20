@@ -9,26 +9,40 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+/**
+ * Api Object Properties file to hold crucial information
+ * about given ApiObject and its parents necessary for
+ * API object initialization.
+ */
 public class AOProps {
     private final AppInstance appInstance;
-    private String endpointUrl = "";
+    private final String endpointUrl;
     private String fullUrl = "";
-    private Object returnKlass;
-    private AOProps parentProps;
+    private Class<?> returnKlass;
     private boolean parameter;
     private String parameterValue;
     private ApiAuthMethod apiAuthMethod;
+    private ApiObject parentApiObject;
+    private AuthParameters authParameters;
 
     public AOProps(String url, AppInstance appInstance) {
         this.endpointUrl = url;
         this.appInstance = appInstance;
     }
 
-    public AOProps(String url, Object returnKlass, AOProps parentProps, AppInstance appInstance, ApiAuthMethod apiAuthMethod) {
+    public <T extends ApiObject> AOProps(
+            String url,
+            T parentApiObject,
+            AOProps parentProps,
+            AppInstance appInstance,
+            ApiAuthMethod apiAuthMethod
+    ) {
         this(url, appInstance);
-        this.returnKlass = returnKlass;
-        this.parentProps = parentProps;
         this.apiAuthMethod = apiAuthMethod;
+        this.parentApiObject = parentApiObject;
+        if (parentApiObject != null) {
+            this.returnKlass = parentApiObject.getClass();
+        }
         checkIfAOIsParameter(url);
         composeFullUrl(parentProps);
     }
@@ -62,6 +76,10 @@ public class AOProps {
         return parameter;
     }
 
+    public ApiObject getParentApiObject() {
+        return parentApiObject;
+    }
+
     public String getFullUrl() {
         return fullUrl;
     }
@@ -70,15 +88,27 @@ public class AOProps {
         return parameterValue;
     }
 
+    public AOProps getParentProps() {
+        if (parentApiObject != null) {
+            return parentApiObject.getProps();
+        } else {
+            return null;
+        }
+    }
+
     public void setParameterValue(String parameterValue) {
         this.parameterValue = parameterValue;
+    }
+
+    public void setAuthParameters(AuthParameters authParameters) {
+        this.authParameters = authParameters;
     }
 
     public AppInstance getAppInstance() {
         return appInstance;
     }
 
-    public AuthParameters getAuthParameters() {
+    public AuthParameters getGlobalAuthParameters() {
         return appInstance
                 .getTestVariablesManager()
                 .getApiAppVariables()
@@ -89,6 +119,10 @@ public class AOProps {
         return appInstance
                 .getConfigManager()
                 .getCurrentApplicationEnvironmentUrl();
+    }
+
+    public AuthParameters getAuthParameters() {
+        return authParameters;
     }
 
     public String getBasePath() {
@@ -103,13 +137,16 @@ public class AOProps {
             if (currentProps.isParameter()) {
                 String parameterValue = currentProps.getParameterValue().toLowerCase();
                 if ("".equals(parameterValue)) {
-                    Log.warn("Endpoint '" + currentProps.endpointUrl + "' is parametrized, but no parameter value has been supplied");
+                    Log.warn(
+                            "Endpoint '" + currentProps.endpointUrl + "' is parametrized, " +
+                            "but no parameter value has been supplied"
+                    );
                 }
                 fullUrlWithParams.insert(0, parameterValue + "/");
             } else {
                 fullUrlWithParams.insert(0, currentProps.endpointUrl + "/");
             }
-            currentProps = currentProps.parentProps;
+            currentProps = currentProps.getParentProps();
         }
         return fullUrlWithParams.toString();
     }
@@ -123,7 +160,10 @@ public class AOProps {
                 String parameterValue = currentProps.getParameterValue();
 
                 if ("".equals(parameterValue) || parameterValue == null) {
-                    Log.warn("Endpoint '" + currentProps.endpointUrl + "' is parametrized, but no parameter value has been supplied");
+                    Log.warn(
+                            "Endpoint '" + currentProps.endpointUrl + "' is parametrized," +
+                                    " but no parameter value has been supplied"
+                    );
                 } else {
                     parameterValue = parameterValue.toLowerCase();
                 }
@@ -134,7 +174,7 @@ public class AOProps {
 
                 pathParams.put(strippedEndpointUrl, parameterValue);
             }
-            currentProps = currentProps.parentProps;
+            currentProps = currentProps.getParentProps();
         }
         return pathParams;
     }

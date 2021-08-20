@@ -11,6 +11,7 @@ import cz.inventi.qa.framework.core.factories.api.ApiObjectFactory;
 import cz.inventi.qa.framework.core.factories.web.webobject.WebObjectFactory;
 import cz.inventi.qa.framework.core.managers.*;
 import cz.inventi.qa.framework.core.objects.api.Api;
+import cz.inventi.qa.framework.core.objects.api.RestAssuredManager;
 import cz.inventi.qa.framework.core.objects.parameters.TestSuiteParameters;
 import cz.inventi.qa.framework.core.objects.web.WebPage;
 import io.restassured.RestAssured;
@@ -26,6 +27,7 @@ public class AppInstance {
     private final ConfigManager configManager;
     private final LanguageManager languageManager;
     private final WebDriverManager webDriverManager;
+    private final RestAssuredManager restAssuredManager;
     private final ReportManager reportManager;
     private ApplicationType applicationType;
     private String applicationName;
@@ -36,6 +38,7 @@ public class AppInstance {
         testVariablesManager = new TestVariablesManager();
         configManager = new ConfigManager(this);
         webDriverManager = new WebDriverManager(this);
+        restAssuredManager = new RestAssuredManager();
         languageManager = LanguageManager.getInstance();
         reportManager = ReportManager.getInstance();
     }
@@ -115,6 +118,10 @@ public class AppInstance {
 
     public String getApplicationName() {
         return applicationName;
+    }
+
+    public RestAssuredManager getRestAssuredManager() {
+        return restAssuredManager;
     }
 
     private void setBasicAppInformation(String applicationName, ApplicationType applicationType) {

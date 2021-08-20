@@ -1,5 +1,6 @@
-package cz.inventi.qa.framework.core.allure;
+package cz.inventi.qa.framework.core.allure.attachments;
 
+import cz.inventi.qa.framework.core.allure.AllureRestAssured;
 import io.qameta.allure.attachment.AttachmentData;
 import io.restassured.internal.support.Prettifier;
 import io.restassured.response.Response;

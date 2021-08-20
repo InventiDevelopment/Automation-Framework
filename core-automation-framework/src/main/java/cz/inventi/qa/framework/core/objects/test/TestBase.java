@@ -10,7 +10,7 @@ import org.testng.ITestContext;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.BeforeTest;
 import org.testng.xml.XmlTest;
 
 import java.io.File;
@@ -23,11 +23,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public abstract class TestBase {
-    private final String testClassName;
-
-    public TestBase() {
-        testClassName = Utils.getCallerTestClassName();
-    }
 
     /**
      * Sets all the parameters supplied through TestNG suite
@@ -36,7 +31,7 @@ public abstract class TestBase {
      * hidden in the output.
      * @param context TestNG context
      */
-    @BeforeSuite(alwaysRun = true)
+    @BeforeTest(alwaysRun = true)
     public void loadTestSuiteParameters(ITestContext context) {
         XmlTest currentTest = context.getCurrentXmlTest();
         Map<String, String> parameters = currentTest.getAllParameters();
@@ -52,11 +47,11 @@ public abstract class TestBase {
 
     /**
      * Quit app instances for given test class after all @Tests
-     * have finished..
+     * have finished.
      */
     @AfterClass(alwaysRun = true)
     public void quit() {
-        FrameworkManager.quitTestAppInstances(testClassName);
+        FrameworkManager.quitTestAppInstances(Utils.getTestIdentifier());
     }
 
     /**

@@ -129,7 +129,11 @@ public class Assert {
         Optional<String> parentStep = Allure.getLifecycle().getCurrentTestCaseOrStep();
         StepResult stepResult = new StepResult();
         stepResult.setName(stepName + " (assertion)");
-        Allure.getLifecycle().startStep(parentStep.orElseThrow(), RandomStringUtils.randomAlphanumeric(120), stepResult);
+        Allure.getLifecycle().startStep(
+                parentStep.orElseThrow(),
+                RandomStringUtils.randomAlphanumeric(120),
+                stepResult
+        );
         stepResult.setStatus(status);
         Allure.getLifecycle().stopStep();
         return stepResult;
