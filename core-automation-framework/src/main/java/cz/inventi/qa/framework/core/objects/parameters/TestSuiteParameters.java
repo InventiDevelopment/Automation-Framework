@@ -36,8 +36,10 @@ public class TestSuiteParameters {
             if (isSensitive.find()) {
                 if (!maskedValuesRegex.toString().equals("")) maskedValuesRegex.append("|");
                 String paramValue = TestSuiteParameters.getParameters().get(paramName);
-                Pattern regexEscChars = Pattern.compile("[{}()\\[\\].+*?^$\\\\|]");
-                maskedValuesRegex.append(regexEscChars.matcher(paramValue).replaceAll("\\\\$0"));
+                if (paramValue != null) {
+                    Pattern regexEscChars = Pattern.compile("[{}()\\[\\].+*?^$\\\\|]");
+                    maskedValuesRegex.append(regexEscChars.matcher(paramValue).replaceAll("\\\\$0"));
+                }
             }
         }
         return maskedValuesRegex.toString();
