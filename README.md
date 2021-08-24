@@ -115,4 +115,4 @@ There is a possibility to mask sensitive data in Allure's results files and Allu
 
 
 ### Parallelization
-By default, framework allows parallelization on the level of TestNG's `classes` level and above in the case of using the `TestBase.class` and `StepsBase.class` pattern.
+By default, framework allows parallelization on the level of TestNG's `classes` level and above in the case of using the `TestBase.class` and `StepsBase.class` pattern. It is recommended to define `thread-count` value in TestNG suite to equal number of defined classes in given test. 

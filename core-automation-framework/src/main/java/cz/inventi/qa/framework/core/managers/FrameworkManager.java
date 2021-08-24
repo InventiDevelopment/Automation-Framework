@@ -67,9 +67,15 @@ public class FrameworkManager {
     public static void quitTestAppInstances(String testIdentifier) {
         Log.info("Quitting all AppInstances created by test thread (" + testIdentifier + ")");
         Map<String, Map<String, AppInstance>> appInstances = getAppInstances();
-        appInstances.get(testIdentifier).forEach((appName, appInstance) -> appInstance.quit());
-        appInstances.remove(testIdentifier);
-        if (getAppInstances().size() == 0) Log.info("No other AppInstances left running in the stack");
+        if (appInstances.size() > 0) {
+            if (appInstances.get(testIdentifier) != null) {
+                appInstances.get(testIdentifier).forEach((appName, appInstance) -> appInstance.quit());
+                appInstances.remove(testIdentifier);
+            }
+            if (appInstances.size() == 0) {
+                Log.info("No other AppInstances left running in the stack");
+            }
+        }
     }
 
     public static RunMode getRunMode() {
@@ -92,7 +98,7 @@ public class FrameworkManager {
         Log.setGlobalLogLevel(runMode);
     }
 
-    private AppInstance retrieveOrInitializeAppInstance(Class<?> appClass, String testIdentifier) {
+    private synchronized AppInstance retrieveOrInitializeAppInstance(Class<?> appClass, String testIdentifier) {
         String appName = validateAndGetAppName(appClass);
         appInstances.computeIfAbsent(testIdentifier, k -> new HashMap<>());
         Map<String, AppInstance> testAppInstances = appInstances.get(testIdentifier);
