@@ -52,4 +52,10 @@ public class AuthParameters {
     public String getApiKey() {
         return apiKey;
     }
+
+    public AuthParameters httpAuth(String username, String password) {
+        this.username = username;
+        this.password = password;
+        return this;
+    }
 }

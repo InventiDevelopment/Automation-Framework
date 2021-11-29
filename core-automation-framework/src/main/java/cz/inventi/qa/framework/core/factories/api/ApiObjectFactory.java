@@ -3,15 +3,12 @@ package cz.inventi.qa.framework.core.factories.api;
 import cz.inventi.qa.framework.core.annotations.api.ApiAuth;
 import cz.inventi.qa.framework.core.annotations.api.EndpointSpecs;
 import cz.inventi.qa.framework.core.data.enums.api.ApiAuthMethod;
-import cz.inventi.qa.framework.core.managers.FrameworkManager;
 import cz.inventi.qa.framework.core.objects.api.AOProps;
 import cz.inventi.qa.framework.core.objects.api.Api;
 import cz.inventi.qa.framework.core.objects.api.ApiObject;
 import cz.inventi.qa.framework.core.objects.api.Endpoint;
 import cz.inventi.qa.framework.core.objects.framework.AppInstance;
 import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
-import io.restassured.RestAssured;
-import io.restassured.specification.ProxySpecification;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -117,7 +114,7 @@ public class ApiObjectFactory {
         }
     }
 
-    public static <T extends Api> T initApi (Class<T> apiClass, AppInstance appInstance) {
+    public static <T extends Api> T initApi(Class<T> apiClass, AppInstance appInstance) {
         String appUrl = appInstance.getConfigManager().getCurrentApplicationEnvironmentUrl();
         AOProps aoProps = new AOProps(
                 appUrl,
@@ -128,29 +125,7 @@ public class ApiObjectFactory {
         );
         T api = reflectionInitAOClass(apiClass, new Class[] {AOProps.class}, new Object[] {aoProps});
         api.setBaseUrl(appUrl);
-        setApiClientsProxy();
         return api;
-    }
-
-    /**
-     * Sets proxy for all API clients.
-     */
-    private static void setApiClientsProxy() {
-        if (FrameworkManager.getProxySettings() != null) {
-            String proxyServer = FrameworkManager.getProxySettings().getProxyServer();
-            String proxyUser = FrameworkManager.getProxySettings().getProxyUser();
-            String proxyPass = FrameworkManager.getProxySettings().getProxyPass();
-            String proxyScheme = FrameworkManager.getProxySettings().getProxyScheme().name().toLowerCase();
-            int proxyPort = FrameworkManager.getProxySettings().getProxyPort();
-            ProxySpecification raProxySpecification = ProxySpecification
-                    .host(proxyServer)
-                    .withPort(proxyPort)
-                    .withScheme(proxyScheme);
-            if (proxyUser != null && proxyPass != null) {
-                raProxySpecification = raProxySpecification.withAuth(proxyUser, proxyPass);
-            }
-            RestAssured.proxy(raProxySpecification);
-        }
     }
 
     private static <T extends ApiObject> ApiAuthMethod getAuthMethod(Class<T> apiObjectClass) {
