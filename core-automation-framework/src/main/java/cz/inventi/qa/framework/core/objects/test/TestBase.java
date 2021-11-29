@@ -7,7 +7,10 @@ import cz.inventi.qa.framework.core.objects.framework.Log;
 import cz.inventi.qa.framework.core.objects.parameters.TestSuiteParameters;
 import cz.inventi.qa.framework.core.utils.Utils;
 import org.testng.ITestContext;
-import org.testng.annotations.*;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeSuite;
 import org.testng.asserts.SoftAssert;
 import org.testng.xml.XmlTest;
 
@@ -52,7 +55,6 @@ public abstract class TestBase {
      * Calls method of TestNG to display all collected
      * soft assertions for given application run through test class.
      */
-    @AfterTest(alwaysRun = true)
     public void handleSoftAssertions() {
         FrameworkManager
                 .getTestRuns()
@@ -75,6 +77,7 @@ public abstract class TestBase {
      */
     @AfterClass(alwaysRun = true)
     public void quit() {
+        handleSoftAssertions();
         FrameworkManager.quitTestAppInstances(Utils.getTestIdentifier());
     }
 
