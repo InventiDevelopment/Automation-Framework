@@ -1,6 +1,7 @@
 package cz.inventi.qa.framework.core.objects.api;
 
 import cz.inventi.qa.framework.core.data.enums.api.ApiAuthMethod;
+import cz.inventi.qa.framework.core.managers.FrameworkManager;
 import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
@@ -101,7 +102,11 @@ public abstract class RestEndpoint<T> extends Endpoint<T> {
     public RequestSpecification createRequestWithAuth() {
         return switch (getAuthMethod()) {
             case OAUTH2 -> createRequestWithAuthToken(getAuthParameters().getAuthToken());
-            case SAML, OAUTH1, OPENID, HTTPAUTH -> throw new FrameworkException("Auth method currently not supported.");
+            case HTTPAUTH -> createRequestWithHttpAuth(
+                    getAuthParameters().getUsername(),
+                    getAuthParameters().getPassword()
+            );
+            case SAML, OAUTH1, OPENID -> throw new FrameworkException("Auth method currently not supported.");
             default -> prepareRequest();
         };
     }
@@ -111,13 +116,17 @@ public abstract class RestEndpoint<T> extends Endpoint<T> {
         return prepareRequest().with().auth().oauth2(authToken);
     }
 
+    @Override
+    public RequestSpecification createRequestWithHttpAuth(String username, String password) {
+        return prepareRequest().with().auth().basic(username, password);
+    }
+
     /**
      * Prepare RA RequestSpecification with URL, path parameters
-     * and other options.
+     * and other options derived from app specific parameters.
      * @return Rest Assured RequestSpecification
      */
     private RequestSpecification prepareRequest() {
-        /* Prepare request URL and fetch path parameters */
         RequestSpecification appSpecificRequestSpecification = getProps()
                 .getAppInstance()
                 .getRestAssuredManager()
@@ -127,12 +136,6 @@ public abstract class RestEndpoint<T> extends Endpoint<T> {
                 .baseUri(getProps().getAppUrl())
                 .basePath(getProps().getBasePath())
                 .pathParams(getProps().getPathParams());
-
-        /* Set relaxed HTTPS validation according to API settings */
-        if (getProps().getAppInstance().getConfigManager().getCurrentApiAppConfig().isRelaxedHttpsValidation()) {
-            requestSpecification = requestSpecification.relaxedHTTPSValidation();
-        }
-
         return requestSpecification.when();
     }
 }

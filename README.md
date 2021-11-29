@@ -22,6 +22,7 @@ This project is a Maven configuration using multiple third-party libraries for c
 - **[Apache Commons](https://commons.apache.org)** (Apache License 2.0)
 - **[Apache Log4J](https://logging.apache.org/log4j/2.x)** (Apache License 2.0)
 - **[AspectJ Weaver](https://www.eclipse.org/aspectj)** (Eclipse Public License 1.0)
+- **[Hibernate Validator](https://hibernate.org/validator/)** (Apache License 2.0)
 - **[Jackson](https://github.com/FasterXML/jackson)** (Apache License 2.0)
 - **[Lombok](https://projectlombok.org)** (MIT License)
 - **[Maven Failsafe Plugin](https://maven.apache.org/surefire/maven-failsafe-plugin)** (Apache License 2.0)

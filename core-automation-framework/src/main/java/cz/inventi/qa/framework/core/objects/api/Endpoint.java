@@ -133,4 +133,6 @@ public abstract class Endpoint<T> extends ApiObject {
 
     public abstract Object createRequestWithAuthToken(String authToken);
 
+    public abstract Object createRequestWithHttpAuth(String username, String password);
+
 }

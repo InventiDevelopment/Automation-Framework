@@ -38,9 +38,9 @@ public class AppInstance {
         testVariablesManager = new TestVariablesManager();
         configManager = new ConfigManager(this);
         webDriverManager = new WebDriverManager(this);
-        restAssuredManager = new RestAssuredManager();
         languageManager = LanguageManager.getInstance();
         reportManager = ReportManager.getInstance();
+        restAssuredManager = new RestAssuredManager(this);
     }
 
     private void checkMandatoryParametersAreSet() {
