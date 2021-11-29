@@ -7,6 +7,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.regex.Matcher;
 
 public class Utils {
 
@@ -31,19 +32,21 @@ public class Utils {
      * @return Path to the file inside test resources folder
      */
     public static Path getTestResourcesFolder() {
-        File testResourcesFolder = new File(
-                Paths.get("").toAbsolutePath() + "/" + System.getProperty("test.resources.directory")
+        String projectPath = Paths.get("").toAbsolutePath().toString();
+        if (!projectPath.endsWith(File.separator)) projectPath += File.separator;
+        String testResourcesFolderPath = "../test-resources".replaceAll(
+                "([\\\\/])",
+                Matcher.quoteReplacement(File.separator)
         );
+        File testResourcesFolder = new File(projectPath + testResourcesFolderPath);
         if (!testResourcesFolder.exists()) {
             if (testResourcesFolder.mkdirs()) {
                 Log.info("Created test-resources (" + testResourcesFolder.toPath() + ") directory");
             } else {
                 throw new FrameworkException("Cannot create test resources directory");
             }
-        } else {
-            return testResourcesFolder.toPath().toAbsolutePath();
         }
-        return null;
+        return testResourcesFolder.toPath().toAbsolutePath();
     }
 
     /**
