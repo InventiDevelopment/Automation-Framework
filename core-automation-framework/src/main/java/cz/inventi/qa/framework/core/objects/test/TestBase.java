@@ -7,10 +7,8 @@ import cz.inventi.qa.framework.core.objects.framework.Log;
 import cz.inventi.qa.framework.core.objects.parameters.TestSuiteParameters;
 import cz.inventi.qa.framework.core.utils.Utils;
 import org.testng.ITestContext;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterSuite;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.*;
+import org.testng.asserts.SoftAssert;
 import org.testng.xml.XmlTest;
 
 import java.io.File;
@@ -23,6 +21,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public abstract class TestBase {
+    private final SoftAssert softAssert;
+
+    public TestBase() {
+        this.softAssert = new SoftAssert();
+    }
 
     /**
      * Sets all the parameters supplied through TestNG suite
@@ -31,7 +34,7 @@ public abstract class TestBase {
      * hidden in the output.
      * @param context TestNG context
      */
-    @BeforeTest(alwaysRun = true)
+    @BeforeSuite(alwaysRun = true)
     public void loadTestSuiteParameters(ITestContext context) {
         XmlTest currentTest = context.getCurrentXmlTest();
         Map<String, String> parameters = currentTest.getAllParameters();
@@ -43,6 +46,27 @@ public abstract class TestBase {
             }
         }
         TestSuiteParameters.setParameters(parameters);
+    }
+
+    /**
+     * Calls method of TestNG to display all collected
+     * soft assertions for given application run through test class.
+     */
+    @AfterTest(alwaysRun = true)
+    public void handleSoftAssertions() {
+        FrameworkManager
+                .getTestRuns()
+                .get(Utils.getTestIdentifier())
+                .getAppInstances()
+                .forEach((appName, appInstance) -> softAssert.assertAll());
+    }
+
+    /**
+     * Call to retrieve current test class' SoftAssert.
+     * @return TestNG SoftAssert
+     */
+    private SoftAssert getSoftAssert() {
+        return softAssert;
     }
 
     /**
@@ -62,7 +86,8 @@ public abstract class TestBase {
     // TODO reimplement better solution with AspectJ or Allure and use @Secret annotation
     @AfterSuite(alwaysRun = true)
     public void hideSecretParametersInAllure() {
-        if (!RunMode.DEBUG.equals(FrameworkManager.getRunMode())) {
+        String maskedValuesRegex = TestSuiteParameters.getMaskedValuesRegex();
+        if (!RunMode.DEBUG.equals(FrameworkManager.getRunMode()) && !maskedValuesRegex.equals("")) {
             Log.info("Masking secret values in ALlure's Results files");
             File allureResultsDir = new File(System.getProperty("allure.results.directory"));
             Arrays
@@ -84,10 +109,7 @@ public abstract class TestBase {
                             String content = Files.readString(file.toPath());
                             Files.writeString(
                                     file.toPath(),
-                                    content.replaceAll(
-                                            TestSuiteParameters.getMaskedValuesRegex(),
-                                            "[**MASKED**]"
-                                    )
+                                    content.replaceAll(maskedValuesRegex,"[**MASKED**]")
                             );
                         } catch (IOException e) {
                             throw new FrameworkException("Could not mask parameter data", e);
