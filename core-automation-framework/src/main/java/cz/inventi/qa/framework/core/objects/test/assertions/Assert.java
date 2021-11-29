@@ -4,18 +4,45 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import cz.inventi.qa.framework.core.objects.framework.FrameworkAssertionException;
+import cz.inventi.qa.framework.core.utils.ApiUtils;
+import cz.inventi.qa.framework.core.utils.Utils;
 import io.qameta.allure.Allure;
 import io.qameta.allure.model.Status;
 import io.qameta.allure.model.StepResult;
 import org.apache.commons.lang3.RandomStringUtils;
 
+import java.util.Objects;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Decorator for TestNG assert so that steps can be recorded
  * in the Allure report.
  */
 public class Assert {
+
+    public static void assertEqualsRegex(String regex, String actual, String name) {
+        try {
+            Matcher matcher = Pattern.compile(regex).matcher(actual);
+            org.testng.Assert.assertTrue(matcher.matches());
+            createStepWithStatus(name, Status.PASSED);
+        } catch (AssertionError e) {
+            createStepWithStatus(name, Status.FAILED);
+            throw new FrameworkAssertionException(e);
+        }
+    }
+
+    public static void assertNotEqualsRegex(String regex, String actual, String name) {
+        try {
+            Matcher matcher = Pattern.compile(regex).matcher(actual);
+            org.testng.Assert.assertFalse(matcher.matches());
+            createStepWithStatus(name, Status.PASSED);
+        } catch (AssertionError e) {
+            createStepWithStatus(name, Status.FAILED);
+            throw new FrameworkAssertionException(e);
+        }
+    }
 
     public static void assertEqualsIgnoreCase(String actual, String expected, String name) {
         try {
@@ -104,7 +131,10 @@ public class Assert {
      * @param <T> Type of the Dto
      */
     public static <T> void assertJsonEquals(T actual, T expected, String name) {
-        ObjectMapper mapper = new ObjectMapper().configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
+        ObjectMapper mapper = ApiUtils.MAPPER.configure(
+                SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS,
+                true
+        );
         String serializedObject1 = null;
         String serializedObject2 = null;
         try {
@@ -137,5 +167,27 @@ public class Assert {
         stepResult.setStatus(status);
         Allure.getLifecycle().stopStep();
         return stepResult;
+    }
+
+    /**
+     * Retries given function with assertion for given amount
+     * of retries and waits for it to pass.
+     * @param function lambda function containing assertion using FrameworkAssertionException
+     * @param retries number of retries
+     * @param retryDelayMs time for delay after retry
+     */
+    public static void waitForAssertionToPass(
+            Runnable function,
+            long retries,
+            long retryDelayMs
+    ) {
+        Objects.requireNonNull(function);
+        try {
+            function.run();
+        } catch (FrameworkAssertionException e) {
+            if (retries <= 1) throw e;
+            Utils.hardSleep(retryDelayMs);
+            waitForAssertionToPass(function, (retries - 1), retryDelayMs);
+        }
     }
 }

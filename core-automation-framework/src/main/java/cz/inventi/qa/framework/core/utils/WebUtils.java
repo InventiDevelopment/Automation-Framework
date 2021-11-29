@@ -11,7 +11,7 @@ import java.time.Duration;
 
 public class WebUtils {
 
-    public static void waitFor (int millis, AppInstance appInstance) {
+    public static void waitFor(int millis, AppInstance appInstance) {
         try {
             appInstance.getWebDriverManager().getDriver().wait(millis);
         } catch (InterruptedException e) {

@@ -9,6 +9,7 @@ import cz.inventi.qa.framework.core.objects.api.Api;
 import cz.inventi.qa.framework.core.objects.framework.AppInstance;
 import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
 import cz.inventi.qa.framework.core.objects.framework.Log;
+import cz.inventi.qa.framework.core.objects.test.TestRun;
 import cz.inventi.qa.framework.core.objects.web.WebPage;
 import cz.inventi.qa.framework.core.utils.Utils;
 
@@ -18,12 +19,12 @@ import java.util.Map;
 
 public class FrameworkManager {
     private volatile static FrameworkManager frameworkManager = null;
-    private final Map<String, Map<String, AppInstance>> appInstances;
+    private final Map<String, TestRun> testRuns;
     private static RunMode runMode;
     private static ProxySettings proxySettings;
 
     public FrameworkManager() {
-        this.appInstances = new HashMap<>();
+        this.testRuns = new HashMap<>();
         Log.info("Loading Inventi Automation Framework");
         setProxy();
         setRunMode();
@@ -55,8 +56,8 @@ public class FrameworkManager {
         return retrieveOrInitializeAppInstance(api, testIdentifier).initApi(api);
     }
 
-    public static Map<String, Map<String, AppInstance>> getAppInstances() {
-        return getInstance().appInstances;
+    public static Map<String, TestRun> getTestRuns() {
+        return getInstance().testRuns;
     }
 
     synchronized public static FrameworkManager getInstance() {
@@ -66,16 +67,20 @@ public class FrameworkManager {
 
     public static void quitTestAppInstances(String testIdentifier) {
         Log.info("Quitting all AppInstances created by test thread (" + testIdentifier + ")");
-        Map<String, Map<String, AppInstance>> appInstances = getAppInstances();
-        if (appInstances.size() > 0) {
-            if (appInstances.get(testIdentifier) != null) {
-                appInstances.get(testIdentifier).forEach((appName, appInstance) -> appInstance.quit());
-                appInstances.remove(testIdentifier);
+        Map<String, AppInstance> testAppInstances = getTestRunAppInstances(testIdentifier);
+        if (testAppInstances.size() > 0) {
+            if (testAppInstances.get(testIdentifier) != null) {
+                testAppInstances.forEach((appName, appInstance) -> appInstance.quit());
+                testAppInstances.remove(testIdentifier);
             }
-            if (appInstances.size() == 0) {
+            if (testAppInstances.size() == 0) {
                 Log.info("No other AppInstances left running in the stack");
             }
         }
+    }
+
+    private static Map<String, AppInstance> getTestRunAppInstances(String testIdentifier) {
+        return getTestRuns().get(testIdentifier).getAppInstances();
     }
 
     public static RunMode getRunMode() {
@@ -100,8 +105,8 @@ public class FrameworkManager {
 
     private synchronized AppInstance retrieveOrInitializeAppInstance(Class<?> appClass, String testIdentifier) {
         String appName = validateAndGetAppName(appClass);
-        appInstances.computeIfAbsent(testIdentifier, k -> new HashMap<>());
-        Map<String, AppInstance> testAppInstances = appInstances.get(testIdentifier);
+        testRuns.computeIfAbsent(testIdentifier, k -> new TestRun());
+        Map<String, AppInstance> testAppInstances = getTestRunAppInstances(testIdentifier);
         AppInstance appInstance = testAppInstances.get(appName);
         if (appInstance == null) {
             Log.info("Creating AppInstance (" + appClass.getName() + ") for test thread (" + testIdentifier + ")");
