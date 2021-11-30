@@ -53,13 +53,12 @@ public abstract class Endpoint<T> extends ApiObject {
      */
     public AuthParameters getParentAuthParameters() {
         AOProps parentProps = getProps().getParentProps();
-        AuthParameters parentAuthParameters = null;
-        while (parentProps.getParentApiObject() != null) {
-            parentAuthParameters = parentProps.getParentApiObject().getProps().getAuthParameters();
-            if (parentAuthParameters != null) break;
+        while (parentProps != null) {
+            AuthParameters parentAuthParameters = parentProps.getAuthParameters();
+            if (parentAuthParameters != null) return parentAuthParameters;
             parentProps = parentProps.getParentProps();
         }
-        return parentAuthParameters;
+        return null;
     }
 
     /**
