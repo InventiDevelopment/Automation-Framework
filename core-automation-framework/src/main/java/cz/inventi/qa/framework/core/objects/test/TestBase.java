@@ -5,13 +5,11 @@ import cz.inventi.qa.framework.core.managers.FrameworkManager;
 import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
 import cz.inventi.qa.framework.core.objects.framework.Log;
 import cz.inventi.qa.framework.core.objects.parameters.TestSuiteParameters;
-import cz.inventi.qa.framework.core.utils.Utils;
 import org.testng.ITestContext;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeSuite;
-import org.testng.asserts.SoftAssert;
 import org.testng.xml.XmlTest;
 
 import java.io.File;
@@ -24,11 +22,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public abstract class TestBase {
-    private final SoftAssert softAssert;
-
-    public TestBase() {
-        this.softAssert = new SoftAssert();
-    }
 
     /**
      * Sets all the parameters supplied through TestNG suite
@@ -57,18 +50,9 @@ public abstract class TestBase {
      */
     public void handleSoftAssertions() {
         FrameworkManager
-                .getTestRuns()
-                .get(Utils.getTestIdentifier())
-                .getAppInstances()
-                .forEach((appName, appInstance) -> softAssert.assertAll());
-    }
-
-    /**
-     * Call to retrieve current test class' SoftAssert.
-     * @return TestNG SoftAssert
-     */
-    private SoftAssert getSoftAssert() {
-        return softAssert;
+                .getCurrentTestRun()
+                .getSoftAssertCollector()
+                .printExceptions();
     }
 
     /**
@@ -78,7 +62,7 @@ public abstract class TestBase {
     @AfterClass(alwaysRun = true)
     public void quit() {
         handleSoftAssertions();
-        FrameworkManager.quitTestAppInstances(Utils.getTestIdentifier());
+        FrameworkManager.quitCurrentTestAppInstances();
     }
 
     /**

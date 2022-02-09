@@ -60,9 +60,17 @@ public class FrameworkManager {
         return getInstance().testRuns;
     }
 
+    public static TestRun getCurrentTestRun() {
+        return getTestRuns().get(Utils.getTestIdentifier());
+    }
+
     synchronized public static FrameworkManager getInstance() {
         if (frameworkManager == null) frameworkManager = new FrameworkManager();
         return frameworkManager;
+    }
+
+    public static void quitCurrentTestAppInstances() {
+        quitTestAppInstances(Utils.getTestIdentifier());
     }
 
     public static void quitTestAppInstances(String testIdentifier) {

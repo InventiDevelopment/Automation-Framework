@@ -1,17 +1,17 @@
 package cz.inventi.qa.framework.core.objects.test;
 
 import cz.inventi.qa.framework.core.objects.framework.AppInstance;
-import org.testng.asserts.SoftAssert;
+import cz.inventi.qa.framework.core.objects.test.assertions.SoftAssertCollector;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class TestRun {
     private final Map<String, AppInstance> appInstances;
-    private final SoftAssert softAssert;
+    private final SoftAssertCollector softAssertCollector;
 
     public TestRun() {
-        this.softAssert = new SoftAssert();
+        this.softAssertCollector = new SoftAssertCollector();
         this.appInstances = new HashMap<>();
     }
 
@@ -19,7 +19,7 @@ public class TestRun {
         return appInstances;
     }
 
-    public SoftAssert getSoftAssert() {
-        return softAssert;
+    public SoftAssertCollector getSoftAssertCollector() {
+        return softAssertCollector;
     }
 }
