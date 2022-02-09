@@ -4,7 +4,6 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>sample-application</artifactId>
-    <packaging>jar</packaging>
 
     <parent>
         <artifactId>automation-framework</artifactId>
@@ -17,7 +16,6 @@
             <groupId>cz.inventi.qa</groupId>
             <artifactId>core-automation-framework</artifactId>
             <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>
