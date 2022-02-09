@@ -16,6 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.Objects;
 
+@SuppressWarnings("unchecked")
 public class ApiObjectFactory {
 
     public static <T extends ApiObject> void initApiObjects(T apiObject, AOProps parentProps) {

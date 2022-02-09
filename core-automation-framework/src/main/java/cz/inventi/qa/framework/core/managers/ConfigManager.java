@@ -37,8 +37,8 @@ public class ConfigManager {
 
     private void setMapperSettings() {
         mapper
-                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                .configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS, true);
+                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
     }
 
     private void initMandatoryConfigs() {

@@ -79,8 +79,8 @@ public class AppInstance {
                 new ObjectMapperConfig().jackson2ObjectMapperFactory(
                     (cls, charset) ->
                         new ObjectMapper().findAndRegisterModules()
-                            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                            .configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS, true)
+                            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                            .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
                 )
         );
         /* Set logging for debug mode */
