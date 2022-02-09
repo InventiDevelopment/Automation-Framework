@@ -1,7 +1,7 @@
 package cz.inventi.qa.framework.testapps.framework.steps;
 
-import cz.inventi.qa.framework.core.objects.test.steps.StepsBase;
 import cz.inventi.qa.framework.core.objects.test.assertions.Assert;
+import cz.inventi.qa.framework.core.objects.test.steps.StepsBase;
 import cz.inventi.qa.framework.testapps.testweb.webobjects.HomePage;
 import io.qameta.allure.Step;
 
@@ -14,8 +14,10 @@ public class WebPageTestSteps extends StepsBase {
                 .getMenu()
                 .leaveComponent();
 
-        Assert.assertEquals(returnedHomePage.getClass(), HomePage.class,
-                "Returned object for leaving Menu is HomePage.class");
+        Assert.assertEquals(
+                returnedHomePage.getClass(), HomePage.class,
+                "Returned object for leaving Menu is HomePage.class"
+        );
         return this;
     }
 

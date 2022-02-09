@@ -64,6 +64,8 @@ public class TestSuiteParameters {
     }
 
     public static String getParameter(String parameterName) {
-        return parameters.get(parameterName);
+        String paramValue = parameters.get(parameterName);
+        if (paramValue == null) paramValue = parameters.get(parameterName.toLowerCase());
+        return paramValue;
     }
 }
