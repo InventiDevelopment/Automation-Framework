@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
  * API object initialization.
  */
 public class AOProps {
-    private final AppInstance appInstance;
+    private final ApiAppInstance<?> appInstance;
     private final String endpointUrl;
     private String fullUrl = "";
     private Class<?> returnKlass;
@@ -25,7 +25,7 @@ public class AOProps {
     private ApiObject parentApiObject;
     private AuthParameters authParameters;
 
-    public AOProps(String url, AppInstance appInstance) {
+    public AOProps(String url, ApiAppInstance<?> appInstance) {
         this.endpointUrl = url;
         this.appInstance = appInstance;
     }
@@ -34,7 +34,7 @@ public class AOProps {
             String url,
             T parentApiObject,
             AOProps parentProps,
-            AppInstance appInstance,
+            ApiAppInstance<?> appInstance,
             ApiAuthMethod apiAuthMethod
     ) {
         this(url, appInstance);
@@ -104,7 +104,7 @@ public class AOProps {
         this.authParameters = authParameters;
     }
 
-    public AppInstance getAppInstance() {
+    public ApiAppInstance<?> getAppInstance() {
         return appInstance;
     }
 

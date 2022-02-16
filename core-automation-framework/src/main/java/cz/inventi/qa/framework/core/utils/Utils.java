@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.regex.Matcher;
 
 public class Utils {
+    public static final String TEST_RESOURCES_FOLDER = "test-resources";
 
     public static <T extends Enum<?>> T getEnum(Class<T> enumClass, String findValue) {
         return Arrays.stream(enumClass.getEnumConstants())
@@ -27,18 +28,14 @@ public class Utils {
     }
 
     /**
-     * Retrieves path to given file in global project test resources folder.
+     * Retrieves absolute path to given file in global project test resources folder.
      * Folder is created if it does not exist.
      * @return Path to the file inside test resources folder
      */
     public static Path getTestResourcesFolder() {
         String projectPath = Paths.get("").toAbsolutePath().toString();
         if (!projectPath.endsWith(File.separator)) projectPath += File.separator;
-        String testResourcesFolderPath = "../test-resources".replaceAll(
-                "([\\\\/])",
-                Matcher.quoteReplacement(File.separator)
-        );
-        File testResourcesFolder = new File(projectPath + testResourcesFolderPath);
+        File testResourcesFolder = new File(projectPath + getTestResourcesFolderRelative());
         if (!testResourcesFolder.exists()) {
             if (testResourcesFolder.mkdirs()) {
                 Log.info("Created test-resources (" + testResourcesFolder.toPath() + ") directory");
@@ -47,6 +44,18 @@ public class Utils {
             }
         }
         return testResourcesFolder.toPath().toAbsolutePath();
+    }
+
+    /**
+     * Retrieves relative path to given file in global project test resources folder.
+     * Folder is created if it does not exist.
+     * @return Path to the file inside test resources folder
+     */
+    public static Path getTestResourcesFolderRelative() {
+        return Path.of(
+                "../",
+                TEST_RESOURCES_FOLDER.replaceAll("([\\\\/])", Matcher.quoteReplacement(File.separator))
+        );
     }
 
     /**

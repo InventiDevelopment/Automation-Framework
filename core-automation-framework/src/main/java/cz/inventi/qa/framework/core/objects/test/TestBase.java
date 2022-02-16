@@ -62,7 +62,7 @@ public abstract class TestBase {
     @AfterClass(alwaysRun = true)
     public void quit() {
         handleSoftAssertions();
-        FrameworkManager.quitCurrentTestAppInstances();
+        FrameworkManager.quitCurrentTestRun();
     }
 
     /**

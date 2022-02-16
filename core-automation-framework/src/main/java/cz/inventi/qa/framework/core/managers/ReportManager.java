@@ -3,6 +3,7 @@ package cz.inventi.qa.framework.core.managers;
 import cz.inventi.qa.framework.core.allure.AllureRestAssured;
 import cz.inventi.qa.framework.core.factories.web.webelement.WebElementLocator;
 import cz.inventi.qa.framework.core.objects.framework.AppInstance;
+import cz.inventi.qa.framework.core.objects.web.WebAppInstance;
 import io.qameta.allure.Allure;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
@@ -36,7 +37,7 @@ public class ReportManager {
     public static void addWebAppScreenshot(
             String description,
             WebElementLocator webElementLocator,
-            AppInstance appInstance
+            WebAppInstance<?> appInstance
     ) {
         boolean shouldTakeScreenshots = appInstance
                 .getConfigManager()

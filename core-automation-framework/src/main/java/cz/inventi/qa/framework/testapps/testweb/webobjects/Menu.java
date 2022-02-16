@@ -1,6 +1,7 @@
 package cz.inventi.qa.framework.testapps.testweb.webobjects;
 
 import cz.inventi.qa.framework.core.annotations.web.FindElement;
+import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
 import cz.inventi.qa.framework.core.objects.web.WOProps;
 import cz.inventi.qa.framework.core.objects.web.WebComponent;
 import cz.inventi.qa.framework.core.objects.web.WebElement;
@@ -27,7 +28,7 @@ public class Menu<T extends WebObject> extends WebComponent<T> {
                 return menuLink;
             }
         }
-        throw new RuntimeException("Menu link not found.");
+        throw new FrameworkException("Menu link not found.");
     }
 
     public HomePage clickHome () {

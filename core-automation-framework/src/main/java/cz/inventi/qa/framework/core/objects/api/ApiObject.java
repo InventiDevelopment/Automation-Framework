@@ -4,8 +4,9 @@ import cz.inventi.qa.framework.core.annotations.api.EndpointSpecs;
 import cz.inventi.qa.framework.core.annotations.api.handlers.EndpointSpecsHandler;
 import cz.inventi.qa.framework.core.data.enums.api.ApiAuthMethod;
 import cz.inventi.qa.framework.core.factories.api.ApiBuilder;
+import cz.inventi.qa.framework.core.objects.AbstractTestObject;
 
-public class ApiObject {
+public class ApiObject extends AbstractTestObject {
     private final AOProps props;
 
     public ApiObject(AOProps props) {

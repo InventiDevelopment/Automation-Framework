@@ -3,11 +3,7 @@ package cz.inventi.qa.framework.core.factories.api;
 import cz.inventi.qa.framework.core.annotations.api.ApiAuth;
 import cz.inventi.qa.framework.core.annotations.api.EndpointSpecs;
 import cz.inventi.qa.framework.core.data.enums.api.ApiAuthMethod;
-import cz.inventi.qa.framework.core.objects.api.AOProps;
-import cz.inventi.qa.framework.core.objects.api.Api;
-import cz.inventi.qa.framework.core.objects.api.ApiObject;
-import cz.inventi.qa.framework.core.objects.api.Endpoint;
-import cz.inventi.qa.framework.core.objects.framework.AppInstance;
+import cz.inventi.qa.framework.core.objects.api.*;
 import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
 
 import java.lang.reflect.Constructor;
@@ -115,7 +111,7 @@ public class ApiObjectFactory {
         }
     }
 
-    public static <T extends Api> T initApi(Class<T> apiClass, AppInstance appInstance) {
+    public static <T extends Api> T initApi(Class<T> apiClass, ApiAppInstance<?> appInstance) {
         String appUrl = appInstance.getConfigManager().getCurrentApplicationEnvironmentUrl();
         AOProps aoProps = new AOProps(
                 appUrl,
