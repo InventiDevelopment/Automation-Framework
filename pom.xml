@@ -34,6 +34,7 @@
         <selenium.version>4.1.2</selenium.version>
         <webdrivermanager.version>5.0.3</webdrivermanager.version>
         <jackson.version>2.13.1</jackson.version>
+	    <google.guava.version>31.0.1-jre</google.guava.version>
     </properties>
 
     <build>

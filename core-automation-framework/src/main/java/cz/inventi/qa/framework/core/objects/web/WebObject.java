@@ -5,10 +5,11 @@ import cz.inventi.qa.framework.core.annotations.web.handlers.FindElementHandler;
 import cz.inventi.qa.framework.core.factories.web.PageBuilder;
 import cz.inventi.qa.framework.core.factories.web.webobject.WebObjectFactory;
 import cz.inventi.qa.framework.core.managers.LanguageManager;
+import cz.inventi.qa.framework.core.objects.AbstractTestObject;
 import cz.inventi.qa.framework.core.objects.framework.AppInstance;
 import org.openqa.selenium.WebDriver;
 
-public abstract class WebObject {
+public abstract class WebObject extends AbstractTestObject {
     private final WOProps props;
 
     public WebObject(WOProps props) {
@@ -41,7 +42,7 @@ public abstract class WebObject {
         return getAppInstance().getWebDriverManager().getDriver();
     }
 
-    public AppInstance getAppInstance() {
+    public WebAppInstance<?> getAppInstance() {
         return props.getAppInstance();
     }
 

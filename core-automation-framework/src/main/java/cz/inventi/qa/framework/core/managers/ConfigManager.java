@@ -25,9 +25,9 @@ public class ConfigManager {
     private static final String CONFIG_DIRECTORY = "src/main/resources/config/";
     private final ObjectMapper mapper;
     private final Map<ConfigFile, Object> configFiles;
-    private final AppInstance appInstance;
+    private final AppInstance<?> appInstance;
 
-    public ConfigManager(AppInstance appInstance) {
+    public ConfigManager(AppInstance<?> appInstance) {
         this.appInstance = appInstance;
         configFiles = new HashMap<>();
         mapper = new ObjectMapper(new YAMLFactory());

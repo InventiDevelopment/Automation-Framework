@@ -1,6 +1,5 @@
 package cz.inventi.qa.framework.core.objects.api;
 
-import cz.inventi.qa.framework.core.objects.framework.AppInstance;
 import cz.inventi.qa.framework.core.objects.framework.Log;
 import cz.inventi.qa.framework.core.objects.variables.api.ApiAppVariables;
 import cz.inventi.qa.framework.core.utils.Utils;
@@ -21,7 +20,7 @@ public class Api extends ApiObject {
         this.baseUrl = baseUrl;
     }
 
-    public AppInstance getAppInstance() {
+    public ApiAppInstance<?> getAppInstance() {
         return getProps().getAppInstance();
     }
 

@@ -19,17 +19,20 @@ Boilerplate for easier testing with Java.
 This project is a Maven configuration using multiple third-party libraries for compiling, testing and in other phases. For more details about particular software used please visit appropriate POM files in the project. Below we provide basic information about software used along with developer's webpage and license type under which given software is supplied.
 
 - **[Allure Framework](https://docs.qameta.io/allure)** (Apache License 2.0)
+- **[AssertJ](https://assertj.github.io/doc/)** (Apache License 2.0)
 - **[Apache Commons](https://commons.apache.org)** (Apache License 2.0)
 - **[Apache Log4J](https://logging.apache.org/log4j/2.x)** (Apache License 2.0)
 - **[AspectJ Weaver](https://www.eclipse.org/aspectj)** (Eclipse Public License 1.0)
+- **[Google Guava](https://github.com/google/guava)** (Apache License 2.0) 
 - **[Hibernate Validator](https://hibernate.org/validator/)** (Apache License 2.0)
+- **[Jackson](https://github.com/FasterXML/jackson)** (Apache License 2.0)
+- **[Jackson](https://github.com/FasterXML/jackson)** (Apache License 2.0)
 - **[Jackson](https://github.com/FasterXML/jackson)** (Apache License 2.0)
 - **[Lombok](https://projectlombok.org)** (MIT License)
 - **[Maven Failsafe Plugin](https://maven.apache.org/surefire/maven-failsafe-plugin)** (Apache License 2.0)
 - **[Maven SureFire Plugin](http://maven.apache.org/surefire/maven-surefire-plugin)** (Apache License 2.0)
 - **[REST Assured](https://rest-assured.io)** (Apache License 2.0)
 - **[Selenium WebDriver](https://www.selenium.dev)** (Apache License 2.0)
-- **[Slf4j](http://www.slf4j.org)** (MIT License)
 - **[TestNG](https://testng.org/doc)** (Apache License 2.0)
 - **[WebDriverManager](https://github.com/bonigarcia/webdrivermanager)** (Apache License 2.0)
 

@@ -4,9 +4,6 @@ import cz.inventi.qa.framework.core.annotations.web.FindElement;
 import cz.inventi.qa.framework.core.annotations.web.handlers.FindElementHandler;
 import cz.inventi.qa.framework.core.factories.web.PageBuilder;
 import cz.inventi.qa.framework.core.factories.web.webobject.WebObjectFactory;
-import cz.inventi.qa.framework.core.managers.ConfigManager;
-import cz.inventi.qa.framework.core.managers.WebDriverManager;
-import cz.inventi.qa.framework.core.objects.framework.AppInstance;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
@@ -54,13 +51,14 @@ public class WebComponentList<R extends WebComponent<?>> {
 
     private int getNumberOfComponents() {
         if (getAppInstance().getConfigManager().getWebDriverConfigData().waitsAutomatically()) {
+            int maxWait = getAppInstance().getConfigManager().getWebDriverConfigData().getTimeouts().getMax();
             FluentWait<WebDriver> fluentWait = new FluentWait<>(getDriver())
-                    .withTimeout(Duration.ofMillis(getAppInstance().getConfigManager().getWebDriverConfigData().getTimeouts().getMax()))
+                    .withTimeout(Duration.ofMillis(maxWait))
                     .pollingEvery(Duration.ofMillis(100))
                     .ignoring(NoSuchElementException.class)
                     .ignoring(StaleElementReferenceException.class)
-                    .withMessage("WebComponentList of '" + componentClass + "' with xpath '" + componentXpath + "' could not be found on page.");
-
+                    .withMessage("WebComponentList of '" + componentClass + "' with xpath '" + componentXpath +
+                            "' could not be found on page.");
             fluentWait.until(ExpectedConditions.numberOfElementsToBeMoreThan(By.xpath(componentXpath), 0));
         }
         return getDriver().findElements(By.xpath(componentXpath)).size();
@@ -69,14 +67,19 @@ public class WebComponentList<R extends WebComponent<?>> {
     private <O extends WebObject> WOProps getWOProps (int xpathIndex) {
         FindElementHandler componentXpathWithIndex = new FindElementHandler(componentXpath, xpathIndex);
         String parentXpath = props.getXpath();
-        return new WOProps(PageBuilder.generateXpathWithParent(parentXpath, componentXpathWithIndex), returnComponent, props, getAppInstance());
+        return new WOProps(
+                PageBuilder.generateXpathWithParent(parentXpath, componentXpathWithIndex),
+                returnComponent,
+                props,
+                getAppInstance()
+        );
     }
 
     public WebDriver getDriver() {
         return props.getAppInstance().getWebDriverManager().getDriver();
     }
 
-    public AppInstance getAppInstance() {
+    public WebAppInstance<?> getAppInstance() {
         return props.getAppInstance();
     }
 }

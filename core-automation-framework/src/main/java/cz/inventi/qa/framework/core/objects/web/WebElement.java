@@ -3,7 +3,6 @@ package cz.inventi.qa.framework.core.objects.web;
 import cz.inventi.qa.framework.core.data.web.Timeouts;
 import cz.inventi.qa.framework.core.factories.web.webelement.WebElementLocator;
 import cz.inventi.qa.framework.core.managers.ReportManager;
-import cz.inventi.qa.framework.core.objects.framework.AppInstance;
 import cz.inventi.qa.framework.core.objects.framework.Log;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
@@ -24,11 +23,15 @@ public class WebElement implements org.openqa.selenium.WebElement {
     private final JavascriptExecutor jsExec;
     private final WebElementLocator webElementLocator;
     private final Actions actions;
-    private final AppInstance appInstance;
+    private final WebAppInstance<?> appInstance;
     private final Timeouts timeouts;
     private org.openqa.selenium.WebElement selWebElement;
 
-    public WebElement(org.openqa.selenium.WebElement selWebElement, WebElementLocator webElementLocator, AppInstance appInstance) {
+    public WebElement(
+            org.openqa.selenium.WebElement selWebElement,
+            WebElementLocator webElementLocator,
+            WebAppInstance<?> appInstance
+    ) {
         this.selWebElement = selWebElement;
         this.webElementLocator = webElementLocator;
         this.appInstance = appInstance;
@@ -92,7 +95,7 @@ public class WebElement implements org.openqa.selenium.WebElement {
         checkElementState();
         waitUntilClickable();
         click();
-        selWebElement.sendKeys();
+        selWebElement.sendKeys(keysToSend);
         afterAction(false);
     }
 
@@ -314,7 +317,8 @@ public class WebElement implements org.openqa.selenium.WebElement {
 
     private void printAction(String inputValue) {
         String actionName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        Log.debug("Trying to do '" + actionName + "' action with input value '" + inputValue + "' on element with XPATH: '" + getXpath() + "'");
+        Log.debug("Trying to do '" + actionName + "' action with input value '" + inputValue + "'" +
+                " on element with XPATH: '" + getXpath() + "'");
     }
 
     private void afterAction(boolean takeScreenshot) {

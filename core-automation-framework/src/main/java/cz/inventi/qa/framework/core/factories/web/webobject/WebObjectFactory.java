@@ -1,15 +1,10 @@
 package cz.inventi.qa.framework.core.factories.web.webobject;
 
-import cz.inventi.qa.framework.core.factories.web.PageBuilder;
-import cz.inventi.qa.framework.core.objects.framework.AppInstance;
-import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
-import cz.inventi.qa.framework.core.objects.web.WOProps;
-import cz.inventi.qa.framework.core.objects.web.WebObject;
-import cz.inventi.qa.framework.core.objects.framework.Log;
-import cz.inventi.qa.framework.core.objects.web.WebComponent;
-import cz.inventi.qa.framework.core.objects.web.WebPage;
 import cz.inventi.qa.framework.core.annotations.web.FindElement;
 import cz.inventi.qa.framework.core.annotations.web.NoParent;
+import cz.inventi.qa.framework.core.factories.web.PageBuilder;
+import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
+import cz.inventi.qa.framework.core.objects.web.*;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -25,12 +20,15 @@ public class WebObjectFactory {
         initElements(webObject.getClass(), webObject, parentProps);
     }
 
-    private static <T extends WebObject> void initElements (Class<? extends WebObject> parentWebObjectClass, T webObject, WOProps parentProps) {
+    private static <T extends WebObject> void initElements (
+            Class<? extends WebObject> parentWebObjectClass,
+            T webObject,
+            WOProps parentProps
+    ) {
         for (Field childComponentField : parentWebObjectClass.getDeclaredFields()) {
             if (!Modifier.toString(childComponentField.getModifiers()).equals("")) {
                 childComponentField.setAccessible(true);
             }
-
             if (isRelatedWebComponentField(childComponentField)) {
                 assignWebComponentField(childComponentField, webObject, parentProps);
             }
@@ -41,14 +39,24 @@ public class WebObjectFactory {
         return WebComponent.class.isAssignableFrom(field.getType());
     }
 
-    private static <T extends WebObject> void assignWebComponentField(Field childComponentField, T parentWebObject, WOProps parentProps) {
-        T childWebComponent = WebObjectFactory.reflectionInitWOClass((Class<T>) childComponentField.getType(), new Class<?>[]{WOProps.class}, new Object[]{getWOProps(childComponentField, parentWebObject, parentProps)});
-
+    private static <T extends WebObject> void assignWebComponentField(
+            Field childComponentField,
+            T parentWebObject,
+            WOProps parentProps
+    ) {
+        T childWebComponent = WebObjectFactory.reflectionInitWOClass(
+                (Class<T>) childComponentField.getType(),
+                new Class<?>[]{WOProps.class},
+                new Object[]{getWOProps(childComponentField, parentWebObject, parentProps)}
+        );
         try {
             childComponentField.setAccessible(true);
             childComponentField.set(parentWebObject, childWebComponent);
         } catch (IllegalAccessException e) {
-            throw new FrameworkException("Could not assign WebObject field object '" + childComponentField.getType().getName() + "'.", e);
+            throw new FrameworkException(
+                    "Could not assign WebObject field object '" + childComponentField.getType().getName() + "'.",
+                    e
+            );
         }
     }
 
@@ -56,7 +64,10 @@ public class WebObjectFactory {
         String finalXpath = "";
 
         if (!hasNoParentAnnotation(f)) {
-            finalXpath = PageBuilder.generateXpathWithParent(parentWebObject.getXpath(), f.getType().getDeclaredAnnotation(FindElement.class));
+            finalXpath = PageBuilder.generateXpathWithParent(
+                    parentWebObject.getXpath(),
+                    f.getType().getDeclaredAnnotation(FindElement.class)
+            );
         }
         return new WOProps(finalXpath, parentWebObject, parentProps, parentProps.getAppInstance());
     }
@@ -76,11 +87,25 @@ public class WebObjectFactory {
         }
     }
 
-    public static <T extends WebPage> T initPage (Class<T> webPageClass, AppInstance appInstance) {
-        return reflectionInitWOClass(webPageClass, new Class[] {WOProps.class}, new Object[] {new WOProps(webPageClass.getDeclaredAnnotation(FindElement.class), webPageClass, appInstance)});
+    public static <T extends WebPage> T initPage (Class<T> webPageClass, WebAppInstance<?> appInstance) {
+        return reflectionInitWOClass(
+                webPageClass,
+                new Class[] {WOProps.class},
+                new Object[] {
+                        new WOProps(
+                                webPageClass.getDeclaredAnnotation(FindElement.class),
+                                webPageClass,
+                                appInstance
+                        )
+                }
+        );
     }
 
-    public static <T extends WebObject> T reflectionInitWOClass(Class<T> klass, Class<?>[] constructorArgs, Object[] constructorParams) {
+    public static <T extends WebObject> T reflectionInitWOClass(
+            Class<T> klass,
+            Class<?>[] constructorArgs,
+            Object[] constructorParams
+    ) {
         if (constructorParams == null) constructorParams = new Object[0];
         if (constructorArgs == null) constructorArgs = new Class<?>[0];
 
@@ -88,8 +113,14 @@ public class WebObjectFactory {
             Constructor<?> klassConstructor = klass.getConstructor(constructorArgs);
             klassConstructor.setAccessible(true);
             return (T) klassConstructor.newInstance(constructorParams);
-        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            throw new FrameworkException("Could not reflectively initialize " + klass + ". Please check that all web components extend WebComponent<T> and have generic <T extends WebObject> type defined.\n" + e.getCause());
+        } catch (
+                NoSuchMethodException | InstantiationException |
+                IllegalAccessException | InvocationTargetException e
+        ) {
+            throw new FrameworkException("Could not reflectively initialize " + klass + ". Please check that all " +
+                    "web components extend WebComponent<T> and have generic <T extends WebObject> type defined.\n" +
+                    e.getCause()
+            );
         }
     }
 

@@ -3,8 +3,8 @@ package cz.inventi.qa.framework.core.factories.web.webelement;
 import cz.inventi.qa.framework.core.annotations.web.FindElement;
 import cz.inventi.qa.framework.core.data.web.GeneralSettings;
 import cz.inventi.qa.framework.core.factories.web.PageBuilder;
-import cz.inventi.qa.framework.core.objects.framework.AppInstance;
 import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
+import cz.inventi.qa.framework.core.objects.web.WebAppInstance;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.pagefactory.ElementLocator;
 import org.openqa.selenium.support.ui.FluentWait;
@@ -19,11 +19,15 @@ public class WebElementLocator implements ElementLocator {
     private final GeneralSettings generalDriverSettings;
     private String xpath;
 
-    public WebElementLocator(final Field field, final AppInstance appInstance) {
-        this(field.getAnnotation(FindElement.class).xpath(), field.getAnnotation(FindElement.class).index(), appInstance);
+    public WebElementLocator(final Field field, final WebAppInstance<?> appInstance) {
+        this(
+                field.getAnnotation(FindElement.class).xpath(),
+                field.getAnnotation(FindElement.class).index(),
+                appInstance
+        );
     }
 
-    public WebElementLocator(final String xpathLocator, final int xpathIndex, final AppInstance appInstance) {
+    public WebElementLocator(final String xpathLocator, final int xpathIndex, final WebAppInstance<?> appInstance) {
         this.driver = appInstance.getWebDriverManager().getDriver();
         generalDriverSettings = appInstance.getConfigManager().getWebDriverConfigData().getGeneralSettings();
         elementAnnotation = new FindElement()

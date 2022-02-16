@@ -6,10 +6,11 @@ import cz.inventi.qa.framework.core.data.enums.ApplicationType;
 import cz.inventi.qa.framework.core.data.enums.ProxyScheme;
 import cz.inventi.qa.framework.core.data.enums.RunMode;
 import cz.inventi.qa.framework.core.objects.api.Api;
-import cz.inventi.qa.framework.core.objects.framework.AppInstance;
+import cz.inventi.qa.framework.core.objects.api.ApiAppInstance;
 import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
 import cz.inventi.qa.framework.core.objects.framework.Log;
 import cz.inventi.qa.framework.core.objects.test.TestRun;
+import cz.inventi.qa.framework.core.objects.web.WebAppInstance;
 import cz.inventi.qa.framework.core.objects.web.WebPage;
 import cz.inventi.qa.framework.core.utils.Utils;
 
@@ -36,7 +37,6 @@ public class FrameworkManager {
     private void setProxy() {
         String proxyServer = System.getProperty("proxyServer");
         String proxyPort = System.getProperty("proxyPort");
-
         if (proxyServer != null && proxyPort != null) {
             proxySettings = new ProxySettings(
                     System.getProperty("proxyUser"),
@@ -49,11 +49,11 @@ public class FrameworkManager {
     }
 
     public <T extends WebPage> T initWebAppAt(Class<T> webPage, String testIdentifier) {
-        return retrieveOrInitializeAppInstance(webPage, testIdentifier).initWebPage(webPage);
+        return retrieveOrInitializeWebAppInstance(webPage, testIdentifier).retrieveOrInitWebPage(webPage);
     }
 
     public <T extends Api> T initApiAppAt(Class<T> api, String testIdentifier) {
-        return retrieveOrInitializeAppInstance(api, testIdentifier).initApi(api);
+        return retrieveOrInitializeApiAppInstance(api, testIdentifier).retrieveOrInitApi(api);
     }
 
     public static Map<String, TestRun> getTestRuns() {
@@ -69,26 +69,20 @@ public class FrameworkManager {
         return frameworkManager;
     }
 
-    public static void quitCurrentTestAppInstances() {
-        quitTestAppInstances(Utils.getTestIdentifier());
+    public static void quitCurrentTestRun() {
+        Log.info("Quitting TestRun (" + Utils.getTestIdentifier() + ")");
+        getCurrentTestRun().quit(Utils.getTestIdentifier());
+        getTestRuns().remove(Utils.getTestIdentifier());
+        Log.info("TestRun (" + Utils.getTestIdentifier() + ") successfully quit");
+        Log.info(getTestRuns().size() + " TestRun instances left in the stack");
     }
 
-    public static void quitTestAppInstances(String testIdentifier) {
-        Log.info("Quitting all AppInstances created by test thread (" + testIdentifier + ")");
-        Map<String, AppInstance> testAppInstances = getTestRunAppInstances(testIdentifier);
-        if (testAppInstances.size() > 0) {
-            if (testAppInstances.get(testIdentifier) != null) {
-                testAppInstances.forEach((appName, appInstance) -> appInstance.quit());
-                testAppInstances.remove(testIdentifier);
-            }
-            if (testAppInstances.size() == 0) {
-                Log.info("No other AppInstances left running in the stack");
-            }
-        }
+    private static Map<String, WebAppInstance<?>> getTestRunWebAppInstances(String testIdentifier) {
+        return getTestRuns().get(testIdentifier).getWebAppInstances();
     }
 
-    private static Map<String, AppInstance> getTestRunAppInstances(String testIdentifier) {
-        return getTestRuns().get(testIdentifier).getAppInstances();
+    private static Map<String, ApiAppInstance<?>> getTestRunApiAppInstances(String testIdentifier) {
+        return getTestRuns().get(testIdentifier).getApiAppInstances();
     }
 
     public static RunMode getRunMode() {
@@ -111,18 +105,38 @@ public class FrameworkManager {
         Log.setGlobalLogLevel(runMode);
     }
 
-    private synchronized AppInstance retrieveOrInitializeAppInstance(Class<?> appClass, String testIdentifier) {
+    @SuppressWarnings("unchecked")
+    private synchronized <T extends WebPage> WebAppInstance<T> retrieveOrInitializeWebAppInstance(
+            Class<T> appClass,
+            String testIdentifier
+    ) {
+        manageTestRun(testIdentifier);
         String appName = validateAndGetAppName(appClass);
-        testRuns.computeIfAbsent(testIdentifier, k -> new TestRun());
-        Map<String, AppInstance> testAppInstances = getTestRunAppInstances(testIdentifier);
-        AppInstance appInstance = testAppInstances.get(appName);
-        if (appInstance == null) {
-            Log.info("Creating AppInstance (" + appClass.getName() + ") for test thread (" + testIdentifier + ")");
-            appInstance = new AppInstance(getApplicationType(appClass), appName);
-            testAppInstances.put(appName, appInstance);
-            Log.info("Successfully created new AppInstance for test thread (" + testIdentifier + ")");
+        Map<String, WebAppInstance<?>> webAppInstances = getTestRunWebAppInstances(testIdentifier);
+        if (!webAppInstances.containsKey(appName)) {
+            logCreatingAppInstance(appClass.getName(), testIdentifier, ApplicationType.WEB);
+            WebAppInstance<T> appInstance = new WebAppInstance<T>(getApplicationType(appClass), appName);
+            webAppInstances.put(appName, appInstance);
+            logFinishedCreatingAppInstance(testIdentifier, ApplicationType.WEB);
         }
-        return appInstance;
+        return (WebAppInstance<T>) webAppInstances.get(appName);
+    }
+
+    @SuppressWarnings("unchecked")
+    private synchronized <T extends Api> ApiAppInstance<T> retrieveOrInitializeApiAppInstance(
+            Class<T> appClass,
+            String testIdentifier
+    ) {
+        manageTestRun(testIdentifier);
+        String appName = validateAndGetAppName(appClass);
+        Map<String, ApiAppInstance<?>> apiAppInstances = getTestRunApiAppInstances(testIdentifier);
+        if (!apiAppInstances.containsKey(appName)) {
+            logCreatingAppInstance(appClass.getName(), testIdentifier, ApplicationType.API);
+            ApiAppInstance<T> appInstance = new ApiAppInstance<T>(getApplicationType(appClass), appName);
+            apiAppInstances.put(appName, appInstance);
+            logFinishedCreatingAppInstance(testIdentifier, ApplicationType.API);
+        }
+        return (ApiAppInstance<T>) apiAppInstances.get(appName);
     }
 
     private ApplicationType getApplicationType(Class<?> startingAppClass) {
@@ -150,5 +164,17 @@ public class FrameworkManager {
 
     public static ProxySettings getProxySettings() {
         return proxySettings;
+    }
+
+    private void logFinishedCreatingAppInstance(String testIdentifier, ApplicationType type) {
+        Log.info("Successfully created new " + type + " AppInstance for test thread (" + testIdentifier + ")");
+    }
+
+    private void logCreatingAppInstance(String name, String testIdentifier, ApplicationType type) {
+        Log.info("Creating " + type + " AppInstance (" + name + ") for test thread (" + testIdentifier + ")");
+    }
+
+    private void manageTestRun(String testIdentifier) {
+        testRuns.computeIfAbsent(testIdentifier, k -> new TestRun());
     }
 }
