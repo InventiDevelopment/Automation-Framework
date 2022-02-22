@@ -4,7 +4,10 @@ import cz.inventi.qa.framework.core.annotations.web.FindElement;
 import cz.inventi.qa.framework.core.annotations.web.NoParent;
 import cz.inventi.qa.framework.core.factories.web.PageBuilder;
 import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
-import cz.inventi.qa.framework.core.objects.web.*;
+import cz.inventi.qa.framework.core.objects.web.WOProps;
+import cz.inventi.qa.framework.core.objects.web.WebAppInstance;
+import cz.inventi.qa.framework.core.objects.web.WebComponent;
+import cz.inventi.qa.framework.core.objects.web.WebObject;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -62,7 +65,6 @@ public class WebObjectFactory {
 
     private static <T extends WebObject> WOProps getWOProps (Field f, T parentWebObject, WOProps parentProps) {
         String finalXpath = "";
-
         if (!hasNoParentAnnotation(f)) {
             finalXpath = PageBuilder.generateXpathWithParent(
                     parentWebObject.getXpath(),
@@ -87,14 +89,14 @@ public class WebObjectFactory {
         }
     }
 
-    public static <T extends WebPage> T initPage (Class<T> webPageClass, WebAppInstance<?> appInstance) {
+    public static <T extends WebObject> T initWebObject(Class<T> webObjectClass, WebAppInstance<?> appInstance) {
         return reflectionInitWOClass(
-                webPageClass,
+                webObjectClass,
                 new Class[] {WOProps.class},
                 new Object[] {
                         new WOProps(
-                                webPageClass.getDeclaredAnnotation(FindElement.class),
-                                webPageClass,
+                                webObjectClass.getDeclaredAnnotation(FindElement.class),
+                                webObjectClass,
                                 appInstance
                         )
                 }
@@ -108,7 +110,6 @@ public class WebObjectFactory {
     ) {
         if (constructorParams == null) constructorParams = new Object[0];
         if (constructorArgs == null) constructorArgs = new Class<?>[0];
-
         try {
             Constructor<?> klassConstructor = klass.getConstructor(constructorArgs);
             klassConstructor.setAccessible(true);

@@ -10,11 +10,11 @@ import lombok.Getter;
 public class HomePage extends BasePage<HomePage> {
 
     @FindElement(xpath = "//div[contains(@class, 'toolTipImage')]")
-    WebElement tooltipImg;
+    WebElement<HomePage> tooltipImg;
     @FindElement(xpath = "//div[contains(@class, 'scrollable')]")
-    WebElement scrollableElement;
+    WebElement<HomePage> scrollableElement;
     @FindElement(xpath = "//span[contains(@class, 'toolTipText')]")
-    WebElement toolTipText;
+    WebElement<HomePage> toolTipText;
 
     public HomePage(WOProps props) {
         super(props);

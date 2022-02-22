@@ -5,11 +5,9 @@ import cz.inventi.qa.framework.core.annotations.web.handlers.FindElementHandler;
 import cz.inventi.qa.framework.core.factories.web.PageBuilder;
 import cz.inventi.qa.framework.core.factories.web.webobject.WebObjectFactory;
 import cz.inventi.qa.framework.core.managers.LanguageManager;
-import cz.inventi.qa.framework.core.objects.AbstractTestObject;
-import cz.inventi.qa.framework.core.objects.framework.AppInstance;
 import org.openqa.selenium.WebDriver;
 
-public abstract class WebObject extends AbstractTestObject {
+public abstract class WebObject {
     private final WOProps props;
 
     public WebObject(WOProps props) {
@@ -27,15 +25,18 @@ public abstract class WebObject extends AbstractTestObject {
 
     public FindElement getFindElementAnnotation () {
         FindElement findElement = getClass().getAnnotation(FindElement.class);
-
-        if (findElement == null) {
-            return new FindElementHandler("", 0);
-        }
+        if (findElement == null) return new FindElementHandler("", 0);
         return getClass().getAnnotation(FindElement.class);
     }
 
-    public <T extends WebPage> T initPage(Class<T> webPageClass) {
-        return WebObjectFactory.initPage(webPageClass, getProps().getAppInstance());
+    /**
+     * Create a WebObject instance withing given AppInstance.
+     * @param webObjectClass class of given WebObject (WebPage, WebComponent, WebObject)
+     * @param <T> generic object type
+     * @return Initialized WebObject
+     */
+    public <T extends WebObject> T navigateTo(Class<T> webObjectClass) {
+        return WebObjectFactory.initWebObject(webObjectClass, getProps().getAppInstance());
     }
 
     public WebDriver getDriver() {

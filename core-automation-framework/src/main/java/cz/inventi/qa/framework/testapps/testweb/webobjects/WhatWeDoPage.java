@@ -9,13 +9,13 @@ import lombok.Getter;
 public class WhatWeDoPage extends BasePage<WhatWeDoPage> {
 
     @FindElement(xpath = "//table[@id='careerOptions']")
-    WebElement careerOptionsTable;
+    WebElement<WhatWeDoPage> careerOptionsTable;
     @FindElement(xpath = "//button[@id='appendSomeContent']")
-    WebElement appendContentBtn;
+    WebElement<WhatWeDoPage> appendContentBtn;
     @FindElement(xpath = "//button[@id='refreshSomeContent']")
-    WebElement refreshContentBtn;
+    WebElement<WhatWeDoPage> refreshContentBtn;
     @FindElement(xpath = "//div[@id='appendedContent']")
-    WebElement appendedContent;
+    WebElement<WhatWeDoPage> appendedContent;
 
     public WhatWeDoPage(WOProps props) {
         super(props);

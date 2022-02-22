@@ -13,11 +13,11 @@ import org.testng.Assert;
 public class SideInfo<T extends WebObject> extends WebComponent<T> {
 
     @FindElement(xpath = "/h3")
-    WebElement infoTitle;
+    WebElement<SideInfo<T>> infoTitle;
     @FindElement(xpath = "/p")
-    WebElement infoText;
+    WebElement<SideInfo<T>> infoText;
     @FindElement(xpath = "/span/a")
-    WebElement readMoreLink;
+    WebElement<SideInfo<T>> readMoreLink;
 
     public SideInfo(WOProps props) {
         super(props);

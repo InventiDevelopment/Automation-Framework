@@ -16,11 +16,11 @@ public class BasePage<T extends WebPage> extends WebPage {
     Popup<T> popup;
 
     @FindElement(xpath = "//div[@id='screen-overlay')]")
-    WebElement loadingOverlay;
+    WebElement<T> loadingOverlay;
     @FindElement(xpath = "//div[contains(@class, 'articleTitleWrapper')]/h1")
-    WebElement articleTitle;
+    WebElement<T> articleTitle;
     @FindElement(xpath = "//div[@id='mainContent']")
-    WebElement mainContentDiv;
+    WebElement<T> mainContentDiv;
 
     public BasePage(WOProps props) {
         super(props);

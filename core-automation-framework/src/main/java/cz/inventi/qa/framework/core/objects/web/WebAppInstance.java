@@ -19,7 +19,7 @@ public class WebAppInstance<T extends WebPage> extends AppInstance<T> {
         if (getApplicationStartingClass() == null) {
             webDriverManager = new WebDriverManager(this);
             webDriverManager.init();
-            setApplicationStartingClass(WebObjectFactory.initPage(startingWebPage, this));
+            setApplicationStartingClass(WebObjectFactory.initWebObject(startingWebPage, this));
         }
         return getApplicationStartingClass();
     }

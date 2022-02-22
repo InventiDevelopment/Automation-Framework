@@ -12,16 +12,20 @@ public class LanguageTestSteps extends StepsBase {
 
     @Step("Check Current Language Is Set to '{language}'")
     public LanguageTestSteps checkCurrentLanguageIsSetTo(Language language) {
-        Assert.assertEquals(homePage.getAppInstance().getLanguageManager().getCurrentLanguage(),
+        Assert.assertEquals(
+                homePage.getAppInstance().getLanguageManager().getCurrentLanguage(),
                 language,
-                "Check current language is " + language);
+                "Check current language is " + language
+        );
         return this;
     }
 
     @Step("Check Language File Is Loaded")
     public LanguageTestSteps checkLanguageFileIsLoaded() {
-        Assert.assertTrue(homePage.getAppInstance().getLanguageManager().getDictionary().keySet().size() > 0,
-                "There are dictionary phrases loaded");
+        Assert.assertTrue(
+                homePage.getAppInstance().getLanguageManager().getDictionary().keySet().size() > 0,
+                "There are dictionary phrases loaded"
+        );
         return this;
     }
 

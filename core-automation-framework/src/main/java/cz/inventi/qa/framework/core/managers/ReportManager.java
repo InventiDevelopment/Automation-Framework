@@ -44,12 +44,12 @@ public class ReportManager {
                 .getWebDriverConfigData()
                 .getGeneralSettings()
                 .takeScreenshots();
-
         WebDriver driver = appInstance.getWebDriverManager().getDriver();
-
         if (shouldTakeScreenshots) {
-            Allure.addAttachment(description + " '" + webElementLocator.getXpath() + "'",
-                    new ByteArrayInputStream(((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES)));
+            Allure.addAttachment(
+                    description + " '" + webElementLocator.getXpath() + "'",
+                    new ByteArrayInputStream(((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES))
+            );
         }
     }
 }

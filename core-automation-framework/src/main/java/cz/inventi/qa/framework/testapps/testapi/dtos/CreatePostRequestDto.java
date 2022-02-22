@@ -2,7 +2,7 @@ package cz.inventi.qa.framework.testapps.testapi.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import cz.inventi.qa.framework.core.objects.api.JsonDto;
-import cz.inventi.qa.framework.core.objects.test.assertions.Assert;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -11,10 +11,13 @@ import org.apache.commons.lang3.RandomStringUtils;
 @Setter
 public class CreatePostRequestDto extends JsonDto {
 
+    @NotNull
     @JsonProperty
     long userId;
+    @NotNull
     @JsonProperty
     String title;
+    @NotNull
     @JsonProperty
     String body;
 
@@ -23,11 +26,5 @@ public class CreatePostRequestDto extends JsonDto {
         rand.setBody(RandomStringUtils.randomAlphanumeric(150));
         rand.setTitle(RandomStringUtils.randomAlphanumeric(100));
         return rand;
-    }
-
-    public void compareTo(PostDto postDto) {
-        Assert.assertEquals(getBody(), postDto.getBody(), "Check body content");
-        Assert.assertEquals(getTitle(), postDto.getTitle(), "Check title");
-        Assert.assertEquals(getUserId(), postDto.getUserId(), "Check user ID");
     }
 }

@@ -4,7 +4,6 @@ import cz.inventi.qa.framework.core.objects.test.steps.StepsBase;
 import cz.inventi.qa.framework.core.objects.web.WebComponentList;
 import cz.inventi.qa.framework.testapps.testweb.webobjects.HomePage;
 import cz.inventi.qa.framework.testapps.testweb.webobjects.SideInfo;
-import cz.inventi.qa.framework.testapps.testweb.webobjects.SidePanel;
 import io.qameta.allure.Step;
 import org.testng.Assert;
 
@@ -37,13 +36,14 @@ public class WebComponentsTestSteps extends StepsBase {
                 .getSidePanel()
                 .getSideInfos()
                 .get(index);
-
-        Assert.assertEquals(homePage.getSidePanel().getSideInfos().get(index).getXpath(),
-                "(//body//aside//div[contains(@class, 'sideInfo')])[" + (index + 1) + "]");
+        Assert.assertEquals(
+                homePage.getSidePanel().getSideInfos().get(index).getXpath(),
+                "(//body//aside//div[contains(@class, 'sideInfo')])[" + (index + 1) + "]"
+        );
         return this;
     }
 
-    private WebComponentList<SideInfo<SidePanel<HomePage>>> getSideInfos() {
+    private WebComponentList<SideInfo<HomePage>> getSideInfos() {
         return homePage
                 .getSidePanel()
                 .getSideInfos();
