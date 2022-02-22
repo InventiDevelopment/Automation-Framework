@@ -14,8 +14,14 @@ import io.qameta.allure.Step;
 public class ConfigManagerTestSteps extends StepsBase {
     private final HomePage homePage = getWebAppInstanceOf(HomePage.class);
     private final JsonPlaceHolderApi jsonPlaceHolderApi = getApiAppInstanceOf(JsonPlaceHolderApi.class);
-    private final WebDriverConfigData webDriverConfigData = homePage.getAppInstance().getConfigManager().getWebDriverConfigData();
-    private final AppsConfigData appsConfigData = jsonPlaceHolderApi.getAppInstance().getConfigManager().getAppsConfigData();
+    private final WebDriverConfigData webDriverConfigData = homePage
+            .getAppInstance()
+            .getConfigManager()
+            .getWebDriverConfigData();
+    private final AppsConfigData appsConfigData = jsonPlaceHolderApi
+            .getAppInstance()
+            .getConfigManager()
+            .getAppsConfigData();
 
     @Step("Check ConfigManager Has Been Initialized")
     public ConfigManagerTestSteps checkAppConfigManagerInitialized() {
@@ -28,8 +34,14 @@ public class ConfigManagerTestSteps extends StepsBase {
 
     @Step("Check Application Configuration Files Are Loaded")
     public ConfigManagerTestSteps checkAppConfigurationFilesAreLoaded() {
-        AppsConfigData webAppConfigData = homePage.getAppInstance().getConfigManager().getAppsConfigData();
-        AppsConfigData apiAppConfigData = jsonPlaceHolderApi.getAppInstance().getConfigManager().getAppsConfigData();
+        AppsConfigData webAppConfigData = homePage
+                .getAppInstance()
+                .getConfigManager()
+                .getAppsConfigData();
+        AppsConfigData apiAppConfigData = jsonPlaceHolderApi
+                .getAppInstance()
+                .getConfigManager()
+                .getAppsConfigData();
         Assert.assertNotNull(apiAppConfigData.getApplications(),
                 "Application object for API app is not null");
         Assert.assertNotNull(webAppConfigData.getApplications(),
@@ -42,58 +54,78 @@ public class ConfigManagerTestSteps extends StepsBase {
 
     @Step("Check Application Configuration Contains Applications ({applicationName})")
     public ConfigManagerTestSteps checkApplicationConfigurationContainsWebApp(String applicationName) {
-            Assert.assertTrue(appsConfigData.getApplications().getWeb().containsKey(applicationName),
-                    "Application '" + applicationName + "' found in app config");
+        Assert.assertTrue(
+                appsConfigData.getApplications().getWeb().containsKey(applicationName),
+                "Application '" + applicationName + "' found in app config"
+        );
         return this;
     }
 
     @Step("Check Application PROD URL Value for '{appName}' WEB app is '{applicationProdUrl}'")
     public ConfigManagerTestSteps checkFirstWebApplicationProdUrlIs(String appName, String applicationProdUrl) {
-        Assert.assertEquals(appsConfigData.getApplications().getWeb().get(appName).getEnvironments().get("PROD"),
+        Assert.assertEquals(
+                appsConfigData.getApplications().getWeb().get(appName).getEnvironments().get("PROD"),
                 applicationProdUrl,
-                    "PROD URL is '" + applicationProdUrl + "'");
+                    "PROD URL is '" + applicationProdUrl + "'"
+        );
         return this;
     }
 
     @Step("Check WebDriver Configuration File Is Loaded")
     public ConfigManagerTestSteps checkWebDriverConfigurationsFileIsLoaded() {
-        Assert.assertNotNull(webDriverConfigData, "WebDriverConfigData object is not null");
+        Assert.assertNotNull(
+                webDriverConfigData,
+                "WebDriverConfigData object is not null"
+        );
         return this;
     }
 
     @Step("Check WindowSizeType is '{windowSizeType}'")
     public ConfigManagerTestSteps checkWindowSizeTypeValue(WindowSizeType windowSizeType) {
-        Assert.assertEquals(webDriverConfigData.getGeneralSettings().getWindowSize().getSizeType(),
+        Assert.assertEquals(
+                webDriverConfigData.getGeneralSettings().getWindowSize().getSizeType(),
                 WindowSizeType.MAXIMIZED,
-                "Window size is set to MAXIMIZED enum");
+                "Window size is set to MAXIMIZED enum"
+        );
         return this;
     }
 
     @Step("Check WindowSize Dimensions Are Set to '{width}'x'{height}'")
     public ConfigManagerTestSteps checkWindowSizeDimensionsValue(int width, int height) {
-        WindowSizeDimensions windowSizeDimensions = webDriverConfigData.getGeneralSettings().getWindowSize().getDimensions();
-        Assert.assertEquals(windowSizeDimensions.getWidth(),
+        WindowSizeDimensions windowSizeDimensions = webDriverConfigData
+                .getGeneralSettings()
+                .getWindowSize()
+                .getDimensions();
+        Assert.assertEquals(
+                windowSizeDimensions.getWidth(),
                 width,
-                "Window width is set to " + height);
-        Assert.assertEquals(windowSizeDimensions.getHeight(),
+                "Window width is set to " + height
+        );
+        Assert.assertEquals(
+                windowSizeDimensions.getHeight(),
                 height,
-                "Window height is set to " + height);
+                "Window height is set to " + height
+        );
         return this;
     }
 
     @Step("Check WebDriver waitsAutomatically Parameter Is '{waitsAutomatically}'")
     public ConfigManagerTestSteps checkWaitsAutomaticallyValue(boolean waitsAutomatically) {
-        Assert.assertEquals(webDriverConfigData.waitsAutomatically(),
+        Assert.assertEquals(
+                webDriverConfigData.waitsAutomatically(),
                 waitsAutomatically,
-                "WaitsAutomatically value is '" + waitsAutomatically + "'");
+                "WaitsAutomatically value is '" + waitsAutomatically + "'"
+        );
         return this;
     }
 
     @Step("Check WebDriver MAX Timeout Is Set To '{maxTimeout}'")
     public ConfigManagerTestSteps checkWebDriverMaxTimeoutValue(int maxTimeout) {
-        Assert.assertEquals(webDriverConfigData.getTimeouts().getMax(),
+        Assert.assertEquals(
+                webDriverConfigData.getTimeouts().getMax(),
                 maxTimeout,
-                "Max timeout value is '" + maxTimeout + "'");
+                "Max timeout value is '" + maxTimeout + "'"
+        );
         return this;
     }
 }

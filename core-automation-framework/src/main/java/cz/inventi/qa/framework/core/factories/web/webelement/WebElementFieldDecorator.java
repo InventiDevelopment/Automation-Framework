@@ -2,9 +2,8 @@ package cz.inventi.qa.framework.core.factories.web.webelement;
 
 import cz.inventi.qa.framework.core.annotations.web.FindElement;
 import cz.inventi.qa.framework.core.annotations.web.NoParent;
-import cz.inventi.qa.framework.core.objects.framework.AppInstance;
-import cz.inventi.qa.framework.core.objects.web.WebObject;
 import cz.inventi.qa.framework.core.objects.web.WebElement;
+import cz.inventi.qa.framework.core.objects.web.WebObject;
 import org.openqa.selenium.support.pagefactory.DefaultFieldDecorator;
 import org.openqa.selenium.support.pagefactory.FieldDecorator;
 
@@ -14,28 +13,20 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WebElementFieldDecorator extends DefaultFieldDecorator implements FieldDecorator {
-    private WebObject page;
+public class WebElementFieldDecorator<T extends WebObject> extends DefaultFieldDecorator implements FieldDecorator {
+    private final T parentWebObject;
 
-    public WebElementFieldDecorator(final WebElementLocatorFactory factory, final Object page) {
+    public WebElementFieldDecorator(WebElementLocatorFactory factory, T parentWebObject) {
         super(factory);
-        this.page = (WebObject) page;
+        this.parentWebObject = parentWebObject;
     }
 
     @Override
-    public Object decorate(final ClassLoader loader, final Field field) {
-        if (!WebElement.class.isAssignableFrom(field.getType()) && !isDecoratableList(field)) {
-            return null;
-        }
-
-        if (field.getAnnotation(FindElement.class) == null) {
-            return null;
-        }
-
+    public Object decorate(ClassLoader loader, Field field) {
+        if (!WebElement.class.isAssignableFrom(field.getType()) && !isDecoratableList(field)) return null;
+        if (field.getAnnotation(FindElement.class) == null) return null;
         final WebElementLocator locator = (WebElementLocator) factory.createLocator(field);
-
         fetchParentXpath(locator, field);
-
         if (locator == null) {
             return null;
         } else if (WebElement.class.isAssignableFrom(field.getType())) {
@@ -47,41 +38,32 @@ public class WebElementFieldDecorator extends DefaultFieldDecorator implements F
         }
     }
 
-    protected boolean isDecoratableList(final Field field) {
-        if (!List.class.isAssignableFrom(field.getType())) {
-            return false;
-        }
-
+    protected boolean isDecoratableList(Field field) {
+        if (!List.class.isAssignableFrom(field.getType())) return false;
         final Type genericType = field.getGenericType();
-
-        if (!(genericType instanceof ParameterizedType)) {
-            return false;
-        }
-
-        final Type listType = ((ParameterizedType) genericType).getActualTypeArguments()[0];
-
-        if (!WebElement.class.equals(listType)) {
-            return false;
-        }
-        return true;
+        return genericType instanceof ParameterizedType;
     }
 
     private void fetchParentXpath (WebElementLocator locator, Field field) {
         NoParent noParent = field.getAnnotation(NoParent.class);
-        if (noParent == null || !noParent.value()) locator.setParentXpath(page.getXpath());
+        if (noParent == null || !noParent.value()) locator.setParentXpath(parentWebObject.getXpath());
     }
 
-    private ArrayList<WebElement> extendWebElements (List<org.openqa.selenium.WebElement> listOfSelWebElements, WebElementLocator webElementLocator) {
-        ArrayList<WebElement> webElements = new ArrayList<>();
-
-        for (org.openqa.selenium.WebElement selWebElement : listOfSelWebElements) {
-            webElements.add(extendWebElement(selWebElement, webElementLocator));
-        }
-
+    private ArrayList<WebElement<T>> extendWebElements (
+            List<org.openqa.selenium.WebElement> listOfSelWebElements,
+            WebElementLocator webElementLocator
+    ) {
+        ArrayList<WebElement<T>> webElements = new ArrayList<>();
+        listOfSelWebElements.forEach(selWebElement ->
+                webElements.add(extendWebElement(selWebElement, webElementLocator))
+        );
         return webElements;
     }
 
-    private WebElement extendWebElement (org.openqa.selenium.WebElement selWebElement, WebElementLocator webElementLocator) {
-        return new WebElement(selWebElement, webElementLocator, page.getAppInstance());
+    private WebElement<T> extendWebElement (
+            org.openqa.selenium.WebElement selWebElement,
+            WebElementLocator webElementLocator
+    ) {
+        return new WebElement<>(selWebElement, webElementLocator, parentWebObject);
     }
 }

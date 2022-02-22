@@ -10,11 +10,11 @@ public class ContactUsPage extends BasePage<ContactUsPage> {
     ContactForm<ContactUsPage> contactForm;
 
     @FindElement(xpath = "//div[contains(@class, 'addressWrapper')]")
-    WebElement addressWrapper;
+    WebElement<ContactUsPage> addressWrapper;
     @FindElement(xpath = "//div[contains(@class, 'mapWrapper')]")
-    WebElement mapWrapper;
+    WebElement<ContactUsPage> mapWrapper;
     @FindElement(xpath = "//div[contains(@class, 'mapWrapper')]/iframe")
-    WebElement map;
+    WebElement<ContactUsPage> map;
 
     public ContactUsPage(WOProps props) {
         super(props);

@@ -10,7 +10,7 @@ public class WebElementFactory {
     }
 
     public static <T extends WebObject> void initElements(final WebElementLocatorFactory factory, final T page) {
-        PageFactory.initElements(new WebElementFieldDecorator(factory, page), page);
+        PageFactory.initElements(new WebElementFieldDecorator<>(factory, page), page);
     }
 }
 

@@ -7,14 +7,13 @@ import lombok.Getter;
 @Getter
 @FindElement(xpath = "//aside")
 public class SidePanel<T extends WebObject> extends WebComponent<T> {
-    WebComponentList<SideInfo<SidePanel<T>>> sideInfos;
+    WebComponentList<SideInfo<T>> sideInfos;
 
     @FindElement(xpath = "/h2")
-    WebElement panelTitle;
+    WebElement<SidePanel<T>> panelTitle;
 
     public SidePanel(WOProps props) {
         super(props);
-        sideInfos = new WebComponentList(SideInfo.class, props);
+        sideInfos = new WebComponentList<>(SideInfo.class, props);
     }
-
 }

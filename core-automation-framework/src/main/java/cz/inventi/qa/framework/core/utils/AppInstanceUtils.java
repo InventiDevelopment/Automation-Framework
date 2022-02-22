@@ -18,11 +18,11 @@ public class AppInstanceUtils {
 
     /**
      * Creates web AppInstance for given test scope.
-     * @param startingWebPage WebPage app root class
+     * @param webPageClass WebPage class that has/inherits @Application annotation
      * @param <T> WebPage app root class type
      * @return Initialized WebPage for given AppInstance
      */
-    public static <T extends WebPage> T getWebAppInstanceOf(Class<T> startingWebPage) {
-        return FrameworkManager.getInstance().initWebAppAt(startingWebPage, Utils.getTestIdentifier());
+    public static <T extends WebPage> T getWebAppInstanceOf(Class<T> webPageClass) {
+        return FrameworkManager.getInstance().initWebAppAt(webPageClass, Utils.getTestIdentifier());
     }
 }

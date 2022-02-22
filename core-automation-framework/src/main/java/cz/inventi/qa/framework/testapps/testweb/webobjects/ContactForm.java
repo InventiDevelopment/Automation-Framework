@@ -3,8 +3,8 @@ package cz.inventi.qa.framework.testapps.testweb.webobjects;
 import cz.inventi.qa.framework.core.annotations.web.FindElement;
 import cz.inventi.qa.framework.core.objects.web.WOProps;
 import cz.inventi.qa.framework.core.objects.web.WebComponent;
-import cz.inventi.qa.framework.core.objects.web.WebObject;
 import cz.inventi.qa.framework.core.objects.web.WebElement;
+import cz.inventi.qa.framework.core.objects.web.WebObject;
 import lombok.Getter;
 
 @Getter
@@ -12,13 +12,13 @@ import lombok.Getter;
 public class ContactForm<T extends WebObject> extends WebComponent<T> {
 
     @FindElement(xpath = "//input[@name='email']")
-    WebElement contactFormEmailInput;
+    WebElement<ContactForm<T>> contactFormEmailInput;
     @FindElement(xpath = "//input[@name='name']")
-    WebElement contactFormNameInput;
+    WebElement<ContactForm<T>> contactFormNameInput;
     @FindElement(xpath = "//textarea[@name='message']")
-    WebElement contactFormMessageTextArea;
+    WebElement<ContactForm<T>> contactFormMessageTextArea;
     @FindElement(xpath = "//form//textarea[@name='message']")
-    WebElement submitContactFormBtn;
+    WebElement<ContactForm<T>> submitContactFormBtn;
 
     public ContactForm(WOProps props) {
         super(props);

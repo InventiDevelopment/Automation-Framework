@@ -1,11 +1,9 @@
 package cz.inventi.qa.framework.core.objects.web;
 
 public class WebComponent<T extends WebObject> extends WebObject {
-    private final WOProps props;
 
     public WebComponent(WOProps props) {
         super(props);
-        this.props = props;
     }
 
     public T leaveComponent() {
@@ -14,6 +12,6 @@ public class WebComponent<T extends WebObject> extends WebObject {
 
     @SuppressWarnings("unchecked")
     public T getKlass() {
-        return (T) props.getReturnKlass();
+        return (T) getProps().getReturnKlass();
     }
 }

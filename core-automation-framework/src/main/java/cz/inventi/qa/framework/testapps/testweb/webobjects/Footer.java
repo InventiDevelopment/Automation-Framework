@@ -3,8 +3,8 @@ package cz.inventi.qa.framework.testapps.testweb.webobjects;
 import cz.inventi.qa.framework.core.annotations.web.FindElement;
 import cz.inventi.qa.framework.core.objects.web.WOProps;
 import cz.inventi.qa.framework.core.objects.web.WebComponent;
-import cz.inventi.qa.framework.core.objects.web.WebObject;
 import cz.inventi.qa.framework.core.objects.web.WebElement;
+import cz.inventi.qa.framework.core.objects.web.WebObject;
 import lombok.Getter;
 
 @Getter
@@ -12,9 +12,9 @@ import lombok.Getter;
 public class Footer<T extends WebObject> extends WebComponent<T> {
 
     @FindElement(xpath = "//div[@id='scrollTop']")
-    WebElement scrollToTopBtn;
+    WebElement<Footer<T>> scrollToTopBtn;
     @FindElement(xpath = "//div", index = 1)
-    WebElement footerText;
+    WebElement<Footer<T>> footerText;
 
     public Footer(WOProps props) {
         super(props);

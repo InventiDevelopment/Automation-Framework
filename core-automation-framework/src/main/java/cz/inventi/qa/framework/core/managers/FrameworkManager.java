@@ -140,12 +140,8 @@ public class FrameworkManager {
     }
 
     private ApplicationType getApplicationType(Class<?> startingAppClass) {
-        if (Api.class.isAssignableFrom(startingAppClass)) {
-            return ApplicationType.API;
-        }
-        if (WebPage.class.isAssignableFrom(startingAppClass)) {
-            return ApplicationType.WEB;
-        }
+        if (Api.class.isAssignableFrom(startingAppClass)) return ApplicationType.API;
+        if (WebPage.class.isAssignableFrom(startingAppClass)) return ApplicationType.WEB;
         return null;
     }
 
@@ -153,9 +149,7 @@ public class FrameworkManager {
         Class<?> currentClass = appClass;
         while (!currentClass.equals(Object.class)) {
             Application applicationAnnotation = currentClass.getDeclaredAnnotation(Application.class);
-            if (applicationAnnotation != null) {
-                return applicationAnnotation.name();
-            }
+            if (applicationAnnotation != null) return applicationAnnotation.name();
             currentClass = currentClass.getSuperclass();
         }
         throw new FrameworkException("@Application(\"YOUR_APP_NAME\") annotation is not set anywhere on supplied" +

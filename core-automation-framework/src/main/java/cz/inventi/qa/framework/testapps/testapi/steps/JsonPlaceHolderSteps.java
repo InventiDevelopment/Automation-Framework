@@ -6,6 +6,7 @@ import cz.inventi.qa.framework.core.objects.test.steps.StepsBase;
 import cz.inventi.qa.framework.testapps.testapi.JsonPlaceHolderApi;
 import cz.inventi.qa.framework.testapps.testapi.dtos.CommentDto;
 import cz.inventi.qa.framework.testapps.testapi.dtos.CreatePostRequestDto;
+import cz.inventi.qa.framework.testapps.testapi.dtos.CreatePostResponseDto;
 import cz.inventi.qa.framework.testapps.testapi.dtos.PostDto;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
@@ -21,7 +22,6 @@ public class JsonPlaceHolderSteps extends StepsBase {
                 .posts
                 .post
                 .getPostMapped(postId);
-
         Assert.assertEquals(post.getId(), Long.parseLong(postId), "Post ID is equal");
         return post;
     }
@@ -34,7 +34,6 @@ public class JsonPlaceHolderSteps extends StepsBase {
                 .setUrlParameter(postId)
                 .comments
                 .getCommentsMapped();
-
         Assert.assertNotEquals(comments.size(), 0, "There is at least 1 comment");
         Assert.assertEquals(comments.get(0).getPostId(), Long.parseLong(postId), "Comment's post ID is correct");
         return comments;
@@ -48,22 +47,21 @@ public class JsonPlaceHolderSteps extends StepsBase {
                 .getBody()
                 .jsonPath()
                 .getList("", PostDto.class);
-
         Assert.assertNotEquals(posts.size(), 0, "There is at least 1 post");
         return posts;
     }
 
     @Step("Create New Post")
-    public PostDto createNewPost(long userId) {
+    public CreatePostResponseDto createNewPost(long userId) {
         CreatePostRequestDto createPostRequestDto = CreatePostRequestDto.random(userId);
-        Response response = RestAssert.assertStatusPassed(jsonPlaceHolderApi
+        Response response = RestAssert.assertStatusPassed(
+                jsonPlaceHolderApi
                         .posts
                         .createPost(createPostRequestDto)
         );
-        PostDto createdPost = response.as(PostDto.class);
-        Assert.assertNotNull(createdPost.getId(), "Check that post ID is present");
-        createPostRequestDto.compareTo(createdPost);
-        return createdPost;
+        CreatePostResponseDto createdPostResponse = response.as(CreatePostResponseDto.class);
+        Assert.assertNotNull(createdPostResponse.getId(), "Check that post ID is present");
+        return createdPostResponse;
     }
 }
 

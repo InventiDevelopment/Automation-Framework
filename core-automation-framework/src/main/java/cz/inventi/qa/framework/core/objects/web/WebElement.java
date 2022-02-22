@@ -17,121 +17,134 @@ import java.util.List;
  * Custom decorator for Selenium WebElement to provide
  * custom actions.
  */
-public class WebElement implements org.openqa.selenium.WebElement {
+public class WebElement<T extends WebObject> {
     private static final int MAX_RETRIES = 5;
-    private final WebDriver driver;
-    private final JavascriptExecutor jsExec;
     private final WebElementLocator webElementLocator;
     private final Actions actions;
-    private final WebAppInstance<?> appInstance;
-    private final Timeouts timeouts;
+    private final T parentWebObject;
     private org.openqa.selenium.WebElement selWebElement;
 
     public WebElement(
             org.openqa.selenium.WebElement selWebElement,
             WebElementLocator webElementLocator,
-            WebAppInstance<?> appInstance
+            T parentWebObject
     ) {
         this.selWebElement = selWebElement;
         this.webElementLocator = webElementLocator;
-        this.appInstance = appInstance;
-        driver = appInstance.getWebDriverManager().getDriver();
-        jsExec = (JavascriptExecutor) driver;
-        actions = new Actions(driver);
-        timeouts = appInstance.getWebDriverManager().getTimeouts();
+        this.parentWebObject = parentWebObject;
+        actions = new Actions(getDriver());
+    }
+
+    public Timeouts getTimeouts() {
+        return parentWebObject.getAppInstance().getWebDriverManager().getTimeouts();
+    }
+
+    public WebDriver getDriver() {
+        return parentWebObject.getAppInstance().getWebDriverManager().getDriver();
+    }
+
+    public WebAppInstance<?> getAppInstance() {
+        return parentWebObject.getAppInstance();
+    }
+
+    public JavascriptExecutor getJsExec() {
+        return (JavascriptExecutor) getDriver();
     }
 
     public String getXpath () {
         return webElementLocator.getXpath();
     }
 
-    public void clickJS() {
+    public T clickJS() {
         printAction();
         checkElementState();
-        jsExec.executeScript("arguments[0].click();", webElementLocator.findElement());
-        afterAction(true);
+        getJsExec().executeScript("arguments[0].click();", webElementLocator.findElement());
+        return afterAction(true);
     }
 
-    public void hover() {
+    public T hover() {
         printAction();
         checkElementState();
         actions
             .moveToElement(selWebElement)
             .build()
             .perform();
-        afterAction(true);
+        return afterAction(true);
     }
 
-    public void scrollTo() {
+    private T scrollTo(boolean takeScreenshot) {
         printAction();
         checkElementState();
-        jsExec.executeScript("arguments[0].scrollIntoView(true);", webElementLocator.findElement());
-        afterAction(true);
+        getJsExec().executeScript("arguments[0].scrollIntoView(true);", webElementLocator.findElement());
+        return afterAction(takeScreenshot);
     }
 
-    @Override
-    public void click() {
+    public T scrollTo() {
+        return scrollTo(true);
+    }
+
+    private T click(boolean takeScreenshot) {
         printAction();
         checkElementState();
-        waitUntilClickable();
-        getFluentWait(timeouts.getMin()).<Boolean>until(webDriver -> {
+        waitUntilClickable(false);
+        getFluentWait(getTimeouts().getMin()).<Boolean>until(webDriver -> {
             selWebElement.click();
             return true;
         });
-        afterAction(true);
+        return afterAction(takeScreenshot);
     }
 
-    @Override
-    public void submit() {
+    public T click() {
+        return click(true);
+    }
+
+    public T submit() {
         printAction();
         checkElementState();
         selWebElement.submit();
-        afterAction(true);
+        return afterAction(true);
     }
 
-    @Override
-    public void sendKeys(CharSequence... keysToSend) {
+    public T sendKeys(CharSequence... keysToSend) {
         printAction();
         checkElementState();
-        waitUntilClickable();
-        click();
+        waitUntilClickable(false);
+        click(false);
         selWebElement.sendKeys(keysToSend);
-        afterAction(false);
+        return afterAction(false);
     }
 
-    @Override
-    public void clear() {
+    public T clear() {
+        return clear(true);
+    }
+
+    private T clear(boolean takeScreenshot) {
         printAction();
         checkElementState();
-        waitUntilClickable();
+        waitUntilClickable(false);
         selWebElement.clear();
-        afterAction(false);
+        return afterAction(takeScreenshot);
     }
 
-    @Override
     public String getTagName() {
         checkElementState();
         return selWebElement.getTagName();
     }
 
-    @Override
     public String getAttribute(String name) {
         checkElementState();
         return selWebElement.getAttribute(name);
     }
 
-    @Override
     public boolean isSelected() {
         checkElementState();
         return selWebElement.isSelected();
     }
 
-    @Override
     public boolean isEnabled() {
         return selWebElement.isEnabled();
     }
 
-    @Override
     public String getText() {
         printAction();
         checkElementState();
@@ -140,7 +153,6 @@ public class WebElement implements org.openqa.selenium.WebElement {
         return elementText;
     }
 
-    @Override
     public List<org.openqa.selenium.WebElement> findElements(By by) {
         printAction(by.toString());
         List<org.openqa.selenium.WebElement> foundElements = selWebElement.findElements(By.xpath(by.toString()));
@@ -148,7 +160,6 @@ public class WebElement implements org.openqa.selenium.WebElement {
         return foundElements;
     }
 
-    @Override
     public org.openqa.selenium.WebElement findElement(By by) {
         printAction(by.toString());
         org.openqa.selenium.WebElement foundElement = selWebElement.findElement(By.xpath(by.toString()));
@@ -156,42 +167,57 @@ public class WebElement implements org.openqa.selenium.WebElement {
         return foundElement;
     }
 
-    public List<WebElement> findElements(String findElementsXpath) {
-        List<WebElement> webElements = new ArrayList<>();
+    public List<WebElement<T>> findElements(String findElementsXpath) {
+        List<WebElement<T>> webElements = new ArrayList<>();
         printAction(findElementsXpath);
-        for (org.openqa.selenium.WebElement selElement : selWebElement.findElements(By.xpath(findElementsXpath))) {
-            webElements.add(new WebElement(selWebElement,
-                    new WebElementLocator(getXpath() + findElementsXpath, 0, appInstance), appInstance));
-        }
+        selWebElement.findElements(By.xpath(findElementsXpath)).forEach(selWebElement -> webElements.add(
+                new WebElement<>(
+                        selWebElement,
+                        new WebElementLocator(
+                                getXpath() + findElementsXpath,
+                                0,
+                                getAppInstance()
+                        ),
+                        parentWebObject
+                )
+        ));
         afterAction(true);
         return webElements;
     }
 
-    public WebElement findElement(String findElementXpath) {
+    public WebElement<T> findElement(String findElementXpath) {
         printAction(findElementXpath);
-        return new WebElement(selWebElement.findElement(By.xpath(findElementXpath)),
-                new WebElementLocator(getXpath() + findElementXpath, 0, appInstance), appInstance);
+        return new WebElement<>(
+                selWebElement.findElement(By.xpath(findElementXpath)),
+                new WebElementLocator(
+                        getXpath() + findElementXpath,
+                        0,
+                        getAppInstance()
+                ),
+                parentWebObject
+        );
     }
 
-    @Override
     public boolean isDisplayed() {
+        return isDisplayed(true);
+    }
+
+    private boolean isDisplayed(boolean takeScreenshot) {
         printAction();
         checkElementState();
         boolean isDisplayed = selWebElement.isDisplayed();
-        afterAction(true);
+        afterAction(takeScreenshot);
         return isDisplayed;
     }
 
-    @Override
     public Point getLocation() {
         printAction();
         checkElementState();
         Point point = selWebElement.getLocation();
-        afterAction(true);
+        afterAction(false);
         return point;
     }
 
-    @Override
     public Dimension getSize() {
         printAction();
         checkElementState();
@@ -200,7 +226,6 @@ public class WebElement implements org.openqa.selenium.WebElement {
         return dimension;
     }
 
-    @Override
     public Rectangle getRect() {
         printAction();
         checkElementState();
@@ -209,7 +234,6 @@ public class WebElement implements org.openqa.selenium.WebElement {
         return rect;
     }
 
-    @Override
     public String getCssValue(String propertyName) {
         printAction();
         checkElementState();
@@ -218,7 +242,6 @@ public class WebElement implements org.openqa.selenium.WebElement {
         return cssValue;
     }
 
-    @Override
     public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
         printAction();
         X screenShot = selWebElement.getScreenshotAs(target);
@@ -231,11 +254,10 @@ public class WebElement implements org.openqa.selenium.WebElement {
     }
 
     private FluentWait<WebDriver> getFluentWait (int timeout) {
-        if (!appInstance.getConfigManager().getWebDriverConfigData().waitsAutomatically()) {
+        if (!getAppInstance().getConfigManager().getWebDriverConfigData().waitsAutomatically()) {
             timeout = 0;
         }
-
-        return new FluentWait<>(driver)
+        return new FluentWait<>(getDriver())
                 .withTimeout(Duration.ofMillis(timeout))
                 .pollingEvery(Duration.ofMillis(100))
                 .ignoring(NoSuchElementException.class)
@@ -245,69 +267,93 @@ public class WebElement implements org.openqa.selenium.WebElement {
 
     public boolean isClickable () {
         checkElementState();
-        return ExpectedConditions.elementToBeClickable(this).apply(driver) != null;
+        return ExpectedConditions.elementToBeClickable(selWebElement).apply(getDriver()) != null;
     }
 
-    public void waitUntilClickable () {
+    public T waitUntilClickable () {
+        return waitUntilClickable(true);
+    }
+
+    private T waitUntilClickable (boolean takeScreenshot) {
         printAction();
-        waitUntilIsDisplayed();
+        waitUntilIsDisplayed(false);
         if (!isClickable()) {
-            getFluentWait(timeouts.getMin())
+            getFluentWait(getTimeouts().getMin())
                     .withMessage("WebElement " + getXpath() + " is not clickable.")
                     .until(webDriver -> isClickable());
         }
-        afterAction(true);
+        return afterAction(takeScreenshot);
     }
 
-    public void waitUntilIsEnabled () {
+    public T waitUntilIsEnabled () {
+        return waitUntilIsEnabled(true);
+    }
+
+    private T waitUntilIsEnabled (boolean takeScreenshot) {
         printAction();
         if (!isEnabled()) {
-            getFluentWait(timeouts.getMid())
+            getFluentWait(getTimeouts().getMid())
                     .withMessage("WebElement " + getXpath() + " is not enabled.")
                     .until(webDriver -> isEnabled());
         }
-        afterAction(true);
+        return afterAction(takeScreenshot);
     }
 
-    public void waitUntilIsDisabled () {
+    public T waitUntilIsDisabled () {
+        return waitUntilIsDisabled(true);
+    }
+
+    private T waitUntilIsDisabled (boolean takeScreenshot) {
         printAction();
         if (isEnabled()) {
-            getFluentWait(timeouts.getMid())
+            getFluentWait(getTimeouts().getMid())
                     .withMessage("WebElement " + getXpath() + " is still enabled.")
                     .until(webDriver -> !isEnabled());
         }
-        afterAction(true);
+        return afterAction(takeScreenshot);
     }
 
-    public void waitUntilNotClickable () {
+    public T waitUntilNotClickable () {
+        return waitUntilNotClickable(true);
+    }
+
+    private T waitUntilNotClickable (boolean takeScreenshot) {
         printAction();
         if (isClickable()) {
-            getFluentWait(timeouts.getMin())
+            getFluentWait(getTimeouts().getMin())
                     .withMessage("WebElement " + getXpath() + " is still clickable.")
                     .until(webDriver -> !isClickable());
         }
-        afterAction(true);
+        return afterAction(takeScreenshot);
     }
 
-    public void waitUntilIsDisplayed() {
+    public T waitUntilIsDisplayed() {
+        return waitUntilIsDisplayed(true);
+    }
+
+    private T waitUntilIsDisplayed(boolean takeScreenshot) {
         printAction();
-        if (!isDisplayed()) {
-            scrollTo();
-            getFluentWait(timeouts.getMid())
+        if (!isDisplayed(false)) {
+            scrollTo(false);
+            getFluentWait(getTimeouts().getMid())
                     .withMessage("WebElement " + getXpath() + " is not displayed.")
-                    .until(webDriver -> isDisplayed());
+                    .until(webDriver -> isDisplayed(false));
         }
-        afterAction(true);
+        return afterAction(takeScreenshot);
     }
 
-    public void waitUntilIsNotDisplayed() {
+    public T waitUntilIsNotDisplayed() {
+        return waitUntilIsNotDisplayed(true);
+    }
+
+    private T waitUntilIsNotDisplayed(boolean takeScreenshot) {
         printAction();
         if (isDisplayed()) {
-            getFluentWait(timeouts.getMid())
+            getFluentWait(getTimeouts().getMid())
                     .withMessage("WebElement " + getXpath() + " is still displayed.")
-                    .until(webDriver -> !isDisplayed());
+                    .until(webDriver -> !isDisplayed(false));
         }
-        afterAction(true);
+        return afterAction(takeScreenshot);
     }
 
     private void printAction() {
@@ -321,16 +367,21 @@ public class WebElement implements org.openqa.selenium.WebElement {
                 " on element with XPATH: '" + getXpath() + "'");
     }
 
-    private void afterAction(boolean takeScreenshot) {
+    private T afterAction(boolean takeScreenshot) {
         String actionName = Thread.currentThread().getStackTrace()[2].getMethodName();
         Log.debug("Performed '" + actionName + "' action on element with XPATH: '" + getXpath() + "'");
         if (takeScreenshot) {
-            ReportManager.addWebAppScreenshot("Action " + actionName, webElementLocator, appInstance);
+            ReportManager.addWebAppScreenshot(
+                    "Action " + actionName,
+                    webElementLocator,
+                    getAppInstance()
+            );
         }
+        return parentWebObject;
     }
 
     private void refreshElement() {
-        this.selWebElement = driver.findElement(By.xpath(getXpath()));
+        this.selWebElement = getDriver().findElement(By.xpath(getXpath()));
     }
 
     private void checkElementState() {

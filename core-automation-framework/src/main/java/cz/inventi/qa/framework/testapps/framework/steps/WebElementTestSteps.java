@@ -36,7 +36,10 @@ public class WebElementTestSteps extends StepsBase {
         whatWeDoPage
                 .getAppendContentBtn()
                 .clickJS();
-        Assert.assertTrue(whatWeDoPage.getAppendedContent().isDisplayed(), "");
+        Assert.assertTrue(
+                whatWeDoPage.getAppendedContent().isDisplayed(),
+                "Appended content is displayed"
+        );
         return this;
     }
 
@@ -47,7 +50,10 @@ public class WebElementTestSteps extends StepsBase {
                 .clickHome()
                 .getTooltipImg()
                 .hover();
-        Assert.assertTrue(homePage.getToolTipText().isDisplayed(), "Tooltip text is now visible on hover");
+        Assert.assertTrue(
+                homePage.getToolTipText().isDisplayed(),
+                "Tooltip text is now visible on hover"
+        );
         return this;
     }
 
@@ -57,7 +63,10 @@ public class WebElementTestSteps extends StepsBase {
                 .getFooter()
                 .getScrollToTopBtn()
                 .scrollTo();
-        Assert.assertTrue(homePage.getFooter().getScrollToTopBtn().isDisplayed(), "Footer element is displayed");
+        Assert.assertTrue(
+                homePage.getFooter().getScrollToTopBtn().isDisplayed(),
+                "Footer element is displayed"
+        );
         return this;
     }
 }

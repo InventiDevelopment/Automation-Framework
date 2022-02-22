@@ -8,6 +8,7 @@ import cz.inventi.qa.framework.core.objects.web.WebElement;
 import cz.inventi.qa.framework.core.objects.web.WebObject;
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -16,14 +17,14 @@ import java.util.List;
 public class Menu<T extends WebObject> extends WebComponent<T> {
 
     @FindElement(xpath = "/ul/li/a")
-    List<WebElement> menuLinks;
+    List<WebElement<Menu<T>>> menuLinks;
 
     public Menu(WOProps props) {
         super(props);
     }
 
-    public WebElement getMenuLink (String name) {
-        for (WebElement menuLink : menuLinks) {
+    public WebElement<Menu<T>> getMenuLink (String name) {
+        for (WebElement<Menu<T>> menuLink : menuLinks) {
             if (menuLink.getText().equalsIgnoreCase(name)) {
                 return menuLink;
             }
@@ -33,16 +34,16 @@ public class Menu<T extends WebObject> extends WebComponent<T> {
 
     public HomePage clickHome () {
         getMenuLink("home").click();
-        return initPage(HomePage.class);
+        return navigateTo(HomePage.class);
     }
 
     public WhatWeDoPage clickWhatWeDo () {
         getMenuLink("what we do").click();
-        return initPage(WhatWeDoPage.class);
+        return navigateTo(WhatWeDoPage.class);
     }
 
     public ContactUsPage clickContactUs () {
         getMenuLink("contact us").click();
-        return initPage(ContactUsPage.class);
+        return navigateTo(ContactUsPage.class);
     }
 }
