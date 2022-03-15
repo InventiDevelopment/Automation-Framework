@@ -3,7 +3,7 @@
 <suite name="Sample Test Set">
     <test name="Some Test">
         <classes>
-            <class name="cz.inventi.qa.sample.tests."/>
+            <class name="cz.inventi.qa.sampleapplication.tests.SampleTest"/>
         </classes>
     </test>
 </suite> <!-- Suite -->

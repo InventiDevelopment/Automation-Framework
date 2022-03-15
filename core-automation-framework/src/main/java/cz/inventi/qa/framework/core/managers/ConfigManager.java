@@ -74,7 +74,7 @@ public class ConfigManager {
         } catch (IOException | IllegalArgumentException e) {
             throw new FrameworkException(
                     "Not possible to read " + configFile + " YML file. Please check that file '" +
-                    configFile.getConfigParamName() + ".yml' is accessible at current project module's 'src" +
+                    configFileName + "' is accessible at current project module's 'src" +
                     File.separator + "main" + File.separator + appInstance.getApplicationName() + File.separator +
                     CONFIG_FILE_FOLDER + "' folder.",
                     e

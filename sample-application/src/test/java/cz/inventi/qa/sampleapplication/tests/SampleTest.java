@@ -1,10 +1,9 @@
-package cz.inventi.qa.sample.tests;
+package cz.inventi.qa.sampleapplication.tests;
 
 import cz.inventi.qa.framework.core.objects.test.TestBase;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Story;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 @Epic("Provide Sample Structure for Custom Module")

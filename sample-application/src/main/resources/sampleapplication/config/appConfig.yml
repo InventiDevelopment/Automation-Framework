@@ -1,5 +1,5 @@
-applications:
-    samplePage:
+application:
+    sampleapplication:
       environments:
         prod: "https://sample-page.prod/"
         test: "https://sample-page.test/"

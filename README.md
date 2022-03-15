@@ -49,10 +49,10 @@ Download resources and change the Maven project name appropriately to your proje
 Later on you can try to run following command in the project root folder:
 
 ```
-mvn clean install
+mvn clean install -DskipTests
 ```
 
-All the necessary Maven packages will be downloaded (beware if you use custom Maven settings). Installation will run unit tests for the framework by default. If you want to skip these unit tests, add `-DskipTests` parameter to the above mentioned command.
+All the necessary Maven packages will be downloaded (beware if you use custom Maven settings). Installation will run unit tests for the framework by default.
 
 After the installation is finished, create a Maven module for your application under test.
 
@@ -97,7 +97,7 @@ Launch maven test from core-automation-framework module:
 mvn --projects core-automation-framework clean test -Dtest=WebElementTests
 ```
 
-Launch core-automation-framework unit tests suite:
+Launch core-automation-framework unit tests suite to verify installation:
 ```
 mvn --projects core-automation-framework clean test -DsuiteXmlFile=framework/unitTests.xml
 ```
