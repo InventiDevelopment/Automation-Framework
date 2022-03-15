@@ -29,7 +29,10 @@ public class LoggerTests extends TestBase {
 
     @Test(expectedExceptions = RuntimeException.class)
     public void testFailTextException() {
-        throw new FrameworkException("Test fail with text and exception", new RuntimeException("Test RuntimeException"));
+        throw new FrameworkException(
+                "Test fail with text and exception",
+                new RuntimeException("Test RuntimeException")
+        );
     }
 
     @Test(expectedExceptions = RuntimeException.class)

@@ -2,47 +2,50 @@ package cz.inventi.qa.framework.core.managers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
-import cz.inventi.qa.framework.core.objects.framework.Log;
-import cz.inventi.qa.framework.core.utils.WebUtils;
 import cz.inventi.qa.framework.core.data.config.LanguageData;
 import cz.inventi.qa.framework.core.data.enums.Language;
+import cz.inventi.qa.framework.core.objects.framework.AppInstance;
+import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
+import cz.inventi.qa.framework.core.objects.framework.Log;
 import cz.inventi.qa.framework.core.objects.parameters.TestSuiteParameters;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Map;
-import java.util.Objects;
 
 public class LanguageManager {
-    private static final String LANGUAGE_DIRECTORY = "lang/";
-    private static LanguageManager languageManager;
+    private static final String LANGUAGE_FOLDER = "lang";
+    private final AppInstance<?> appInstance;
     private Language currentLanguage;
-    private String languageFile;
     private LanguageData languageData;
     private Map<String, String> dictionary;
 
-    public static LanguageManager getInstance() {
-        if (languageManager == null) languageManager = new LanguageManager();
-        return languageManager;
-    }
-
-    public LanguageManager() {
+    public LanguageManager(AppInstance<?> appInstance) {
+        this.appInstance = appInstance;
         init(TestSuiteParameters.getParameter("language"));
     }
 
     public void init(Language language) {
-        languageFile = loadLanguageFile();
+        URL languageFile = loadLanguageFile();
         currentLanguage = language;
-
         if (!Language.NONE.equals(currentLanguage)) {
             try {
-                Log.debug("Loading '" + currentLanguage + "' language YAML dictionary file: '" + languageFile + "'");
-                languageData = new ObjectMapper(new YAMLFactory()).readValue(new File(languageFile), LanguageData.class);
+                Log.debug(
+                        "Loading '" + currentLanguage + "' language YAML dictionary file: '" +
+                            languageFile + "'"
+                );
+                languageData = new ObjectMapper(new YAMLFactory()).readValue(languageFile, LanguageData.class);
                 dictionary = languageData.getDictionary();
                 Log.debug("YAML language dictionary successfully loaded");
-            } catch (IOException e) {
-                throw new FrameworkException("Not possible to read from language YML files. Check that files are accessible on following locations:\n '" + languageFile + "'", e);
+            } catch (IOException | IllegalArgumentException e) {
+                throw new FrameworkException(
+                        "Not possible to read from language YML files. Check that language YML dictionary files " +
+                        "are accessible in the project module's 'src" + File.separator + "main" + File.separator +
+                        "resources" + File.separator + appInstance.getApplicationName() + File.separator +
+                        LANGUAGE_FOLDER + "' folder.",
+                        e
+                );
             }
         } else {
             Log.debug("No language parameter acquired, skipping translation file lookup");
@@ -54,16 +57,17 @@ public class LanguageManager {
         init(currentLanguage);
     }
 
-    private String loadLanguageFile() {
+    private URL loadLanguageFile() {
         if (!Language.NONE.equals(currentLanguage)) {
-            return WebUtils
-                    .getFilePathDecoded(
-                            Objects.requireNonNull(LanguageManager.class
-                                    .getClassLoader()
-                                    .getResource(LANGUAGE_DIRECTORY + currentLanguage.toString().toLowerCase() + ".yml"))
-                                    .getPath());
+            return getClass()
+                    .getClassLoader()
+                    .getResource(
+                            appInstance.getApplicationName() + File.separator +
+                                  "lang" + File.separator +
+                                  currentLanguage.toString().toLowerCase() + ".yml"
+                    );
         }
-        return "";
+        return null;
     }
 
     public Map<String, String> getDictionary() {
@@ -89,7 +93,10 @@ public class LanguageManager {
             try {
                 return Language.valueOf(language.toUpperCase());
             } catch (Exception e) {
-                throw new FrameworkException("Language '" + language + "' could not be found, please enter correct value according to ISO 639-1");
+                throw new FrameworkException(
+                        "Language '" + language + "' could not be found, please enter correct value " +
+                        "according to ISO 639-1"
+                );
             }
         }
     }

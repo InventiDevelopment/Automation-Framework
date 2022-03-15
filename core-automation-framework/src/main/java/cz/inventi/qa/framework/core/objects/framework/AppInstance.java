@@ -5,7 +5,9 @@ import cz.inventi.qa.framework.core.managers.ConfigManager;
 import cz.inventi.qa.framework.core.managers.LanguageManager;
 import cz.inventi.qa.framework.core.managers.ReportManager;
 import cz.inventi.qa.framework.core.managers.TestVariablesManager;
+import cz.inventi.qa.framework.core.objects.api.Api;
 import cz.inventi.qa.framework.core.objects.parameters.TestSuiteParameters;
+import cz.inventi.qa.framework.core.objects.web.WebPage;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,13 +20,13 @@ public abstract class AppInstance<T> {
     private final ReportManager reportManager;
     private ApplicationType applicationType;
     private String applicationName;
-    private T applicationStartingClass;
+    private T applicationStartingClassInitialized;
 
-    public AppInstance(ApplicationType applicationType, String applicationName) {
-        setBasicAppInformation(applicationName, applicationType);
+    public AppInstance(Class<T> applicationStartingClass, String applicationName) {
+        setBasicAppInformation(applicationName, getApplicationType(applicationStartingClass));
         testVariablesManager = new TestVariablesManager();
         configManager = new ConfigManager(this);
-        languageManager = LanguageManager.getInstance();
+        languageManager = new LanguageManager(this);
         reportManager = ReportManager.getInstance();
     }
 
@@ -33,7 +35,6 @@ public abstract class AppInstance<T> {
                 .of(mandatoryParamsEnum.getEnumConstants())
                 .map(Enum::name)
                 .collect(Collectors.toList());
-
         for (String mandatoryParameter : mandatoryParameters) {
             if (
                     TestSuiteParameters.getParameters() == null ||
@@ -70,8 +71,8 @@ public abstract class AppInstance<T> {
         return applicationName;
     }
 
-    public T getApplicationStartingClass() {
-        return applicationStartingClass;
+    public T getApplicationStartingClassInitialized() {
+        return applicationStartingClassInitialized;
     }
 
     private void setBasicAppInformation(String applicationName, ApplicationType applicationType) {
@@ -80,8 +81,14 @@ public abstract class AppInstance<T> {
         this.applicationName = applicationName;
     }
 
-    public void setApplicationStartingClass(T applicationStartingClass) {
-        this.applicationStartingClass = applicationStartingClass;
+    public void setApplicationStartingClassInitialized(T applicationStartingClassInitialized) {
+        this.applicationStartingClassInitialized = applicationStartingClassInitialized;
+    }
+
+    public ApplicationType getApplicationType(Class<?> startingAppClass) {
+        if (Api.class.isAssignableFrom(startingAppClass)) return ApplicationType.API;
+        if (WebPage.class.isAssignableFrom(startingAppClass)) return ApplicationType.WEB;
+        return null;
     }
 
     abstract public void quit();

@@ -34,8 +34,10 @@ public class WebElementTests extends TestBase {
                 .clickAppendedButton();
     }
 
-    @Test(description = "Check Exception Is Returned If Default Wait Is Turned Off",
-            expectedExceptions = NoSuchElementException.class)
+    @Test(
+            description = "Check Exception Is Returned If Default Wait Is Turned Off",
+            expectedExceptions = NoSuchElementException.class
+    )
     public void doNotWaitAutomaticallyExceptionTest() {
         webElementTestSteps.clickAppendedButton();
     }

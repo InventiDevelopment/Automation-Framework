@@ -3,7 +3,6 @@ package cz.inventi.qa.framework.core.objects.api;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import cz.inventi.qa.framework.core.data.enums.ApplicationType;
 import cz.inventi.qa.framework.core.data.enums.RunMode;
 import cz.inventi.qa.framework.core.data.enums.api.ApiMandatoryParameters;
 import cz.inventi.qa.framework.core.factories.api.ApiObjectFactory;
@@ -14,20 +13,20 @@ import io.restassured.config.ObjectMapperConfig;
 import io.restassured.config.RestAssuredConfig;
 
 public class ApiAppInstance<T extends Api> extends AppInstance<T> {
-    private final RestAssuredManager restAssuredManager;
+    private final RestAssuredManager<T> restAssuredManager;
 
-    public ApiAppInstance(ApplicationType applicationType, String applicationName) {
-        super(applicationType, applicationName);
+    public ApiAppInstance(Class<T> applicationClass, String applicationName) {
+        super(applicationClass, applicationName);
         checkMandatoryParametersAreSet(ApiMandatoryParameters.class);
-        restAssuredManager = new RestAssuredManager(this);
+        restAssuredManager = new RestAssuredManager<>(this);
         setRestAssuredConfiguration();
     }
 
     public T retrieveOrInitApi(Class<T> api) {
-        if (getApplicationStartingClass() == null) {
-            setApplicationStartingClass(ApiObjectFactory.initApi(api, this));
+        if (getApplicationStartingClassInitialized() == null) {
+            setApplicationStartingClassInitialized(ApiObjectFactory.initApi(api, this));
         }
-        return getApplicationStartingClass();
+        return getApplicationStartingClassInitialized();
     }
 
     private void setRestAssuredConfiguration() {
@@ -49,7 +48,7 @@ public class ApiAppInstance<T extends Api> extends AppInstance<T> {
         }
     }
 
-    public RestAssuredManager getRestAssuredManager() {
+    public RestAssuredManager<T> getRestAssuredManager() {
         return restAssuredManager;
     }
 

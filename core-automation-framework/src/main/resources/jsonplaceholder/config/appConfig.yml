@@ -1,0 +1,6 @@
+application:
+  api:
+    jsonplaceholder:
+      protocol: REST
+      environments:
+        PROD: "https://jsonplaceholder.typicode.com"

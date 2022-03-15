@@ -17,14 +17,20 @@ public class WebElementTestSteps extends StepsBase {
                 .clickWhatWeDo()
                 .clickAppendContent()
                 .clickRefreshAppendedContent();
+        Assert.assertTrue(
+                whatWeDoPage.getAppendedContent().isClickable(),
+                "Appended content is clickable"
+        );
         return this;
     }
 
     @Step("Check Parent XPath Locator Is Correct for TestWeb WebElement")
     public WebElementTestSteps checkParentXpath() {
-        Assert.assertEquals(homePage.getTooltipImg().getXpath(),
+        Assert.assertEquals(
+                homePage.getTooltipImg().getXpath(),
                 "//body//div[contains(@class, 'toolTipImage')]",
-                "Parent Xpath is correct");
+                "Parent Xpath is correct"
+        );
         return this;
     }
 

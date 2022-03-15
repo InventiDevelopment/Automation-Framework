@@ -3,7 +3,7 @@
 <suite name="Unit Tests Without Automatic Wait">
     <parameter name="appsconfig" value="customAppsConfig.yml"/>
     <parameter name="webdriverconfig" value="customWebDriverConfig.yml"/>
-    <test name="Core Components Tests">
+    <test name="WebDriver Tests">
         <classes>
             <class name="cz.inventi.qa.framework.tests.framework.web.webdriver.WebDriverTest"/>
         </classes>

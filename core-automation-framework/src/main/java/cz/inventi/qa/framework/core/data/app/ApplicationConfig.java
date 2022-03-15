@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Map;
 
-public class Applications {
+public class ApplicationConfig {
 
     @JsonProperty
     private Map<String, WebApplication> web;

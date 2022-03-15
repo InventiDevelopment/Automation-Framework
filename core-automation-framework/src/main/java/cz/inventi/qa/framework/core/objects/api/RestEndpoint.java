@@ -1,7 +1,6 @@
 package cz.inventi.qa.framework.core.objects.api;
 
 import cz.inventi.qa.framework.core.data.enums.api.ApiAuthMethod;
-import cz.inventi.qa.framework.core.managers.FrameworkManager;
 import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
@@ -113,6 +112,7 @@ public abstract class RestEndpoint<T> extends Endpoint<T> {
 
     @Override
     public RequestSpecification createRequestWithAuthToken(String authToken) {
+        if (authToken == null) throw new FrameworkException("Missing access token for request");
         return prepareRequest().with().auth().oauth2(authToken);
     }
 

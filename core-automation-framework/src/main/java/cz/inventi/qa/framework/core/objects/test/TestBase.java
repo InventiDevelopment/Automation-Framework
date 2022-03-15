@@ -60,8 +60,10 @@ public abstract class TestBase {
      */
     @AfterClass(alwaysRun = true)
     public void quit() {
-        handleSoftAssertions();
-        FrameworkManager.quitCurrentTestRun();
+        if (FrameworkManager.getTestRuns().size() > 0) {
+            handleSoftAssertions();
+            FrameworkManager.quitCurrentTestRun();
+        }
     }
 
     /**
