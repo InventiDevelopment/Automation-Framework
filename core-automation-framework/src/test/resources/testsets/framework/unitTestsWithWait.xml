@@ -3,7 +3,6 @@
 <suite name="Unit Tests With Automatic Wait">
     <test name="Core Components Tests">
         <classes>
-            <class name="cz.inventi.qa.framework.tests.framework.web.webdriver.WebDriverTest"/>
             <class name="cz.inventi.qa.framework.tests.framework.logger.LoggerTests"/>
         </classes>
     </test>
@@ -16,9 +15,9 @@
             </class>
         </classes>
     </test>
-    <test name="Language Tests">
+    <test name="WebDriver Tests">
         <classes>
-            <class name="cz.inventi.qa.framework.tests.framework.language.LanguageWebTest"/>
+            <class name="cz.inventi.qa.framework.tests.framework.web.webdriver.WebDriverTest"/>
         </classes>
     </test>
     <test name="WebObject Related Tests">
@@ -30,6 +29,11 @@
             </class>
             <class name="cz.inventi.qa.framework.tests.framework.web.webobjects.WebPageTests"/>
             <class name="cz.inventi.qa.framework.tests.framework.web.webobjects.WebComponentsTests"/>
+        </classes>
+    </test>
+    <test name="Language Tests">
+        <classes>
+            <class name="cz.inventi.qa.framework.tests.framework.language.LanguageWebTest"/>
         </classes>
     </test>
 </suite> <!-- Suite -->

@@ -74,7 +74,7 @@ public class FrameworkManager {
         getCurrentTestRun().quit(Utils.getTestIdentifier());
         getTestRuns().remove(Utils.getTestIdentifier());
         Log.info("TestRun (" + Utils.getTestIdentifier() + ") successfully quit");
-        Log.info(getTestRuns().size() + " TestRun instances left in the stack");
+        Log.info(getTestRuns().size() + " TestRun instance(s) left in the stack");
     }
 
     private static Map<String, WebAppInstance<?>> getTestRunWebAppInstances(String testIdentifier) {
@@ -115,7 +115,7 @@ public class FrameworkManager {
         Map<String, WebAppInstance<?>> webAppInstances = getTestRunWebAppInstances(testIdentifier);
         if (!webAppInstances.containsKey(appName)) {
             logCreatingAppInstance(appClass.getName(), testIdentifier, ApplicationType.WEB);
-            WebAppInstance<T> appInstance = new WebAppInstance<T>(getApplicationType(appClass), appName);
+            WebAppInstance<T> appInstance = new WebAppInstance<>(appClass, appName);
             webAppInstances.put(appName, appInstance);
             logFinishedCreatingAppInstance(testIdentifier, ApplicationType.WEB);
         }
@@ -132,17 +132,11 @@ public class FrameworkManager {
         Map<String, ApiAppInstance<?>> apiAppInstances = getTestRunApiAppInstances(testIdentifier);
         if (!apiAppInstances.containsKey(appName)) {
             logCreatingAppInstance(appClass.getName(), testIdentifier, ApplicationType.API);
-            ApiAppInstance<T> appInstance = new ApiAppInstance<T>(getApplicationType(appClass), appName);
+            ApiAppInstance<T> appInstance = new ApiAppInstance<>(appClass, appName);
             apiAppInstances.put(appName, appInstance);
             logFinishedCreatingAppInstance(testIdentifier, ApplicationType.API);
         }
         return (ApiAppInstance<T>) apiAppInstances.get(appName);
-    }
-
-    private ApplicationType getApplicationType(Class<?> startingAppClass) {
-        if (Api.class.isAssignableFrom(startingAppClass)) return ApplicationType.API;
-        if (WebPage.class.isAssignableFrom(startingAppClass)) return ApplicationType.WEB;
-        return null;
     }
 
     private static String validateAndGetAppName(Class<?> appClass) {

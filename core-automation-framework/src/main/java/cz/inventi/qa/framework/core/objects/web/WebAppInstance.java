@@ -9,19 +9,19 @@ import cz.inventi.qa.framework.core.objects.framework.AppInstance;
 public class WebAppInstance<T extends WebPage> extends AppInstance<T> {
     private WebDriverManager webDriverManager;
 
-    public WebAppInstance(ApplicationType applicationType, String applicationName) {
-        super(applicationType, applicationName);
+    public WebAppInstance(Class<T> applicationClass, String applicationName) {
+        super(applicationClass, applicationName);
         checkMandatoryParametersAreSet(WebMandatoryParameters.class);
         webDriverManager = new WebDriverManager(this);
     }
 
     public T retrieveOrInitWebPage(Class<T> startingWebPage) {
-        if (getApplicationStartingClass() == null) {
+        if (getApplicationStartingClassInitialized() == null) {
             webDriverManager = new WebDriverManager(this);
             webDriverManager.init();
-            setApplicationStartingClass(WebObjectFactory.initWebObject(startingWebPage, this));
+            setApplicationStartingClassInitialized(WebObjectFactory.initWebObject(startingWebPage, this));
         }
-        return getApplicationStartingClass();
+        return getApplicationStartingClassInitialized();
     }
 
     public WebDriverManager getWebDriverManager() {

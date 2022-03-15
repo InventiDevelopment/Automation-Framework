@@ -40,7 +40,7 @@ public class Api extends ApiObject {
      * Shorthand call for RestAssuredManager.
      * @return RestAssuredManager
      */
-    public RestAssuredManager getRestAssuredManager() {
+    public RestAssuredManager<?> getRestAssuredManager() {
         return getAppInstance().getRestAssuredManager();
     }
 }

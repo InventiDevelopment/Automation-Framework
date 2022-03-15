@@ -1,6 +1,6 @@
 package cz.inventi.qa.framework.testapps.framework.steps;
 
-import cz.inventi.qa.framework.core.data.config.AppsConfigData;
+import cz.inventi.qa.framework.core.data.config.AppConfigData;
 import cz.inventi.qa.framework.core.data.config.WebDriverConfigData;
 import cz.inventi.qa.framework.core.data.enums.web.WindowSizeType;
 import cz.inventi.qa.framework.core.data.web.WindowSizeDimensions;
@@ -18,57 +18,49 @@ public class ConfigManagerTestSteps extends StepsBase {
             .getAppInstance()
             .getConfigManager()
             .getWebDriverConfigData();
-    private final AppsConfigData appsConfigData = jsonPlaceHolderApi
-            .getAppInstance()
-            .getConfigManager()
-            .getAppsConfigData();
 
-    @Step("Check ConfigManager Has Been Initialized")
-    public ConfigManagerTestSteps checkAppConfigManagerInitialized() {
-        ConfigManager webConfigManager = homePage.getAppInstance().getConfigManager();
+    @Step("Check Proper API Application Configuration File Is Loaded")
+    public void checkApiAppConfigurationLoaded(String apiAppName) {
         ConfigManager apiConfigManager = jsonPlaceHolderApi.getAppInstance().getConfigManager();
-        Assert.assertNotNull(webConfigManager, "Web ConfigManager object is not null");
-        Assert.assertNotNull(apiConfigManager, "Api ConfigManager object is not null");
-        return this;
-    }
-
-    @Step("Check Application Configuration Files Are Loaded")
-    public ConfigManagerTestSteps checkAppConfigurationFilesAreLoaded() {
-        AppsConfigData webAppConfigData = homePage
-                .getAppInstance()
-                .getConfigManager()
-                .getAppsConfigData();
-        AppsConfigData apiAppConfigData = jsonPlaceHolderApi
-                .getAppInstance()
-                .getConfigManager()
-                .getAppsConfigData();
-        Assert.assertNotNull(apiAppConfigData.getApplications(),
-                "Application object for API app is not null");
-        Assert.assertNotNull(webAppConfigData.getApplications(),
-                "Application object for WEB app is not null");
-        Assert.assertNotEquals(webAppConfigData,
-                apiAppConfigData,
-                "Application configuration files are not shared for WEB and API application instance");
-        return this;
-    }
-
-    @Step("Check Application Configuration Contains Applications ({applicationName})")
-    public ConfigManagerTestSteps checkApplicationConfigurationContainsWebApp(String applicationName) {
-        Assert.assertTrue(
-                appsConfigData.getApplications().getWeb().containsKey(applicationName),
-                "Application '" + applicationName + "' found in app config"
+        Assert.assertNotNull(
+                apiConfigManager,
+                "Api ConfigManager object is not null"
         );
-        return this;
-    }
-
-    @Step("Check Application PROD URL Value for '{appName}' WEB app is '{applicationProdUrl}'")
-    public ConfigManagerTestSteps checkFirstWebApplicationProdUrlIs(String appName, String applicationProdUrl) {
+        AppConfigData apiAppConfigData = jsonPlaceHolderApi
+                .getAppInstance()
+                .getConfigManager()
+                .getAppsConfigData();
         Assert.assertEquals(
-                appsConfigData.getApplications().getWeb().get(appName).getEnvironments().get("PROD"),
-                applicationProdUrl,
-                    "PROD URL is '" + applicationProdUrl + "'"
+                apiAppConfigData.getApplicationConfig().getApi().size(),
+                1,
+                "1 API application config was initialized"
         );
-        return this;
+        Assert.assertNotNull(
+                apiAppConfigData.getApplicationConfig().getApi().get(apiAppName),
+                "Application '" + apiAppName + "' found in initialized config files"
+        );
+    }
+
+    @Step("Check Proper WEB Application Configuration File Is Loaded")
+    public void checkWebAppConfigurationLoaded(String webAppName) {
+        ConfigManager webConfigManager = homePage.getAppInstance().getConfigManager();
+        Assert.assertNotNull(
+                webConfigManager,
+                "Web ConfigManager object is not null"
+        );
+        AppConfigData webAppConfigData = homePage
+                .getAppInstance()
+                .getConfigManager()
+                .getAppsConfigData();
+        Assert.assertEquals(
+                webAppConfigData.getApplicationConfig().getWeb().size(),
+                1,
+                "1 WEB application config was initialized"
+        );
+        Assert.assertNotNull(
+                webAppConfigData.getApplicationConfig().getWeb().get(webAppName),
+                "Application '" + webAppName + "' found in initialized config files"
+        );
     }
 
     @Step("Check WebDriver Configuration File Is Loaded")

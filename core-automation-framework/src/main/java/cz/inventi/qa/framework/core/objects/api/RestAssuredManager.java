@@ -1,19 +1,18 @@
 package cz.inventi.qa.framework.core.objects.api;
 
 import cz.inventi.qa.framework.core.objects.api.filters.ProxyFilter;
-import cz.inventi.qa.framework.core.objects.framework.AppInstance;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 
-public class RestAssuredManager {
-    private final AppInstance appInstance;
+public class RestAssuredManager<T extends Api> {
+    private final ApiAppInstance<T> apiAppInstance;
     private RequestSpecification requestSpecification;
     private ResponseSpecification responseSpecification;
 
-    public RestAssuredManager(AppInstance appInstance) {
-        this.appInstance = appInstance;
+    public RestAssuredManager(ApiAppInstance<T> apiAppInstance) {
+        this.apiAppInstance = apiAppInstance;
         requestSpecification = prepareRequestSpec().build();
         responseSpecification = new ResponseSpecBuilder().build();
     }
@@ -42,7 +41,7 @@ public class RestAssuredManager {
     }
 
     private RequestSpecBuilder setRelaxedHttps(RequestSpecBuilder requestSpecification) {
-        if (appInstance.getConfigManager().getCurrentApiAppConfig().isRelaxedHttpsValidation()) {
+        if (apiAppInstance.getConfigManager().getCurrentApiAppConfig().isRelaxedHttpsValidation()) {
             requestSpecification = requestSpecification.setRelaxedHTTPSValidation();
         }
         return requestSpecification;

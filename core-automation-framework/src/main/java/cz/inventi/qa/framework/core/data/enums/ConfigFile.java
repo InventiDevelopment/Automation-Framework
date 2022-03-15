@@ -1,27 +1,41 @@
 package cz.inventi.qa.framework.core.data.enums;
 
-import cz.inventi.qa.framework.core.data.config.AppsConfigData;
+import cz.inventi.qa.framework.core.data.config.AppConfigData;
 import cz.inventi.qa.framework.core.data.config.WebDriverConfigData;
+
+import java.util.List;
 
 /**
  * Configuration objects for the framework.
  */
 public enum ConfigFile {
-    WEB_DRIVER_CONFIG(WebDriverConfigData.class, true, "webDriverConfig"),
-    APPS_CONFIG(AppsConfigData.class, true, "appsConfig");
+    WEB_DRIVER_CONFIG(
+            WebDriverConfigData.class,
+            List.of(ApplicationType.WEB),
+            "webDriverConfig"
+    ),
+    APPS_CONFIG(
+            AppConfigData.class,
+            List.of(ApplicationType.WEB, ApplicationType.API, ApplicationType.DESKTOP, ApplicationType.MOBILE),
+            "appConfig"
+    );
 
     private final Class<?> configClass;
-    private final boolean mandatory;
+    private final List<ApplicationType> mandatoryForAppType;
     private final String configParamName;
 
     /**
      * @param configClass configuration file class (to be mapped by Jackson)
-     * @param mandatory if the class should be loaded by default with the framework
+     * @param mandatoryForAppType lists application types for which this config file will be checked
      * @param configParamName parameter name that will contain config file path/name
      */
-    ConfigFile(Class<?> configClass, boolean mandatory, String configParamName) {
+    ConfigFile(
+            Class<?> configClass,
+            List<ApplicationType> mandatoryForAppType,
+            String configParamName
+    ) {
         this.configClass = configClass;
-        this.mandatory = mandatory;
+        this.mandatoryForAppType = mandatoryForAppType;
         this.configParamName = configParamName;
     }
 
@@ -29,8 +43,8 @@ public enum ConfigFile {
         return configClass;
     }
 
-    public boolean isMandatory() {
-        return mandatory;
+    public List<ApplicationType> getMandatoryForAppType() {
+        return mandatoryForAppType;
     }
 
     public String getConfigParamName() {

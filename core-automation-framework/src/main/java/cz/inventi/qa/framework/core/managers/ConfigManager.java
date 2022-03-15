@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import cz.inventi.qa.framework.core.annotations.ConfigFileSpecs;
 import cz.inventi.qa.framework.core.data.app.*;
-import cz.inventi.qa.framework.core.data.config.AppsConfigData;
+import cz.inventi.qa.framework.core.data.config.AppConfigData;
 import cz.inventi.qa.framework.core.data.config.WebDriverConfigData;
 import cz.inventi.qa.framework.core.data.enums.ConfigFile;
 import cz.inventi.qa.framework.core.objects.framework.AppInstance;
@@ -16,13 +16,14 @@ import cz.inventi.qa.framework.core.objects.parameters.TestSuiteParameters;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class ConfigManager {
-    private static final String CONFIG_DIRECTORY = "src/main/resources/config/";
+    private static final String CONFIG_FILE_FOLDER = "config";
     private final ObjectMapper mapper;
     private final Map<ConfigFile, Object> configFiles;
     private final AppInstance<?> appInstance;
@@ -44,7 +45,10 @@ public class ConfigManager {
     private void initMandatoryConfigs() {
         Arrays
                 .stream(ConfigFile.values())
-                .filter(ConfigFile::isMandatory)
+                .filter(configFile -> configFile
+                        .getMandatoryForAppType()
+                        .contains(appInstance.getApplicationType())
+                )
                 .forEach(this::initConfig);
     }
 
@@ -52,23 +56,27 @@ public class ConfigManager {
         Class<?> configClass = configFile.getConfigClass();
         String configFileName = getConfigDefaultFileName(configClass);
         String customConfigPath = TestSuiteParameters.getParameter(configFile.getConfigParamName());
-
-        if (customConfigPath != null) {
-            configFileName = customConfigPath;
-        }
-
-        String configPath = new File(CONFIG_DIRECTORY + configFileName).getAbsolutePath();
-
+        if (customConfigPath != null) configFileName = customConfigPath;
+        String configFilePath = Path.of(
+                appInstance.getApplicationName(),
+                CONFIG_FILE_FOLDER,
+                configFileName
+        ).toString();
+        URL absoluteConfigFileUrl = getClass().getClassLoader().getResource(configFilePath);
         try {
-            Log.debug("Loading " + configFile + " YAML configuration file: '" + configPath + "'");
-            configFiles.put(configFile, mapper.readValue(new File(Objects.requireNonNull(configPath)), configClass));
+            Log.debug("Loading " + configFile + " YAML configuration file: '" + absoluteConfigFileUrl + "'");
+            configFiles.put(configFile, mapper.readValue(absoluteConfigFileUrl, configClass));
             Log.debug(configFile + " YAML configuration files successfully loaded");
-            Log.debug(configFile + " YAML config content:\n"
-                    + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(configFiles.get(configFile)));
-        } catch (IOException e) {
+            Log.debug(
+                    configFile + " YAML config content:\n" +
+                    mapper.writerWithDefaultPrettyPrinter().writeValueAsString(configFiles.get(configFile))
+            );
+        } catch (IOException | IllegalArgumentException e) {
             throw new FrameworkException(
-                    "Not possible to read from " + configFile + " YML file. Check that file is" +
-                    " accessible at following location: '" + configPath + "'",
+                    "Not possible to read " + configFile + " YML file. Please check that file '" +
+                    configFile.getConfigParamName() + ".yml' is accessible at current project module's 'src" +
+                    File.separator + "main" + File.separator + appInstance.getApplicationName() + File.separator +
+                    CONFIG_FILE_FOLDER + "' folder.",
                     e
             );
         }
@@ -76,49 +84,72 @@ public class ConfigManager {
 
     private String getConfigDefaultFileName(Class<?> configClass) {
         ConfigFileSpecs configFileSpecsAnnotation = configClass.getDeclaredAnnotation(ConfigFileSpecs.class);
-        if (configFileSpecsAnnotation != null) {
-            return configFileSpecsAnnotation.name();
-        } else {
-            throw new FrameworkException(
-                    "Given config file class '" + configClass + "' has no defined @ConfigFile annotation"
-            );
-        }
+        if (configFileSpecsAnnotation != null) return configFileSpecsAnnotation.name();
+        throw new FrameworkException(
+                "Given config file class '" + configClass + "' has no defined @ConfigFile annotation"
+        );
     }
 
     public WebDriverConfigData getWebDriverConfigData() {
         return (WebDriverConfigData) configFiles.get(ConfigFile.WEB_DRIVER_CONFIG);
     }
 
-    public AppsConfigData getAppsConfigData() {
-        return (AppsConfigData) configFiles.get(ConfigFile.APPS_CONFIG);
+    public AppConfigData getAppsConfigData() {
+        return (AppConfigData) configFiles.get(ConfigFile.APPS_CONFIG);
     }
 
     public WebApplication getCurrentWebAppConfig() {
-        return getAppsConfigData().getApplications().getWeb().get(appInstance.getApplicationName());
+        return verifyConfigExists(getAppsConfigData()
+                .getApplicationConfig()
+                .getWeb()
+                .get(appInstance.getApplicationName())
+        );
     }
 
     public ApiApplication getCurrentApiAppConfig() {
-        return getAppsConfigData().getApplications().getApi().get(appInstance.getApplicationName());
+        return verifyConfigExists(getAppsConfigData()
+                .getApplicationConfig()
+                .getApi()
+                .get(appInstance.getApplicationName())
+        );
     }
 
     public MobileApplication getCurrentMobileAppConfig() {
-        return getAppsConfigData().getApplications().getMobile().get(appInstance.getApplicationName());
+        return verifyConfigExists(getAppsConfigData()
+                .getApplicationConfig()
+                .getMobile()
+                .get(appInstance.getApplicationName())
+        );
     }
 
     public DesktopApplication getCurrentDesktopAppConfig() {
-        return getAppsConfigData().getApplications().getDesktop().get(appInstance.getApplicationName());
+        return verifyConfigExists(getAppsConfigData()
+                .getApplicationConfig()
+                .getDesktop()
+                .get(appInstance.getApplicationName())
+        );
+    }
+
+    private <T> T verifyConfigExists(T webApplication) {
+        if (webApplication == null) {
+            throw new FrameworkException(
+                    "Configuration for application '" + appInstance.getApplicationName() + "' could not be found. " +
+                    "Please verify that you entered correct application name into you application starting class."
+                    + appInstance.getApplicationStartingClassInitialized().getClass()
+            );
+        }
+        return webApplication;
     }
 
     public Application getCurrentAppGeneralConfig() {
-        Applications applications = getAppsConfigData().getApplications();
-        String currentApplicationName = appInstance.getApplicationName();
-
-        return switch (appInstance.getApplicationType()) {
-            case API -> applications.getApi().get(currentApplicationName);
-            case DESKTOP -> applications.getDesktop().get(currentApplicationName);
-            case MOBILE -> applications.getMobile().get(currentApplicationName);
-            case WEB -> applications.getWeb().get(currentApplicationName);
-        };
+        Application appGeneralConfig = null;
+        switch (appInstance.getApplicationType()) {
+            case API -> appGeneralConfig = getCurrentApiAppConfig();
+            case DESKTOP -> appGeneralConfig = getCurrentDesktopAppConfig();
+            case MOBILE -> appGeneralConfig = getCurrentMobileAppConfig();
+            case WEB -> appGeneralConfig = getCurrentWebAppConfig();
+        }
+        return appGeneralConfig;
     }
 
     public String getCurrentApplicationEnvironmentUrl() {

@@ -5,7 +5,6 @@ import cz.inventi.qa.framework.core.objects.test.TestBase;
 import cz.inventi.qa.framework.testapps.framework.steps.ConfigManagerTestSteps;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Story;
-import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -20,13 +19,14 @@ public class ConfigurationTests extends TestBase {
         configManagerTestSteps = new ConfigManagerTestSteps();
     }
 
-    @Test(description = "Check AppConfig Managers Are Initialized")
-    public void checkAppsConfigManagersInitialized() {
-        configManagerTestSteps
-                .checkAppConfigurationFilesAreLoaded()
-                .checkAppConfigManagerInitialized()
-                .checkApplicationConfigurationContainsWebApp("testweb")
-                .checkFirstWebApplicationProdUrlIs("testweb", "test://testwebpage/index.htm");
+    @Test(description = "Check WEB Configuration Was Initialized")
+    public void checkWebAppConfigurationInitialized() {
+        configManagerTestSteps.checkWebAppConfigurationLoaded("testweb");
+    }
+
+    @Test(description = "Check API Configuration Was Initialized")
+    public void checkApiAppConfigurationInitialized() {
+        configManagerTestSteps.checkApiAppConfigurationLoaded("jsonplaceholder");
     }
 
     @Test(description = "Check WebDriver Configuration Is Initialized")

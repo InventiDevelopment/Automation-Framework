@@ -16,10 +16,10 @@ import java.nio.file.Paths;
 
 
 public class WebDriverManager {
-    private final AppInstance appInstance;
+    private final AppInstance<?> appInstance;
     private WebDriverWrapper webDriverWrapper;
 
-    public WebDriverManager(AppInstance appInstance) {
+    public WebDriverManager(AppInstance<?> appInstance) {
         this.appInstance = appInstance;
     }
 

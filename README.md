@@ -5,31 +5,31 @@ Boilerplate for easier testing with Java.
 **Inventi Automation Framework** is an ecosystem of libraries and design patterns that allows you to test various kinds and parts of applications with ease. The framework's main features are following:
 
 - Testing of front-end of web applications
-  - Using XPATH locators to locate elements
-  - Easy to understand web page object structure following the Page-Object pattern
-- Testing of back-end applications (REST)
+  - Using **XPATH** locators to locate elements
+  - Easy to understand web page object structure following the **Page-Object pattern**
+- Testing of back-end applications (**REST**)
   - Easy to understand API object structure
-- Multi-language support
+- **Multi-language** support
 - Simultaneous testing of different applications
   - Easily implement custom solution for your application type
-- Better reporting and structure with Allure reports
-- Open-sourced
+- Better reporting and structure with **Allure reports**
+- **Open-sourced**
 
 ### Used Libraries
 This project is a Maven configuration using multiple third-party libraries for compiling, testing and in other phases. For more details about particular software used please visit appropriate POM files in the project. Below we provide basic information about software used along with developer's webpage and license type under which given software is supplied.
 
 - **[Allure Framework](https://docs.qameta.io/allure)** (Apache License 2.0)
+- **[AssertJ](https://assertj.github.io/doc/)** (Apache License 2.0)
 - **[Apache Commons](https://commons.apache.org)** (Apache License 2.0)
 - **[Apache Log4J](https://logging.apache.org/log4j/2.x)** (Apache License 2.0)
 - **[AspectJ Weaver](https://www.eclipse.org/aspectj)** (Eclipse Public License 1.0)
+- **[Google Guava](https://github.com/google/guava)** (Apache License 2.0) 
 - **[Hibernate Validator](https://hibernate.org/validator/)** (Apache License 2.0)
 - **[Jackson](https://github.com/FasterXML/jackson)** (Apache License 2.0)
 - **[Lombok](https://projectlombok.org)** (MIT License)
-- **[Maven Failsafe Plugin](https://maven.apache.org/surefire/maven-failsafe-plugin)** (Apache License 2.0)
 - **[Maven SureFire Plugin](http://maven.apache.org/surefire/maven-surefire-plugin)** (Apache License 2.0)
 - **[REST Assured](https://rest-assured.io)** (Apache License 2.0)
 - **[Selenium WebDriver](https://www.selenium.dev)** (Apache License 2.0)
-- **[Slf4j](http://www.slf4j.org)** (MIT License)
 - **[TestNG](https://testng.org/doc)** (Apache License 2.0)
 - **[WebDriverManager](https://github.com/bonigarcia/webdrivermanager)** (Apache License 2.0)
 
@@ -54,18 +54,22 @@ mvn clean install
 
 All the necessary Maven packages will be downloaded (beware if you use custom Maven settings). Installation will run unit tests for the framework by default. If you want to skip these unit tests, add `-DskipTests` parameter to the above mentioned command.
 
+After the installation is finished, create a Maven module for your application under test.
+
 Don't forget to have a peek at the `.gitignore` file to fit your needs and contain your module's folder!
 
 ## Global Configuration
-Before you begin a development to test your own application, it is necessary to set basic key configuration values in given framework's config files. By default, framework consumes following configuration files:
+Before you begin the development to test your own application, it is necessary to set basic configuration values supplying framework's config files. By default, framework consumes following configuration files:
 
-- Applications configuration YAML file
-- WebDriver configuration YAML file
+- Applications configuration YAML file - mandatory for all application types (`appConfig.yml`)
+- WebDriver configuration YAML file - mandatory for web applications (`webDriverConfig.yml`)
 
-All this configuration files are loaded from module's **main** `resources/config` folder. By default, `appsConfig.yml` and `webDriverConfig.yml` from `core-automation-framework` module are used and you should provide them into every of your Maven module. You can also provide more of your own configuration files by putting them in the same resources folder and supplying their name in `appconfig` and `webdriverconfig` parameters in your TestNG suite (or Maven command).
+All these configuration files are loaded from module's `src/main/resources/<your-application-name>/config` folder. By default, `appsConfig.yml` and `webDriverConfig.yml` from `core-automation-framework` module are used. You need to provide at least the `appConfig.yml` into every of your project module's `src/main/<your-application-name>/folder`. You can also provide more of your own configuration files by putting them in the same resources folder and supplying their name in `appconfig` (`-Dappconfig`) and `webdriverconfig` (`-Dwebdriverconfig`) parameters in your TestNG suite (or Maven command).
+
+`<your-application-name>` stands for the name of application under test. It is recommended to use lowercase names without spaces. This identifier should be unique across all Maven modules in the project (to avoid resource file conflicts).
 
 ### Multi-Language Setup
-If you want to test in multiple languages, you should provide a `language` parameter to the Maven when running tests. Along with parameter there is a need to set up YAML dictionaries for given languages to the **main** `resources/lang` folder (samples can be seen in `core-automation-framework`'s `resources/lang` folder). Dictionary file names have to be corresponding to given language by the ISO 639-1.
+If you want to test in multiple languages, you should provide a `language` (`-Dlanguage`) parameter to Maven when running tests. Along with mentioned parameter there is a need to set up YAML dictionaries for given languages to the `src/main/resources/<your-application-name>/lang/<language-iso-identifier>` folder (samples can be seen in `core-automation-framework` module). Dictionary file names have to be corresponding to given language by the ISO 639-1.
 
 ### Allure Reports Configuration
 You can create your own Allure report templates and put them in the `src/main/resources/tpl` folder. More information can be found in Allure's documentation (link above).
@@ -80,12 +84,12 @@ Framework uses **TestNG** and **Maven** configuration to run tests. You can run 
 
 From an XML suite:
 ```
-mvn --projects YOUR_PROJECT_MODULE_NAME clean test -DsuiteXmlFile=someSuite.xml -DsomeParameterName=parameterValue
+mvn --projects <YOUR_PROJECT_MODULE_NAME> clean test -DsuiteXmlFile=<TESTNG-SUITE-FILE> -D<PARAMETER-NAME>=<PARAMETER-VALUE>
 ```
 
 From a test class directly:
 ```
-mvn --projects YOUR_PROJECT_MODULE_NAME clean test -Dtest=SomeTest -DsomeParameterName=parameterValue
+mvn --projects <YOUR_PROJECT_MODULE_NAME> clean test -Dtest=<TEST-CLASS-NAME> -D<PARAMETER-NAME>=<PARAMETER-VALUE>
 ```
 
 Launch maven test from core-automation-framework module:
