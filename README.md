@@ -64,7 +64,7 @@ Before you begin the development to test your own application, it is necessary t
 - Applications configuration YAML file - mandatory for all application types (`appConfig.yml`)
 - WebDriver configuration YAML file - mandatory for web applications (`webDriverConfig.yml`)
 
-All these configuration files are loaded from module's `src/main/resources/<your-application-name>/config` folder. By default, `appsConfig.yml` and `webDriverConfig.yml` from `core-automation-framework` module are used. You need to provide at least the `appConfig.yml` into every of your project module's `src/main/<your-application-name>/folder`. You can also provide more of your own configuration files by putting them in the same resources folder and supplying their name in `appconfig` (`-Dappconfig`) and `webdriverconfig` (`-Dwebdriverconfig`) parameters in your TestNG suite (or Maven command).
+All these configuration files are loaded from module's `src/main/resources/<your-application-name>/config` folder. By default, `appConfig.yml` and `webDriverConfig.yml` from `core-automation-framework` module are used. You need to provide at least the `appConfig.yml` into every of your project module's `src/main/<your-application-name>/folder`. You can also provide more of your own configuration files by putting them in the same resources folder and supplying their name in `appconfig` (`-Dappconfig`) and `webdriverconfig` (`-Dwebdriverconfig`) parameters in your TestNG suite (or Maven command).
 
 `<your-application-name>` stands for the name of application under test. It is recommended to use lowercase names without spaces. This identifier should be unique across all Maven modules in the project (to avoid resource file conflicts).
 
