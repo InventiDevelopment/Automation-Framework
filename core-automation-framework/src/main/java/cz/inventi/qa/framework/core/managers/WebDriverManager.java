@@ -111,8 +111,18 @@ public class WebDriverManager {
      * @return Timeouts object with defined values
      */
     public Timeouts getTimeouts() {
-        Timeouts configTimeouts = appInstance.getConfigManager().getWebDriverConfigData().getGeneralSettings().getWait().getTimeouts();
-        boolean waitAutomatically = appInstance.getConfigManager().getWebDriverConfigData().getGeneralSettings().getWait().waitsAutomatically();
+        Timeouts configTimeouts = appInstance
+                .getConfigManager()
+                .getWebDriverConfigData()
+                .getGeneralSettings()
+                .getWait()
+                .getTimeouts();
+        boolean waitAutomatically = appInstance
+                .getConfigManager()
+                .getWebDriverConfigData()
+                .getGeneralSettings()
+                .getWait()
+                .waitsAutomatically();
         if (configTimeouts == null) {
             if (waitAutomatically) {
                 return new Timeouts(5000,10000,20000);

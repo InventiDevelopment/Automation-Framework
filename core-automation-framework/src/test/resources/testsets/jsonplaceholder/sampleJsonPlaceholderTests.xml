@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
-<suite name="JSONPlaceholder Tests">
-    <parameter name="environment" value="PROD"/>
-    <test name="Basic JSONPlaceHolder Tests" parallel="tests">
+<suite name="JSONPlaceholder Tests" parallel="classes">
+    <parameter name="environment:jsonplaceholder" value="prod"/>
+    <test name="Basic JSONPlaceHolder Tests" thread-count="1">
         <classes>
             <class name="cz.inventi.qa.framework.tests.jsonplaceholder.SampleJsonPlaceHolderTests"/>
         </classes>

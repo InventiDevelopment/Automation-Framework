@@ -1,10 +1,9 @@
 package cz.inventi.qa.framework.core.managers;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import cz.inventi.qa.framework.core.annotations.ConfigFileSpecs;
 import cz.inventi.qa.framework.core.data.app.*;
 import cz.inventi.qa.framework.core.data.config.AppConfigData;
 import cz.inventi.qa.framework.core.data.config.WebDriverConfigData;
@@ -37,9 +36,7 @@ public class ConfigManager {
     }
 
     private void setMapperSettings() {
-        mapper
-                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-                .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
+        mapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
     }
 
     private void initMandatoryConfigs() {
@@ -54,40 +51,37 @@ public class ConfigManager {
 
     public void initConfig(ConfigFile configFile) {
         Class<?> configClass = configFile.getConfigClass();
-        String configFileName = getConfigDefaultFileName(configClass);
+        String configFileName = configFile.getConfigDefaultFileName();
         String customConfigPath = TestSuiteParameters.getParameter(configFile.getConfigParamName());
         if (customConfigPath != null) configFileName = customConfigPath;
+        String configFileDirPath = "src" + File.separator + "main" + File.separator +
+                appInstance.getApplicationName() + File.separator + CONFIG_FILE_FOLDER;
         String configFilePath = Path.of(
                 appInstance.getApplicationName(),
                 CONFIG_FILE_FOLDER,
                 configFileName
         ).toString();
         URL absoluteConfigFileUrl = getClass().getClassLoader().getResource(configFilePath);
-        try {
-            Log.debug("Loading " + configFile + " YAML configuration file: '" + absoluteConfigFileUrl + "'");
+         try {
             configFiles.put(configFile, mapper.readValue(absoluteConfigFileUrl, configClass));
             Log.debug(configFile + " YAML configuration files successfully loaded");
-            Log.debug(
-                    configFile + " YAML config content:\n" +
-                    mapper.writerWithDefaultPrettyPrinter().writeValueAsString(configFiles.get(configFile))
+            Log.debug(configFile + " YAML config content:\n");
+            Log.debug(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(configFiles.get(configFile)));
+            if (ConfigFile.APPS_CONFIG.equals(configFile)) verifyConfigForAppExists(configFileName, configFileDirPath);
+        } catch (MismatchedInputException | NullPointerException e) {
+            throw new FrameworkException(
+                    "Configuration file (" + configFileName + ") located at '" + configFileDirPath +
+                    "' does not have proper structure.",
+                    e
             );
         } catch (IOException | IllegalArgumentException e) {
             throw new FrameworkException(
                     "Not possible to read " + configFile + " YML file. Please check that file '" +
-                    configFileName + "' is accessible at current project module's 'src" +
-                    File.separator + "main" + File.separator + appInstance.getApplicationName() + File.separator +
-                    CONFIG_FILE_FOLDER + "' folder.",
+                    configFileName + "' is accessible at current project module's '" + configFileDirPath +
+                    "' folder.",
                     e
             );
         }
-    }
-
-    private String getConfigDefaultFileName(Class<?> configClass) {
-        ConfigFileSpecs configFileSpecsAnnotation = configClass.getDeclaredAnnotation(ConfigFileSpecs.class);
-        if (configFileSpecsAnnotation != null) return configFileSpecsAnnotation.name();
-        throw new FrameworkException(
-                "Given config file class '" + configClass + "' has no defined @ConfigFile annotation"
-        );
     }
 
     public WebDriverConfigData getWebDriverConfigData() {
@@ -99,46 +93,43 @@ public class ConfigManager {
     }
 
     public WebApplication getCurrentWebAppConfig() {
-        return verifyConfigExists(getAppsConfigData()
+        return getAppsConfigData()
                 .getApplicationConfig()
                 .getWeb()
-                .get(appInstance.getApplicationName())
-        );
+                .get(appInstance.getApplicationName());
     }
 
     public ApiApplication getCurrentApiAppConfig() {
-        return verifyConfigExists(getAppsConfigData()
+        return getAppsConfigData()
                 .getApplicationConfig()
                 .getApi()
-                .get(appInstance.getApplicationName())
-        );
+                .get(appInstance.getApplicationName());
     }
 
     public MobileApplication getCurrentMobileAppConfig() {
-        return verifyConfigExists(getAppsConfigData()
+        return getAppsConfigData()
                 .getApplicationConfig()
                 .getMobile()
-                .get(appInstance.getApplicationName())
-        );
+                .get(appInstance.getApplicationName());
     }
 
     public DesktopApplication getCurrentDesktopAppConfig() {
-        return verifyConfigExists(getAppsConfigData()
+        return getAppsConfigData()
                 .getApplicationConfig()
                 .getDesktop()
-                .get(appInstance.getApplicationName())
-        );
+                .get(appInstance.getApplicationName());
     }
 
-    private <T> T verifyConfigExists(T webApplication) {
-        if (webApplication == null) {
+    private void verifyConfigForAppExists(String configFileName, String configFileDirPath) {
+        if (getCurrentAppGeneralConfig() == null) {
             throw new FrameworkException(
-                    "Configuration for application '" + appInstance.getApplicationName() + "' could not be found. " +
-                    "Please verify that you entered correct application name into you application starting class."
-                    + appInstance.getApplicationStartingClassInitialized().getClass()
+                    "Configuration part for keyword '" + appInstance.getApplicationName() + "' could not be " +
+                    "found in the configuration YML file (" + configFileDirPath + File.separator + configFileName +
+                    "). Please verify that you entered correct application name into your application " +
+                    "starting class (" + appInstance.getApplicationStartingClass() + ") of type '" +
+                    appInstance.getApplicationType() + "'."
             );
         }
-        return webApplication;
     }
 
     public Application getCurrentAppGeneralConfig() {
@@ -153,7 +144,10 @@ public class ConfigManager {
     }
 
     public String getCurrentApplicationEnvironmentUrl() {
-        String environment = TestSuiteParameters.getParameter("environment");
+        String environment = TestSuiteParameters.getParameter(
+                "environment",
+                appInstance.getApplicationName()
+        );
         return getCurrentAppGeneralConfig()
                 .getEnvironments()
                 .entrySet()
@@ -162,9 +156,9 @@ public class ConfigManager {
                 .map(Map.Entry::getValue)
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException(
-                        "URL of application: '" +
-                        appInstance.getApplicationName() + "' with env: '" + environment + "'" +
-                        " could not be found in YAML. Please check config and definition of init class."
+                        "URL of application '" + appInstance.getApplicationName() + "' with env '" +
+                        environment + "' could not be found in " + ConfigFile.APPS_CONFIG + " YAML. Please check " +
+                        "config and test input parameters."
                     )
                 );
     }

@@ -49,10 +49,10 @@ Download resources and change the Maven project name appropriately to your proje
 Later on you can try to run following command in the project root folder:
 
 ```
-mvn clean install -DskipTests
+mvn clean install
 ```
 
-All the necessary Maven packages will be downloaded (beware if you use custom Maven settings). Installation will run unit tests for the framework by default.
+All the necessary Maven packages will be downloaded (beware if you use custom Maven settings). Installation will run unit tests for the framework by default. If you want to skip these unit tests, add `-DskipTests` parameter to the above mentioned command.
 
 After the installation is finished, create a Maven module for your application under test.
 
@@ -97,10 +97,19 @@ Launch maven test from core-automation-framework module:
 mvn --projects core-automation-framework clean test -Dtest=WebElementTests
 ```
 
-Launch core-automation-framework unit tests suite to verify installation:
+Launch core-automation-framework unit tests suite:
 ```
 mvn --projects core-automation-framework clean test -DsuiteXmlFile=framework/unitTests.xml
 ```
+
+### Passing Parameters to the Test
+You can pass parameters either by using the TestNG suite xml file, or directly with Maven command (see command sample above).
+
+#### Running Multiple Applications Under Test Simultaneously
+If your test uses more applications at once, it is recommended to write input parameters in format of `parameterName:applicationname`. In this way, you can supply parameter with same name for multiple projects with different values for each of the projects at once - supplying application name helps to assign parameter value to a specific application. Given parameter is used for all the applications in case of using multiple applications in one test without supplying application name to the parameter. 
+
+#### Passing Application Dependent Mandatory Parameters Through TestNG Suite
+To pass application dependent mandatory parameter (i.e. like **environment**) using the TestNG suite, it is necessary to put this parameter directly under the `<suite>` or `<test>` tag. Other parameters can be passed through deeper levels of TestNG suite.
 
 ### Framework Run Mode
 You can set up framework run modes (**NORMAL**, **DEBUG**) adding `-DrunMode` Maven parameter to command with selected mode value. Run mode affects mainly log information that is being displayed in the console output. By default, **NORMAL** run mode is applied.
@@ -117,7 +126,6 @@ allure serve
 
 #### Masking sensitive data in reports
 There is a possibility to mask sensitive data in Allure's results files and Allure reports - by default all TestNG input parameters' values that have name containing _"password"_ or _"secret"_ are masked with `[**MASKED**]`. Their values will be hidden only if other than `DEBUG` framework run mode is used. This solution should be reworked in the future to use `@Secret` annotation and AspectJ or Allure native solution.
-
 
 ### Parallelization
 By default, framework allows parallelization on the level of TestNG's `classes` level and above in the case of using the `TestBase.class` and `StepsBase.class` pattern. It is recommended to define `thread-count` value in TestNG suite to equal number of defined classes in given test. 

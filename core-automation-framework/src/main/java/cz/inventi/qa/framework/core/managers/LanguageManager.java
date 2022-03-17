@@ -1,13 +1,14 @@
 package cz.inventi.qa.framework.core.managers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import cz.inventi.qa.framework.core.data.config.LanguageData;
 import cz.inventi.qa.framework.core.data.enums.Language;
-import cz.inventi.qa.framework.core.objects.framework.AppInstance;
 import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
 import cz.inventi.qa.framework.core.objects.framework.Log;
 import cz.inventi.qa.framework.core.objects.parameters.TestSuiteParameters;
+import cz.inventi.qa.framework.core.utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,13 +17,13 @@ import java.util.Map;
 
 public class LanguageManager {
     private static final String LANGUAGE_FOLDER = "lang";
-    private final AppInstance<?> appInstance;
+    private final String applicationName;
     private Language currentLanguage;
     private LanguageData languageData;
     private Map<String, String> dictionary;
 
-    public LanguageManager(AppInstance<?> appInstance) {
-        this.appInstance = appInstance;
+    public LanguageManager(String applicationName) {
+        this.applicationName = applicationName;
         init(TestSuiteParameters.getParameter("language"));
     }
 
@@ -30,6 +31,8 @@ public class LanguageManager {
         URL languageFile = loadLanguageFile();
         currentLanguage = language;
         if (!Language.NONE.equals(currentLanguage)) {
+            String languageDirPath = "src" + File.separator + "main" + File.separator + "resources" + File.separator +
+                    applicationName + File.separator + LANGUAGE_FOLDER;
             try {
                 Log.debug(
                         "Loading '" + currentLanguage + "' language YAML dictionary file: '" +
@@ -38,17 +41,22 @@ public class LanguageManager {
                 languageData = new ObjectMapper(new YAMLFactory()).readValue(languageFile, LanguageData.class);
                 dictionary = languageData.getDictionary();
                 Log.debug("YAML language dictionary successfully loaded");
+            } catch (MismatchedInputException e) {
+                throw new FrameworkException(
+                        "Language dictionary file (" + currentLanguage.forJackson() + ".yml) " +
+                        "located at '" + languageDirPath +  "' does not have proper structure.",
+                        e
+                );
             } catch (IOException | IllegalArgumentException e) {
                 throw new FrameworkException(
-                        "Not possible to read from language YML files. Check that language YML dictionary files " +
-                        "are accessible in the project module's 'src" + File.separator + "main" + File.separator +
-                        "resources" + File.separator + appInstance.getApplicationName() + File.separator +
-                        LANGUAGE_FOLDER + "' folder.",
+                        "Not possible to read from language YML file. Check that language YML dictionary file (" +
+                        currentLanguage.forJackson() + ".yml) is accessible in the project module's '" +
+                        languageDirPath + "' folder.",
                         e
                 );
             }
         } else {
-            Log.debug("No language parameter acquired, skipping translation file lookup");
+            Log.debug("No language parameter acquired, skipping translation file lookup.");
         }
     }
 
@@ -62,9 +70,8 @@ public class LanguageManager {
             return getClass()
                     .getClassLoader()
                     .getResource(
-                            appInstance.getApplicationName() + File.separator +
-                                  "lang" + File.separator +
-                                  currentLanguage.toString().toLowerCase() + ".yml"
+                            applicationName + File.separator + "lang" + File.separator +
+                                  currentLanguage.forJackson() + ".yml"
                     );
         }
         return null;
@@ -82,7 +89,7 @@ public class LanguageManager {
         try {
             return dictionary.get(index.toString());
         } catch (NullPointerException e) {
-            throw new FrameworkException("Given '" + index +  "' key has not been found in the dictionary file");
+            throw new FrameworkException("Given '" + index +  "' key has not been found in the dictionary file.");
         }
     }
 
@@ -91,11 +98,11 @@ public class LanguageManager {
             return Language.NONE;
         } else {
             try {
-                return Language.valueOf(language.toUpperCase());
+                return Utils.getEnum(Language.class, language);
             } catch (Exception e) {
                 throw new FrameworkException(
                         "Language '" + language + "' could not be found, please enter correct value " +
-                        "according to ISO 639-1"
+                        "according to ISO 639-1."
                 );
             }
         }

@@ -11,15 +11,15 @@ import java.util.Map;
  * Class allowing setting variables bound to current AppInstance.
  */
 public class TestVariablesManager {
-    private final TestSuiteParameters testSuiteParameters;
     private final ApiAppVariables apiAppVariables;
     private final WebAppVariables webAppVariables;
     private final Map<String, String> customVariables;
+    private final String applicationName;
 
-    public TestVariablesManager() {
-        testSuiteParameters = TestSuiteParameters.getInstance();
-        apiAppVariables = new ApiAppVariables();
-        webAppVariables = new WebAppVariables();
+    public TestVariablesManager(String applicationName) {
+        this.applicationName = applicationName;
+        apiAppVariables = new ApiAppVariables(applicationName);
+        webAppVariables = new WebAppVariables(applicationName);
         customVariables = new HashMap<>();
     }
 
@@ -31,8 +31,12 @@ public class TestVariablesManager {
         return webAppVariables;
     }
 
+    public String getApplicationName() {
+        return applicationName;
+    }
+
     public TestSuiteParameters getTestSuiteParameters() {
-        return testSuiteParameters;
+        return TestSuiteParameters.getInstance();
     }
 
     public Map<String, String> getCustomVariables() {

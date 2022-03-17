@@ -112,7 +112,9 @@ public class ApiObjectFactory {
     }
 
     public static <T extends Api> T initApi(Class<T> apiClass, ApiAppInstance<?> appInstance) {
-        String appUrl = appInstance.getConfigManager().getCurrentApplicationEnvironmentUrl();
+        String appUrl = appInstance
+                .getConfigManager()
+                .getCurrentApplicationEnvironmentUrl();
         AOProps aoProps = new AOProps(
                 appUrl,
                 null,

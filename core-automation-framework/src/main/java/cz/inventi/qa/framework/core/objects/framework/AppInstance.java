@@ -18,15 +18,17 @@ public abstract class AppInstance<T> {
     private final ConfigManager configManager;
     private final LanguageManager languageManager;
     private final ReportManager reportManager;
+    private final Class<T> applicationStartingClass;
     private ApplicationType applicationType;
     private String applicationName;
     private T applicationStartingClassInitialized;
 
     public AppInstance(Class<T> applicationStartingClass, String applicationName) {
         setBasicAppInformation(applicationName, getApplicationType(applicationStartingClass));
-        testVariablesManager = new TestVariablesManager();
+        this.applicationStartingClass = applicationStartingClass;
+        testVariablesManager = new TestVariablesManager(applicationName);
         configManager = new ConfigManager(this);
-        languageManager = new LanguageManager(this);
+        languageManager = new LanguageManager(applicationName);
         reportManager = ReportManager.getInstance();
     }
 
@@ -36,15 +38,22 @@ public abstract class AppInstance<T> {
                 .map(Enum::name)
                 .collect(Collectors.toList());
         for (String mandatoryParameter : mandatoryParameters) {
-            if (
-                    TestSuiteParameters.getParameters() == null ||
-                    TestSuiteParameters.getParameter(mandatoryParameter.toLowerCase()) == null
-            ) {
-                throw new FrameworkException("Parameter '" + mandatoryParameter.toLowerCase() + "' has to be" +
-                        " supplied either in the TestNG suite or as a Maven parameter to start this type of" +
-                        " application");
+            if (!checkMandatoryParameterDefined(mandatoryParameter)) {
+                throw new FrameworkException(
+                        "Parameter '" + mandatoryParameter.toLowerCase() + "' for application '" + applicationName +
+                        "' has to be supplied either in the TestNG suite or as a Maven parameter to start this " +
+                        "type of application in appropriate format of '" + mandatoryParameter.toLowerCase() +
+                        "' or '" + mandatoryParameter.toLowerCase() + ":" + applicationName + "'."
+                );
             }
         }
+    }
+
+    private boolean checkMandatoryParameterDefined(String mandatoryParameter) {
+        String mandatoryParamForApp = mandatoryParameter.toLowerCase() + ":" + applicationName;
+        if (TestSuiteParameters.getParameters() == null) return false;
+        return TestSuiteParameters.getParameter(mandatoryParameter.toLowerCase()) != null ||
+               TestSuiteParameters.getParameter(mandatoryParamForApp) != null;
     }
 
     public TestVariablesManager getTestVariablesManager() {
@@ -73,6 +82,10 @@ public abstract class AppInstance<T> {
 
     public T getApplicationStartingClassInitialized() {
         return applicationStartingClassInitialized;
+    }
+
+    public Class<T> getApplicationStartingClass() {
+        return applicationStartingClass;
     }
 
     private void setBasicAppInformation(String applicationName, ApplicationType applicationType) {
