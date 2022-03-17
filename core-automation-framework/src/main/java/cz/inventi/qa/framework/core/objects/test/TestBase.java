@@ -6,20 +6,16 @@ import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
 import cz.inventi.qa.framework.core.objects.framework.Log;
 import cz.inventi.qa.framework.core.objects.parameters.TestSuiteParameters;
 import org.testng.ITestContext;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterSuite;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeSuite;
-import org.testng.xml.XmlTest;
+import org.testng.annotations.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+@Listeners(TestListener.class)
 public abstract class TestBase {
 
     /**
@@ -27,20 +23,10 @@ public abstract class TestBase {
      * or Maven command to the TestSuiteParameters class.
      * Also checks for @Secret parameters that should be
      * hidden in the output.
-     * @param context TestNG context
      */
-    @BeforeSuite(alwaysRun = true)
+    @BeforeTest(alwaysRun = true)
     public void loadTestSuiteParameters(ITestContext context) {
-        XmlTest currentTest = context.getCurrentXmlTest();
-        Map<String, String> parameters = currentTest.getAllParameters();
-        for (String key : parameters.keySet()) {
-            String parameterValue = parameters.get(key);
-            if (parameterValue.startsWith("$")) {
-                String newValue = currentTest.getParameter(parameterValue.substring(1));
-                parameters.put(key, newValue);
-            }
-        }
-        TestSuiteParameters.setParameters(parameters);
+        TestSuiteParameters.parseTestSuiteParameters(context);
     }
 
     /**
@@ -48,10 +34,10 @@ public abstract class TestBase {
      * soft assertions for given application run through test class.
      */
     public void handleSoftAssertions() {
-        FrameworkManager
-                .getCurrentTestRun()
-                .getSoftAssertCollector()
-                .printExceptions();
+            FrameworkManager
+                    .getCurrentTestRun()
+                    .getSoftAssertCollector()
+                    .printExceptions();
     }
 
     /**

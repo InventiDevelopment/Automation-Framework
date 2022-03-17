@@ -26,9 +26,9 @@ public class FrameworkManager {
 
     public FrameworkManager() {
         this.testRuns = new HashMap<>();
-        Log.info("Loading Inventi Automation Framework");
         setProxy();
         setRunMode();
+        Log.info("Loading Inventi Automation Framework");
     }
 
     /**
@@ -61,7 +61,14 @@ public class FrameworkManager {
     }
 
     public static TestRun getCurrentTestRun() {
-        return getTestRuns().get(Utils.getTestIdentifier());
+        TestRun testRun = getTestRuns().get(Utils.getTestIdentifier());
+        if (testRun == null) {
+            throw new FrameworkException(
+                    "Could not retrieve current TestRun instance. Please check that your TestNG suite has " +
+                    "properly defined 'parallel' parameter and 'thread-count' parameter for tests."
+            );
+        }
+        return testRun;
     }
 
     synchronized public static FrameworkManager getInstance() {

@@ -30,7 +30,7 @@ public abstract class WebObject {
     }
 
     /**
-     * Create a WebObject instance withing given AppInstance.
+     * Create a WebObject instance within given AppInstance.
      * @param webObjectClass class of given WebObject (WebPage, WebComponent, WebObject)
      * @param <T> generic object type
      * @return Initialized WebObject

@@ -37,12 +37,4 @@ public class ConfigurationTests extends TestBase {
                 .checkWebDriverMaxTimeoutValue(30000)
                 .checkWindowSizeTypeValue(WindowSizeType.MAXIMIZED);
     }
-
-    @Test(description = "Check WebDriver Configuration Is Initialized - Custom Config")
-    public void checkWebDriverConfigurationIsInitializedCustomConfig() {
-        configManagerTestSteps
-                .checkWebDriverConfigurationsFileIsLoaded()
-                .checkWaitsAutomaticallyValue(false)
-                .checkWindowSizeDimensionsValue(1920, 1080);
-    }
 }

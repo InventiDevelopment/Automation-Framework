@@ -2,6 +2,7 @@ package cz.inventi.qa.framework.tests.framework.language;
 
 import cz.inventi.qa.framework.core.data.enums.Language;
 import cz.inventi.qa.framework.core.objects.test.TestBase;
+import cz.inventi.qa.framework.core.utils.Utils;
 import cz.inventi.qa.framework.testapps.framework.steps.LanguageTestSteps;
 import cz.inventi.qa.framework.testapps.testweb.lang.Index;
 import io.qameta.allure.Epic;
@@ -24,7 +25,7 @@ public class LanguageWebTest extends TestBase {
     @Test(description = "Check Current Language")
     @Parameters({ "language" })
     public void checkCurrentLanguage(String language) {
-        languageTestSteps.checkCurrentLanguageIsSetTo(Language.valueOf(language));
+        languageTestSteps.checkCurrentLanguageIsSetTo(Utils.getEnum(Language.class, language));
     }
 
     @Test(description = "Check Translations Are Working")

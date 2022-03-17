@@ -1,7 +1,9 @@
 package cz.inventi.qa.framework.core.data.enums;
 
+import cz.inventi.qa.framework.core.annotations.ConfigFileSpecs;
 import cz.inventi.qa.framework.core.data.config.AppConfigData;
 import cz.inventi.qa.framework.core.data.config.WebDriverConfigData;
+import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
 
 import java.util.List;
 
@@ -49,5 +51,13 @@ public enum ConfigFile {
 
     public String getConfigParamName() {
         return configParamName;
+    }
+
+    public String getConfigDefaultFileName() {
+        ConfigFileSpecs configFileSpecsAnnotation = configClass.getDeclaredAnnotation(ConfigFileSpecs.class);
+        if (configFileSpecsAnnotation != null) return configFileSpecsAnnotation.name();
+        throw new FrameworkException(
+                "Given config file class '" + configClass + "' has no defined @ConfigFile annotation"
+        );
     }
 }

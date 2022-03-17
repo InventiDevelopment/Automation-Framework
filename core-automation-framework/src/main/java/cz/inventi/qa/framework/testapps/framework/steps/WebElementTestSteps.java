@@ -8,7 +8,7 @@ import io.qameta.allure.Step;
 
 public class WebElementTestSteps extends StepsBase {
     private final HomePage homePage = getWebAppInstanceOf(HomePage.class);
-    private WhatWeDoPage whatWeDoPage;
+    private final WhatWeDoPage whatWeDoPage = homePage.navigateTo(WhatWeDoPage.class);
 
     @Step("Try to Click Appended Button of TestWeb")
     public WebElementTestSteps clickAppendedButton() {
@@ -36,10 +36,9 @@ public class WebElementTestSteps extends StepsBase {
 
     @Step("Try to Perform JS Click on an WebElement of TestWeb")
     public WebElementTestSteps clickJs() {
-        whatWeDoPage = homePage
+        homePage
                 .getMenu()
-                .clickWhatWeDo();
-        whatWeDoPage
+                .clickWhatWeDo()
                 .getAppendContentBtn()
                 .clickJS();
         Assert.assertTrue(
@@ -74,6 +73,10 @@ public class WebElementTestSteps extends StepsBase {
                 "Footer element is displayed"
         );
         return this;
+    }
+
+    public HomePage getHomePage() {
+        return homePage;
     }
 }
 
