@@ -5,22 +5,24 @@ import cz.inventi.qa.framework.core.objects.framework.FrameworkAssertionExceptio
 import cz.inventi.qa.framework.core.objects.test.assertions.Assertion;
 import io.restassured.response.Response;
 
+import java.util.regex.Pattern;
+
 /**
  * Assertion methods for Rest Assured API calls.
  */
 public class RestAssertion extends Assertion {
 
     public static Response assertStatusPassed(Response response, AssertionType assertionType) {
-        return assertStatusRegex(response,"2\\d\\d", assertionType);
+        return assertStatusRegex(response, Pattern.compile("2\\d\\d"), assertionType);
     }
 
     public static Response assertStatusFailed(Response response, AssertionType assertionType) {
-        return assertStatusRegex(response,"(4\\d\\d|5\\d\\d)", assertionType);
+        return assertStatusRegex(response, Pattern.compile("(4\\d\\d|5\\d\\d)"), assertionType);
     }
 
     public static Response assertStatusRegex(
             Response response,
-            String statusPattern,
+            Pattern statusPattern,
             AssertionType assertionType
     ) {
         try {

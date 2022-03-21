@@ -7,6 +7,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.regex.Matcher;
 
 public class Utils {
@@ -68,5 +69,13 @@ public class Utils {
         } catch (InterruptedException e) {
             throw new FrameworkException("Exception raised while in sleep", e);
         }
+    }
+
+    public static String decodeBase64(String toBeDecoded) {
+        return new String(Base64.getDecoder().decode(toBeDecoded));
+    }
+
+    public static String encodeBase64(String toBeEncoded) {
+        return Base64.getEncoder().encodeToString(toBeEncoded.getBytes());
     }
 }

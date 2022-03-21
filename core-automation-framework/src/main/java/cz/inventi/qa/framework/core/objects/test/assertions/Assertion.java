@@ -20,6 +20,7 @@ import org.assertj.core.api.Assertions;
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 
 public class Assertion {
@@ -55,16 +56,24 @@ public class Assertion {
     }
 
     public static void assertEqualsRegex(
-            String regex,
+            Pattern regex,
             String actual,
             String name,
             AssertionType assertionType
     ) {
         try {
-            Assertions
-                    .assertThat(actual)
-                    .matches(regex);
-            createAndFinishStepWithStatus(name, Status.PASSED, assertionType);
+            if (regex.matcher(actual).find()) {
+                createAndFinishStepWithStatus(name, Status.PASSED, assertionType);
+            } else {
+                createAndFinishStepWithStatus(name, Status.FAILED, assertionType);
+                handleAssertionException(
+                        new AssertionError(
+                                "Expected:\n" + actual + "\n\nto match regex: '" + regex.pattern() + "'"
+                        ),
+                        name,
+                        assertionType
+                );
+            }
         } catch (AssertionError e) {
             createAndFinishStepWithStatus(name, Status.FAILED, assertionType);
             handleAssertionException(e, name, assertionType);
@@ -72,17 +81,22 @@ public class Assertion {
     }
 
     public static void assertNotEqualsRegex(
-            String regex,
+            Pattern regex,
             String actual,
             String name,
             AssertionType assertionType
     ) {
-        try {
-            Assertions.assertThat(actual).withFailMessage(name).doesNotMatch(regex);
+        if (!regex.matcher(actual).find()) {
             createAndFinishStepWithStatus(name, Status.PASSED, assertionType);
-        } catch (AssertionError e) {
+        } else {
             createAndFinishStepWithStatus(name, Status.FAILED, assertionType);
-            handleAssertionException(e, name, assertionType);
+            handleAssertionException(
+                    new AssertionError(
+                            "Expected:\n" + actual + "\n\nto not match regex: '" + regex.pattern() + "'"
+                    ),
+                    name,
+                    assertionType
+            );
         }
     }
 

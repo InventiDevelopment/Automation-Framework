@@ -3,6 +3,7 @@ package cz.inventi.qa.framework.core.objects.test.assertions;
 import cz.inventi.qa.framework.core.data.enums.test.AssertionType;
 
 import java.io.File;
+import java.util.regex.Pattern;
 
 /**
  * Shorthand calls for Assertion functions.
@@ -15,11 +16,19 @@ public class Assert extends Assertion {
     }
 
     public static void assertEqualsRegex(String regex, String actual, String name) {
-        assertEqualsRegex(regex, actual, name, ASSERTION_TYPE);
+        assertEqualsRegex(Pattern.compile(regex), actual, name, ASSERTION_TYPE);
+    }
+
+    public static void assertEqualsRegex(Pattern pattern, String actual, String name) {
+        assertEqualsRegex(pattern, actual, name, ASSERTION_TYPE);
     }
 
     public static void assertNotEqualsRegex(String regex, String actual, String name) {
-        assertNotEqualsRegex(regex, actual, name, ASSERTION_TYPE);
+        assertNotEqualsRegex(Pattern.compile(regex), actual, name, ASSERTION_TYPE);
+    }
+
+    public static void assertNotEqualsRegex(Pattern pattern, String actual, String name) {
+        assertNotEqualsRegex(pattern, actual, name, ASSERTION_TYPE);
     }
 
     public static void assertEqualsIgnoreCase(String actual, String expected, String name) {
