@@ -20,12 +20,14 @@ import java.util.Map;
 
 public class FrameworkManager {
     private volatile static FrameworkManager frameworkManager = null;
+    private final VariablesManager globalVariables;
     private final Map<String, TestRun> testRuns;
     private static RunMode runMode;
     private static ProxySettings proxySettings;
 
     public FrameworkManager() {
         this.testRuns = new HashMap<>();
+        this.globalVariables = new VariablesManager();
         setProxy();
         setRunMode();
         Log.info("Loading Inventi Automation Framework");
@@ -74,6 +76,10 @@ public class FrameworkManager {
     synchronized public static FrameworkManager getInstance() {
         if (frameworkManager == null) frameworkManager = new FrameworkManager();
         return frameworkManager;
+    }
+
+    synchronized public static Map<String, Object> getGlobalVariables() {
+        return getInstance().globalVariables.getVariables();
     }
 
     public static void quitCurrentTestRun() {
