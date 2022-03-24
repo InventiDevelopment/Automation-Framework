@@ -4,7 +4,7 @@ import cz.inventi.qa.framework.core.data.enums.ApplicationType;
 import cz.inventi.qa.framework.core.managers.ConfigManager;
 import cz.inventi.qa.framework.core.managers.LanguageManager;
 import cz.inventi.qa.framework.core.managers.ReportManager;
-import cz.inventi.qa.framework.core.managers.TestVariablesManager;
+import cz.inventi.qa.framework.core.managers.AppVariablesManager;
 import cz.inventi.qa.framework.core.objects.api.Api;
 import cz.inventi.qa.framework.core.objects.parameters.TestSuiteParameters;
 import cz.inventi.qa.framework.core.objects.web.WebPage;
@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public abstract class AppInstance<T> {
-    private final TestVariablesManager testVariablesManager;
+    private final AppVariablesManager testVariablesManager;
     private final ConfigManager configManager;
     private final LanguageManager languageManager;
     private final ReportManager reportManager;
@@ -26,7 +26,7 @@ public abstract class AppInstance<T> {
     public AppInstance(Class<T> applicationStartingClass, String applicationName) {
         setBasicAppInformation(applicationName, getApplicationType(applicationStartingClass));
         this.applicationStartingClass = applicationStartingClass;
-        testVariablesManager = new TestVariablesManager(applicationName);
+        testVariablesManager = new AppVariablesManager(applicationName);
         configManager = new ConfigManager(this);
         languageManager = new LanguageManager(applicationName);
         reportManager = ReportManager.getInstance();
@@ -56,7 +56,7 @@ public abstract class AppInstance<T> {
                TestSuiteParameters.getParameter(mandatoryParamForApp) != null;
     }
 
-    public TestVariablesManager getTestVariablesManager() {
+    public AppVariablesManager getTestVariablesManager() {
         return testVariablesManager;
     }
 
