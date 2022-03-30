@@ -26,6 +26,8 @@ public abstract class TestBase {
      * hidden in the output.
      */
     @BeforeTest(alwaysRun = true)
+    @BeforeClass(alwaysRun = true)
+    @BeforeSuite(alwaysRun = true)
     public void loadTestSuiteParameters(ITestContext context) {
         TestSuiteParameters.parseTestSuiteParameters(context);
     }
