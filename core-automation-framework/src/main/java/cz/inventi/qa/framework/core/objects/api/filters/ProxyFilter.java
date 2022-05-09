@@ -10,8 +10,7 @@ import io.restassured.specification.ProxySpecification;
 
 public class ProxyFilter implements Filter {
 
-    public ProxyFilter() {
-    }
+    public ProxyFilter() {}
 
     @Override
     public Response filter(
@@ -29,7 +28,7 @@ public class ProxyFilter implements Filter {
         String proxyPass = FrameworkManager.getProxySettings().getProxyPass();
         String proxyScheme = FrameworkManager.getProxySettings().getProxyScheme().name().toLowerCase();
         int proxyPort = FrameworkManager.getProxySettings().getProxyPort();
-       ProxySpecification raProxySpecification  = ProxySpecification
+        ProxySpecification raProxySpecification  = ProxySpecification
                 .host(proxyServer)
                 .withPort(proxyPort)
                 .withScheme(proxyScheme);
