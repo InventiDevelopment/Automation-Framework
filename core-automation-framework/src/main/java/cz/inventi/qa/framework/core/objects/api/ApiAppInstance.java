@@ -52,7 +52,5 @@ public class ApiAppInstance<T extends Api> extends AppInstance<T> {
         return restAssuredManager;
     }
 
-    public void quit() {
-
-    }
+    public void quit() {}
 }
