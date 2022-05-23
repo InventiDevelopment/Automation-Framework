@@ -5,6 +5,8 @@ import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -107,6 +109,48 @@ public class FileUtils {
             return outputArchivePath;
         } catch (IOException e) {
             throw new FrameworkException("Could not ZIP result files", e);
+        }
+    }
+
+    /**
+     * Creates a TXT file in given location with given content.
+     * @param fileName Filename
+     * @param content Content
+     */
+    public static File createTxtFile(Path path, String fileName, String content, boolean noExtension) {
+        try {
+            String fileExtension = ".txt";
+            if (noExtension) fileExtension = "";
+            Path fullPath = Path
+                    .of(path.toString(), File.separator, fileName + fileExtension)
+                    .toAbsolutePath();
+            PrintWriter writer = new PrintWriter(fullPath.toString(), StandardCharsets.UTF_8);
+            writer.println(content);
+            writer.close();
+            return fullPath.toFile();
+        } catch (IOException e) {
+            throw new FrameworkException("Cannot create TXT file", e);
+        }
+    }
+
+    public static File createTxtFile(String fileName, String content) {
+        return createTxtFile(Utils.getTestResourcesFolder(), fileName, content);
+    }
+
+    public static File createTxtFile(Path path, String fileName, String content) {
+        return createTxtFile(path, fileName, content, false);
+    }
+
+    /**
+     * Returns MIME type of the file.
+     * @param filePath Path to the file
+     * @return File MIME type in String
+     */
+    public static String retrieveFileMimeType(Path filePath) {
+        try {
+            return Files.probeContentType(filePath);
+        } catch (IOException e) {
+            throw new FrameworkException("Could not get file MIME type", e);
         }
     }
 }
