@@ -16,7 +16,7 @@ public class SampleTest extends TestBase {
     }
 
     @Test(description = "This Is a Sample Test")
-    public void retrieveDfAccessToken(String userNameDf, String userPasswordDf) {
+    public void sampleTest() {
         // Write some test here
     }
 }
