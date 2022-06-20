@@ -3,11 +3,13 @@ package cz.inventi.qa.framework.core.managers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import cz.inventi.qa.framework.core.annotations.Application;
 import cz.inventi.qa.framework.core.data.config.LanguageData;
 import cz.inventi.qa.framework.core.data.enums.Language;
 import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
 import cz.inventi.qa.framework.core.objects.framework.Log;
 import cz.inventi.qa.framework.core.objects.parameters.TestSuiteParameters;
+import cz.inventi.qa.framework.core.objects.web.WebPage;
 import cz.inventi.qa.framework.core.utils.Utils;
 
 import java.io.File;
@@ -25,6 +27,18 @@ public class LanguageManager {
     public LanguageManager(String applicationName) {
         this.applicationName = applicationName;
         init(TestSuiteParameters.getParameter("language"));
+    }
+
+    public static <T extends WebPage> LanguageManager getLanguageManager(Class<T> webAppClass) {
+        return FrameworkManager
+                .getCurrentTestRun()
+                .getWebAppInstances()
+                .get(webAppClass.getDeclaredAnnotation(Application.class).name())
+                .getLanguageManager();
+    }
+
+    public static <T extends WebPage> String getTranslation(Enum<?> keyword, T webAppClass) {
+        return getLanguageManager(webAppClass.getClass()).getTranslation(keyword);
     }
 
     public void init(Language language) {
@@ -85,11 +99,11 @@ public class LanguageManager {
         return currentLanguage;
     }
 
-    public String getTranslation(Object index) {
+    public String getTranslation(Enum<?> keyword) {
         try {
-            return dictionary.get(index.toString());
+            return dictionary.get(keyword.toString());
         } catch (NullPointerException e) {
-            throw new FrameworkException("Given '" + index +  "' key has not been found in the dictionary file.");
+            throw new FrameworkException("Given '" + keyword +  "' key has not been found in the dictionary file.");
         }
     }
 

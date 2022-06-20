@@ -1,4 +1,5 @@
 application:
+  web:
     sampleapplication:
       environments:
         prod: "https://sample-page.prod/"

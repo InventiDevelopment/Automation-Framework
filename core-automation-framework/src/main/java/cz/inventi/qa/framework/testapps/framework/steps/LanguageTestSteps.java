@@ -1,6 +1,8 @@
 package cz.inventi.qa.framework.testapps.framework.steps;
 
 import cz.inventi.qa.framework.core.data.enums.Language;
+import cz.inventi.qa.framework.core.managers.FrameworkManager;
+import cz.inventi.qa.framework.core.managers.LanguageManager;
 import cz.inventi.qa.framework.core.objects.test.assertions.Assert;
 import cz.inventi.qa.framework.core.objects.test.steps.StepsBase;
 import cz.inventi.qa.framework.testapps.testweb.lang.Index;
@@ -31,9 +33,11 @@ public class LanguageTestSteps extends StepsBase {
 
     @Step("Check Translation of '{webPagePhrase}' Is Correct")
     public LanguageTestSteps checkTranslationIsCorrect(Index webPagePhrase, String expectedTranslation) {
-        Assert.assertEquals(expectedTranslation.toLowerCase(),
-                homePage.getAppInstance().getLanguageManager().getTranslation(webPagePhrase).toLowerCase(),
-                "Check translation is '" + expectedTranslation + "'");
+        Assert.assertEquals(
+                expectedTranslation.toLowerCase(),
+                LanguageManager.getTranslation(webPagePhrase, homePage).toLowerCase(),
+                "Check translation is '" + expectedTranslation + "'"
+        );
         return this;
     }
 }

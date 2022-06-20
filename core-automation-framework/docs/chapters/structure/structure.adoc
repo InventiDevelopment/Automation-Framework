@@ -1,0 +1,190 @@
+= Structure
+
+For easier development of automated tests, the framework follows possibilities of Java's object-oriented programming to abstract different levels of application "objects" in order to provide easier access and use of these application parts.
+
+. link:./structure.adoc#_1_framework_structure[Framework Specific Structure]
+. link:./structure.adoc#_2_platform_specific_structure[Platform-Specific Structure]
+
+== 1. Framework Structure
+
+[link=../../img/inventi-automation-framework.drawio.png]
+image::../../img/inventi-automation-framework.drawio.png[Inventi Automation Framework Structure - ER Diagram,750,role=text-center]
+
+=== Framework Configuration Objects
+
+Bellow you can find description related to the objects from the
+
+==== TestNG Suite
+
+Basic TestNG XML test suite file. The structure and use can be found at the link:https://testng.org/doc/documentation-main.html[TestNG official documentation].
+
+.Sample TextNG XML test suite:
+[source, xml]
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<suite name="Sample Test Set" parallel="classes">
+    <parameter name="parameter_name" value="parameter_value">
+    <test name="Some Test" thread-count="1">
+        <classes>
+            <class name="cz.inventi.qa.sampleapplication.tests.SampleTest"/>
+        </classes>
+    </test>
+</suite> <!-- Suite -->
+
+```
+
+*Note:* when defining the test suite, please mind the link:../development/parallelization.adoc[specifics of parallelization].
+
+==== Application Config
+
+Application config file is supposed to provide application-bound specifics, mainly URL, environments, and other necessary information. This config file should have YAML structure - more information can be found in the link:../setup/project-setup.adoc#_application_configuration_file[Project Setup chapter - Application Config File].
+
+==== WebDriver Config
+
+Specifically for web-based applications, WebDriver approach is supported to allow front-end testing. Similarly to the Application Config file, the WebDriver config file provides configuration values for the WebDriver, like wait timeouts, browser capabilities, waiting mode, and other specifics. More information about this file can be found in the link:../setup/project-setup.adoc#_webdriver_configuration_file[Project Setup chapter - WebDriver Config File].
+
+=== Framework Abstraction Objects
+
+==== Test Class
+
+The *Test Class* is designed to contain all the "tests" - primarily _test methods_ annotated with the TestNG's `@Test` annotation. It should always extend the `TestBase` class which provides it some core functionalities related to the framework in order to properly run all the tests. In the _test methods_, *Test Steps* class and its methods should be addressed in order to follow a real-world test scenario.
+
+*Test Class* can contain _test setup steps_ (`testSetup()`), _test steps_ and _test teardown steps_ (`tearDown()`) in separate methods. _Assertions_ can be used in test methods as well - however, it is recommended to use primarily methods defined in the *Test Steps* class in order to maintain simple and clear test methods.
+
+To use the _Test Steps_ class, you should initialize it within a separate dedicated `initSteps()` method which is executed before all the *Test Class* is instantiated.
+
+.Sample of a Test class:
+[source,java]
+```
+@Epic("Provide Sample Structure for Custom Module")
+public class SampleTest extends TestBase {
+    private SampleApiSteps sampleApiSteps;
+    private SampleWebSteps sampleWebSteps;
+
+    @BeforeClass
+    @Override
+    public void initSteps() {
+        sampleApiSteps = new SampleApiSteps();
+        sampleWebSteps = new SampleWebSteps();
+    }
+
+    @BeforeClass
+    @Override
+    public void setUp() {
+        // Setup steps belong here
+    }
+
+    @Test(description = "This Is a Sample Test Method")
+    public void someTestMethod() {
+        // Write some test here
+        // API test example:
+        ArticlesResultsListDto articles = sampleApiSteps
+                .retrieveAllArticles()
+                .as(ArticlesResultsListDto.class);
+        Assert.assertEquals(
+            articles.size(),
+            4,
+            "There are 4 articles in the response"
+        );
+        // Web test example:
+        sampleWebSteps
+                .checkContactFormIsDisplayed()
+                .fillContactForm("joedoe@email.com", "Hello, I really like your products!")
+                .sendContactForm()
+                .leaveComponent();
+    }
+
+    @AfterClass
+    @Override
+    public void tearDown() {
+        // TearDown steps go here
+    }
+}
+
+
+```
+
+==== Test Steps
+
+The *Test Steps* class serves as a bridge to your application-related objects and is supposed to provide simpler look to the *Test Class* with test methods, as well as follows the DRY principle by allowing you to define _step methods_ with repeatable steps connected to given application anywhere in your tests.
+
+Step methods are defined by using the `@Step` annotation from the Allure Framework. All the Test Steps classes should extend `StepsBase` class to gain access to application-related methods.
+
+.Sample of a Test Steps class:
+[source, java]
+```
+public class ContactFormSteps extends StepsBase {
+    // Create application instance and obtain access to it
+    private final HomePage homePage = getWebAppInstanceOf(HomePage.class);
+
+    @Step("Fill Contact Form ({email})")
+    public ContactFormSteps fillContactForm(String email, String message) {
+        ContactForm contactForm = homePage.getContactForm();
+        contactForm
+            .fillEmail(email)
+            .fillMessage(message);
+        Assert.assertEquals(
+                contactForm.getEmailInput().getText(),
+                email,
+                "Email was filled correctly"
+        );
+        Assert.assertEquals(
+                contactForm.getMessageInput().getText(),
+                message,
+                "Message was filled correctly"
+        );
+        return this; // Use the fluent interface
+    }
+
+    @Step("Send Contact Form")
+    public ContactFormSteps sendContactForm() {
+        ...
+    }
+}
+
+```
+
+==== Framework Manager
+
+One object rules them all - that is the *Framework Manager*. With a singleton pattern, this object is predefined to manage all the *Test Runs* and global test variables, and therefore it serves as a gate to all the related objects for the *Test Run*. You can access its instance anywhere in the code by calling the `FrameworkManager` class instance. Its instance is first created with *Test Classes*.
+
+==== Test Run
+
+In order to preserve possibilities of link:../development/parallelization.adoc[parallelization], the *Test Run* object was created (`TestRun` class). The *Test Run* instance represents a running TestNG "test class" (above-mentioned link:#_test_class[*Test Class*]) with all related applications that were started in order to perform given test.
+
+The *Test Run* collects and manages all the application instances (`AppInstance`) for various platforms. Along with that, it also saves all the failed soft-assertions via link:soft-assert-collector.adoc[`SoftAssertCollector`] class instance, that is bound to the test run.
+
+==== Application Instance
+
+*Application Instance* contains all the information about current platform-dependent application. At one moment, *only one instance of the same application can be run*. However, it is allowed to run *multiple different applications at the same time*.
+
+This instance is represented by the `AppInstance` class.
+
+==== Platform Related Objects
+
+This layer of abstraction covers objects related to the platform itself. Please follow to the link:#_2_platform_specific_structure[next subchapter] dedicated to each of the platform-specific objects.
+
+=== Framework Variable Containers
+
+If you are in a need of sharing data between *Test Runs* or for given *Application Instance* (i.e. to reuse data created in the first setup script without the need to run it again), there is a possibility to do so by using the "variable containers". These containers are currently on two levels:
+
+* Framework Manager level (global)
+* Application Instance level (local)
+
+==== Framework Shared Variables
+
+Variables that you want to use between different `TestRun` instances, can be saved using the `VariablesManager` instance that is bound to the `FrameworkManager`.
+
+==== Application Instance Shared Variables
+
+For `AppInstance` level variables sharing, there is a possibility to use an `AppVariablesManager`, that contains `VariablesManger` instance bound to the `AppInstance`, as well as some additional properties.
+
+More about using shared variables link:../development/shared-variables.adoc[can be found here].
+
+== 2. Platform-Specific Structure
+
+At the moment, the framework supports testing of API and web (frontend) applications. Please find description to platform-specific structure bellow:
+
+. link:./api-components[API Component Structure]
+. link:./web-components[Web Component Structure]
