@@ -1,0 +1,20 @@
+= WebDriver Configuration File Structure
+
+.webDriverConfig.yml file structure
+[source,yaml]
+```
+generalSettings:
+  windowSize:
+    sizeType: maximized
+  customTargetPath: "<custom path to the WebDriver executables folder>"
+  takeScreenshots: <true/false>
+  wait:
+    waitsAutomatically: <true/false>
+    timeouts:
+      min: <amount of milliseconds to wait>
+      mid: <amount of milliseconds to wait>
+      max: <amount of milliseconds to wait>
+
+chrome:
+  arguments: [ "<ChromeDriver arguments>" ]
+```

@@ -1,0 +1,14 @@
+/*
+!/core-automation-framework/
+!/sample-application/
+!pom.xml
+!.gitignore
+!README.md
+!LICENSE
+!COPYRIGHT
+*.iml
+/*/target/
+*.log
+/test-results
+/test-resources
+*/.idea

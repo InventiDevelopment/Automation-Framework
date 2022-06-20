@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Unit Tests" parallel="classes">
+    <parameter name="browser" value="chrome"/>
+    <parameter name="environment" value="prod"/>
+    <parameter name="language" value="en"/>
+    <test name="Core Framework Components Tests" thread-count="1">
+        <classes>
+            <class name="cz.inventi.qa.framework.tests.framework.logger.LoggerTests"/>
+        </classes>
+    </test>
+    <test name="Parameters Tests" thread-count="1">
+        <parameter name="appspecificparam:testweb" value="appspecificparamvaltestweb"/>
+        <parameter name="appspecificparam:jsonplaceholder" value="appspecificparamvaljsonplaceholder"/>
+        <parameter name="sharedparam" value="sharedparamval"/>
+        <parameter name="sharedparam:testweb" value="sharedparamvaltestweb"/>
+        <parameter name="sharedparam:jsonplaceholder" value="sharedparamvaljsonplaceholder"/>
+        <classes>
+            <class name="cz.inventi.qa.framework.tests.framework.parameters.ParametersTests"/>
+        </classes>
+    </test>
+    <test name="Config Tests" thread-count="1">
+        <classes>
+            <class name="cz.inventi.qa.framework.tests.framework.config.ConfigurationTests"/>
+        </classes>
+    </test>
+    <test name="WebDriver Tests" thread-count="1">
+        <classes>
+            <class name="cz.inventi.qa.framework.tests.framework.web.webdriver.WebDriverTest"/>
+        </classes>
+    </test>
+    <test name="WebObject Related Tests" thread-count="3">
+        <classes>
+            <class name="cz.inventi.qa.framework.tests.framework.web.webobjects.WebPageTests"/>
+            <class name="cz.inventi.qa.framework.tests.framework.web.webobjects.WebComponentsTests"/>
+            <class name="cz.inventi.qa.framework.tests.framework.web.webobjects.WebElementTests"/>
+        </classes>
+    </test>
+    <test name="Dynamic Wait Related Tests - Automatic Wait On" thread-count="1">
+        <classes>
+            <class name="cz.inventi.qa.framework.tests.framework.web.webobjects.DynamicWaitTests">
+                <methods>
+                    <exclude name="doNotWaitAutomaticallyExceptionTest"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+    <test name="WebObject Related Tests - Automatic Wait Off" thread-count="1">
+        <parameter name="appconfig" value="customAppConfig.yml"/>
+        <parameter name="webdriverconfig" value="customWebDriverConfig.yml"/>
+        <classes>
+            <class name="cz.inventi.qa.framework.tests.framework.web.webobjects.DynamicWaitTests">
+                <methods>
+                    <exclude name="waitRelatedBasicWebElementActionsTests"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+    <test name="Language Tests" thread-count="1">
+        <classes>
+            <class name="cz.inventi.qa.framework.tests.framework.language.LanguageWebTest"/>
+        </classes>
+    </test>
+</suite> <!-- Suite -->

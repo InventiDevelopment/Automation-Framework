@@ -1,0 +1,12 @@
+generalSettings:
+  windowSize:
+    dimensions:
+      width: 1920
+      height: 1080
+  customTargetPath: "~/.m2/repository/webdriver"
+  takeScreenshots: true
+  wait:
+    waitsAutomatically: false
+
+chrome:
+  arguments: []

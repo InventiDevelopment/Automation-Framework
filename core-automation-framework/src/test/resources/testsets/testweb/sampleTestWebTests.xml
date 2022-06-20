@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Sample TestWeb Tests" parallel="classes">
+    <parameter name="environment" value="prod"/>
+    <parameter name="browser" value="chrome"/>
+    <parameter name="language" value="en"/>
+    <test name="Sample TestWeb Tests" thread-count="1">
+        <classes>
+            <class name="cz.inventi.qa.framework.tests.testweb.SampleTestWebTests"/>
+        </classes>
+    </test>
+</suite>

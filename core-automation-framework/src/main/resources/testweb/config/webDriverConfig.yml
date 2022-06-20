@@ -1,0 +1,14 @@
+generalSettings:
+  windowSize:
+    sizeType: maximized
+  customTargetPath: "~/.m2/repository/webdriver"
+  takeScreenshots: true
+  wait:
+    waitsAutomatically: true
+    timeouts:
+      min: 8000
+      mid: 20000
+      max: 30000
+
+chrome:
+  arguments: []
