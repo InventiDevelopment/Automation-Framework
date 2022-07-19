@@ -1,0 +1,31 @@
+= WebElement
+
+Similarly to the Selenium's `WebElement`, `WebElement` object in this automation framework decorates Selenium's `WebElement` and adds multitude of methods and functions to it.
+
+.Sample use of WebElement
+[source,java]
+```
+@FindElement(xpath = "//div[@id='scrollToTopBtn']")
+WebElement<SomePage> scrollToTopBtn;
+```
+
+.Sample of WebElement declaration in a WebComponent class
+[source,java]
+```
+@FindElement(xpath = "//aside")
+public class SidePanel<T extends WebObject> extends WebComponent<T> {
+
+    // Here comes declaration of WebElement along with @FindElement annotation
+    @FindElement(xpath = "/h2")
+    WebElement<SidePanel<T>> panelTitle;
+
+    public SidePanel(WOProps props) {
+        super(props);
+    }
+}
+```
+
+== WebElement Annotations
+
+- link:../../cheatsheets/annotations.adoc#_findelement[@FindElement]
+- link:../../cheatsheets/annotations.adoc#_noparent[@NoParent]

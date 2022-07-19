@@ -1,0 +1,7 @@
+= WebObject and WOProps
+
+`WebObject` is a core object for any element related to the front-end of a web application. It is designed to hold basic information that can help with locating a web element on a web page (this can be XPath locator) and also link to the current `AppInstance` or other web application/test run relevant objects.
+
+== WOProps
+
+In `WOProps`, the framework passes necessary data to other related WebObjects - like XPath of the parent WebObject, parent WebComponent and such - therefore it is necessary to provide its instance on the WebObject instantiation. This object is passed through a constructor.
