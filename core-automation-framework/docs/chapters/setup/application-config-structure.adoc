@@ -7,9 +7,8 @@ Now let's get on to the creation of the file. The required structure of the file
 ```
 application:
   <application type>:
-    <application name>:
-      environments:
-        <environment name>: "<value/url>"
+    environments:
+      <environment name>: "<value/url>"
 ```
 
 The application name should correspond to the name defined for the application resources folder.
@@ -19,9 +18,8 @@ The application name should correspond to the name defined for the application r
 ```
 application:
   web:
-    sampleapplication:
-      environments:
-        PROD: "https://sampleapplication.com"
+    environments:
+      PROD: "https://sampleapplication.com"
 ```
 
 .appConfig.yml file structure for API application
@@ -29,8 +27,7 @@ application:
 ```
 application:
   api:
-    sampleapplication:
-      environments:
-        PROD: "https://sampleapplication.com"
-      relaxedHttpsValidation: true
+    environments:
+      PROD: "https://sampleapplication.com"
+    relaxedHttpsValidation: true
 ```

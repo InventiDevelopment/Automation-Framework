@@ -2,32 +2,30 @@ package cz.inventi.qa.framework.core.data.app;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Map;
-
 public class ApplicationConfig {
 
     @JsonProperty
-    private Map<String, WebApplication> web;
+    private WebApplication web;
     @JsonProperty
-    private Map<String, MobileApplication> mobile;
+    private MobileApplication mobile;
     @JsonProperty
-    private Map<String, DesktopApplication> desktop;
+    private DesktopApplication desktop;
     @JsonProperty
-    private Map<String, ApiApplication> api;
+    private ApiApplication api;
 
-    public Map<String, WebApplication> getWeb() {
+    public WebApplication getWeb() {
         return web;
     }
 
-    public Map<String, MobileApplication> getMobile() {
+    public MobileApplication getMobile() {
         return mobile;
     }
 
-    public Map<String, DesktopApplication> getDesktop() {
+    public DesktopApplication getDesktop() {
         return desktop;
     }
 
-    public Map<String, ApiApplication> getApi() {
+    public ApiApplication getApi() {
         return api;
     }
 }

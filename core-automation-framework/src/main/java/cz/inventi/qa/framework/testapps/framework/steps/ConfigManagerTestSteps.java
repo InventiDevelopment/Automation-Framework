@@ -30,14 +30,9 @@ public class ConfigManagerTestSteps extends StepsBase {
                 .getAppInstance()
                 .getConfigManager()
                 .getAppsConfigData();
-        Assert.assertEquals(
-                apiAppConfigData.getApplicationConfig().getApi().size(),
-                1,
-                "1 API application config was initialized"
-        );
         Assert.assertNotNull(
-                apiAppConfigData.getApplicationConfig().getApi().get(apiAppName),
-                "Application '" + apiAppName + "' found in initialized config files"
+                apiAppConfigData.getApplicationConfig().getApi(),
+                "API application config was initialized"
         );
     }
 
@@ -52,14 +47,9 @@ public class ConfigManagerTestSteps extends StepsBase {
                 .getAppInstance()
                 .getConfigManager()
                 .getAppsConfigData();
-        Assert.assertEquals(
-                webAppConfigData.getApplicationConfig().getWeb().size(),
-                1,
-                "1 WEB application config was initialized"
-        );
         Assert.assertNotNull(
-                webAppConfigData.getApplicationConfig().getWeb().get(webAppName),
-                "Application '" + webAppName + "' found in initialized config files"
+                webAppConfigData.getApplicationConfig().getWeb(),
+                "WEB application config was initialized"
         );
     }
 

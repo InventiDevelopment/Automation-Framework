@@ -95,29 +95,25 @@ public class ConfigManager {
     public WebApplication getCurrentWebAppConfig() {
         return getAppsConfigData()
                 .getApplicationConfig()
-                .getWeb()
-                .get(appInstance.getApplicationName());
+                .getWeb();
     }
 
     public ApiApplication getCurrentApiAppConfig() {
         return getAppsConfigData()
                 .getApplicationConfig()
-                .getApi()
-                .get(appInstance.getApplicationName());
+                .getApi();
     }
 
     public MobileApplication getCurrentMobileAppConfig() {
         return getAppsConfigData()
                 .getApplicationConfig()
-                .getMobile()
-                .get(appInstance.getApplicationName());
+                .getMobile();
     }
 
     public DesktopApplication getCurrentDesktopAppConfig() {
         return getAppsConfigData()
                 .getApplicationConfig()
-                .getDesktop()
-                .get(appInstance.getApplicationName());
+                .getDesktop();
     }
 
     private void verifyConfigForAppExists(String configFileName, String configFileDirPath) {

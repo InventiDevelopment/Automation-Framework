@@ -1,7 +1,6 @@
 application:
   web:
-    testweb:
-      environments:
-        PROD: "test://testwebpage/index.htm"
-        TEST: "test://testwebpage/index.htm"
-        DEV: "test://testwebpage/index.htm"
+    environments:
+      PROD: "test://testwebpage/index.htm"
+      TEST: "test://testwebpage/index.htm"
+      DEV: "test://testwebpage/index.htm"

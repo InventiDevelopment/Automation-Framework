@@ -3,7 +3,6 @@ package cz.inventi.qa.framework.core.managers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import cz.inventi.qa.framework.core.annotations.Application;
 import cz.inventi.qa.framework.core.data.config.LanguageData;
 import cz.inventi.qa.framework.core.data.enums.Language;
 import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
@@ -29,16 +28,16 @@ public class LanguageManager {
         init(TestSuiteParameters.getParameter("language"));
     }
 
-    public static <T extends WebPage> LanguageManager getLanguageManager(Class<T> webAppClass) {
+    public static <T extends WebPage> LanguageManager getLanguageManager(String applicationName) {
         return FrameworkManager
                 .getCurrentTestRun()
                 .getWebAppInstances()
-                .get(webAppClass.getDeclaredAnnotation(Application.class).name())
+                .get(applicationName)
                 .getLanguageManager();
     }
 
     public static <T extends WebPage> String getTranslation(Enum<?> keyword, T webAppClass) {
-        return getLanguageManager(webAppClass.getClass()).getTranslation(keyword);
+        return getLanguageManager(webAppClass.getAppInstance().getApplicationName()).getTranslation(keyword);
     }
 
     public void init(Language language) {
