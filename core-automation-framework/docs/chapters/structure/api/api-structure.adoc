@@ -1,0 +1,29 @@
+= Api
+
+The `Api` class represents a "root" of an API of a web service. Api is designed to contain various endpoints (a link:endpoint-structure.adoc[`Endpoint`] child class), in which you can define specific request calls as named methods. Information from the configuration file is obtained using the link:../../cheatsheets/annotations.adoc#_application[@Application] annotation, which contains the name of application. In the URL representation, `Api` can stand for https://sample.api - so the `Api` also functions as an `Endpoint`.
+
+.Sample of Api class use
+[source,java]
+```
+@Application(name = "jsonplaceholder") // Define application endpoint root endpoint class
+@ApiAuth(authType = ApiAuthMethod.NONE) // Define authentication method for any endpoint
+public class JsonPlaceHolderApi extends Api {
+    public Posts posts; // Define child endpoints
+
+    public JsonPlaceHolderApi(AOProps props) {
+        super(props);
+    }
+}
+```
+
+You can also define an authentication method for the whole API and underlying endpoints using the link:../../cheatsheets/annotations.adoc#_apiauth[@ApiAuth] annotation.
+
+== Supported API Implementations and Protocols
+
+Primarily, *REST* APIs are supported using the _RestAssured_ framework. Other API implementations, like *SOAP*, are currently not supported, however the framework is ready for an easy additional implementation.
+
+== Api Annotations
+
+- link:../../cheatsheets/annotations.adoc#_endpointspecs[@EndpointSpecs]
+- link:../../cheatsheets/annotations.adoc#_application[@Application]
+- link:../../cheatsheets/annotations.adoc#_apiauth[@ApiAuth]

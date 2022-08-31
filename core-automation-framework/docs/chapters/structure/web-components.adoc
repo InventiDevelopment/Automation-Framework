@@ -10,9 +10,3 @@ image::../../img/web-objects-structure.drawio.png[Web Component Structure - ER D
 - link:./web/webcomponentlist-structure.adoc[WebComponentList]
 - link:./web/webelement-structure.adoc[WebElement]
 - link:./web/webpage-structure.adoc[WebPage]
-
-== Fluent Interface Implementation
-
-Mind that the framework uses the Fluent Interface technique to navigate through the test. This stands behind the use of Java's generic types that can be seen in the code samples bellow. In this case, Fluent Interface should allow you to see and use options that are available in the current state of tested application.
-
-Generic types are used in order to preserve possibility to return from various elements, like `WebComponent` or `WebElement` that are described further.

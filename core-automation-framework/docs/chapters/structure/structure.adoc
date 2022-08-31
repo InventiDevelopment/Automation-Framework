@@ -4,6 +4,7 @@ For easier development of automated tests, the framework follows possibilities o
 
 . link:./structure.adoc#_1_framework_structure[Framework Specific Structure]
 . link:./structure.adoc#_2_platform_specific_structure[Platform-Specific Structure]
+. link:./structure.adoc#_fluent_interface_implementation[Fluent Interface Implementation]
 
 == 1. Framework Structure
 
@@ -188,3 +189,9 @@ At the moment, the framework supports testing of API and web (frontend) applicat
 
 . link:./api-components[API Component Structure]
 . link:./web-components[Web Component Structure]
+
+== 3. Fluent Interface Implementation
+
+Mind that the framework uses the Fluent Interface technique to navigate through the test. This stands behind the use of Java's generic types that can be seen in the code samples bellow. In this case, Fluent Interface should allow you to see and use options that are available in the current state of tested application.
+
+Generic types are used in order to preserve possibility to return from various elements, like `WebComponent` or `WebElement` that are described further.

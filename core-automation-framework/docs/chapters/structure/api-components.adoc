@@ -1,12 +1,12 @@
 = API Component Structure
 
-[link=../../img/inventi-automation-framework.drawio.png]
-image::../../img/inventi-automation-framework.drawio.png[Inventi Automation Framework Structure - ER Diagram,750,role=text-center]
+[link=../../img/api-objects-structure.drawio.png]
+image::../../img/api-objects-structure.drawio.png[API Component Structure - ER Diagram,550,role=text-center]
 
-== ApiObject
+== Description of Components
 
-== Api
-
-== Endpoint
-
-== RestEndpoint
+- link:./web/webobject-structure.adoc[WebObject]
+- link:./web/webcomponent-structure.adoc[WebComponent]
+- link:./web/webcomponentlist-structure.adoc[WebComponentList]
+- link:./web/webelement-structure.adoc[WebElement]
+- link:./web/webpage-structure.adoc[WebPage]
