@@ -1,11 +1,11 @@
 package cz.inventi.qa.framework.core.objects.framework;
 
 import cz.inventi.qa.framework.core.data.enums.ApplicationType;
+import cz.inventi.qa.framework.core.managers.AppVariablesManager;
 import cz.inventi.qa.framework.core.managers.ConfigManager;
 import cz.inventi.qa.framework.core.managers.LanguageManager;
 import cz.inventi.qa.framework.core.managers.ReportManager;
-import cz.inventi.qa.framework.core.managers.AppVariablesManager;
-import cz.inventi.qa.framework.core.objects.api.Api;
+import cz.inventi.qa.framework.core.objects.api.Endpoint;
 import cz.inventi.qa.framework.core.objects.parameters.TestSuiteParameters;
 import cz.inventi.qa.framework.core.objects.web.WebPage;
 
@@ -99,7 +99,7 @@ public abstract class AppInstance<T> {
     }
 
     public ApplicationType getApplicationType(Class<?> startingAppClass) {
-        if (Api.class.isAssignableFrom(startingAppClass)) return ApplicationType.API;
+        if (Endpoint.class.isAssignableFrom(startingAppClass)) return ApplicationType.API;
         if (WebPage.class.isAssignableFrom(startingAppClass)) return ApplicationType.WEB;
         return null;
     }

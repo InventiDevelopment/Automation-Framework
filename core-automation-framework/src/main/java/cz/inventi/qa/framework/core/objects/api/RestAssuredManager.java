@@ -6,7 +6,7 @@ import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 
-public class RestAssuredManager<T extends Api> {
+public class RestAssuredManager<T extends Endpoint<?>> {
     private final ApiAppInstance<T> apiAppInstance;
     private RequestSpecification requestSpecification;
     private ResponseSpecification responseSpecification;

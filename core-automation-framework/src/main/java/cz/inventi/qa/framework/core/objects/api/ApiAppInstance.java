@@ -12,7 +12,7 @@ import io.restassured.RestAssured;
 import io.restassured.config.ObjectMapperConfig;
 import io.restassured.config.RestAssuredConfig;
 
-public class ApiAppInstance<T extends Api> extends AppInstance<T> {
+public class ApiAppInstance<T extends Endpoint<?>> extends AppInstance<T> {
     private final RestAssuredManager<T> restAssuredManager;
 
     public ApiAppInstance(Class<T> applicationClass, String applicationName) {

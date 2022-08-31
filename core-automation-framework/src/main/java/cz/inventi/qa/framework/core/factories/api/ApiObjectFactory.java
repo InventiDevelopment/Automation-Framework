@@ -3,7 +3,10 @@ package cz.inventi.qa.framework.core.factories.api;
 import cz.inventi.qa.framework.core.annotations.api.ApiAuth;
 import cz.inventi.qa.framework.core.annotations.api.EndpointSpecs;
 import cz.inventi.qa.framework.core.data.enums.api.ApiAuthMethod;
-import cz.inventi.qa.framework.core.objects.api.*;
+import cz.inventi.qa.framework.core.objects.api.AOProps;
+import cz.inventi.qa.framework.core.objects.api.ApiAppInstance;
+import cz.inventi.qa.framework.core.objects.api.ApiObject;
+import cz.inventi.qa.framework.core.objects.api.Endpoint;
 import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
 
 import java.lang.reflect.Constructor;
@@ -34,7 +37,7 @@ public class ApiObjectFactory {
             }
         }
         /* Initialize also endpoints in case Api class extends another Api class. */
-        if (Api.class.isAssignableFrom(parentEndpointClass.getSuperclass())) {
+        if (Endpoint.class.isAssignableFrom(parentEndpointClass.getSuperclass())) {
             initChildApiObjects((Class<Y>) parentEndpointClass.getSuperclass(), apiObject, parentProps);
         }
     }
@@ -108,14 +111,14 @@ public class ApiObjectFactory {
     private static <T extends ApiObject> void initEndpoints(T apiObject, AOProps parentProps) {
         if (Endpoint.class.isAssignableFrom(apiObject.getClass().getSuperclass())) {
             Class<T> parentClass = (Class<T>) apiObject.getClass().getSuperclass();
-            while (!parentClass.equals(Api.class) && !parentClass.equals(Endpoint.class)) {
+            while (!parentClass.equals(Endpoint.class)) {
                 initChildApiObjects(parentClass, apiObject, parentProps);
                 parentClass = (Class<T>) parentClass.getSuperclass();
             }
         }
     }
 
-    public static <T extends Api> T initApi(Class<T> apiClass, ApiAppInstance<?> appInstance) {
+    public static <T extends Endpoint<?>> T initApi(Class<T> apiClass, ApiAppInstance<?> appInstance) {
         AOProps aoProps = new AOProps(
                 appInstance.getConfigManager().getCurrentApplicationEnvironmentUrl(),
                 null,

@@ -1,6 +1,6 @@
 package cz.inventi.qa.framework.core.objects.test.steps;
 
-import cz.inventi.qa.framework.core.objects.api.Api;
+import cz.inventi.qa.framework.core.objects.api.Endpoint;
 import cz.inventi.qa.framework.core.objects.web.WebPage;
 import cz.inventi.qa.framework.core.utils.AppInstanceUtils;
 
@@ -22,7 +22,7 @@ public abstract class StepsBase {
      * @param <T> Api app root class type
      * @return Initialized Api for given AppInstance
      */
-    public static <T extends Api> T getApiAppInstanceOf(Class<T> api) {
+    public static <T extends Endpoint<?>> T getApiAppInstanceOf(Class<T> api) {
         return AppInstanceUtils.getApiAppInstanceOf(api);
     }
 }

@@ -5,7 +5,7 @@ import cz.inventi.qa.framework.core.data.config.ProxySettings;
 import cz.inventi.qa.framework.core.data.enums.ApplicationType;
 import cz.inventi.qa.framework.core.data.enums.ProxyScheme;
 import cz.inventi.qa.framework.core.data.enums.RunMode;
-import cz.inventi.qa.framework.core.objects.api.Api;
+import cz.inventi.qa.framework.core.objects.api.Endpoint;
 import cz.inventi.qa.framework.core.objects.api.ApiAppInstance;
 import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
 import cz.inventi.qa.framework.core.objects.framework.Log;
@@ -54,7 +54,7 @@ public class FrameworkManager {
         return retrieveOrInitializeWebAppInstance(webPage, testIdentifier).retrieveOrInitWebPage(webPage);
     }
 
-    public <T extends Api> T initApiAppAt(Class<T> api, String testIdentifier) {
+    public <T extends Endpoint<?>> T initApiAppAt(Class<T> api, String testIdentifier) {
         return retrieveOrInitializeApiAppInstance(api, testIdentifier).retrieveOrInitApi(api);
     }
 
@@ -136,7 +136,7 @@ public class FrameworkManager {
     }
 
     @SuppressWarnings("unchecked")
-    private synchronized <T extends Api> ApiAppInstance<T> retrieveOrInitializeApiAppInstance(
+    private synchronized <T extends Endpoint<?>> ApiAppInstance<T> retrieveOrInitializeApiAppInstance(
             Class<T> appClass,
             String testIdentifier
     ) {
