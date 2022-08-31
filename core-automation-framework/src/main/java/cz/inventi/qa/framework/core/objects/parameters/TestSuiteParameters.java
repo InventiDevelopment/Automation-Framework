@@ -81,8 +81,9 @@ public class TestSuiteParameters {
     }
 
     public static String getParameter(String parameterName, String appName) {
-        if (getParameter(parameterName) == null) {
-            return getParameter(parameterName + ":" + appName);
+        String appSpecificParVal = getParameter(getAppSpecificParameterName(parameterName, appName));
+        if (appSpecificParVal != null) {
+            return appSpecificParVal;
         } else {
             return getParameter(parameterName);
         }
@@ -119,5 +120,17 @@ public class TestSuiteParameters {
             }
         }
         return parameters;
+    }
+
+    public synchronized static void changeParameter(String paramName, String newParamValue, String... appName) {
+        if (appName[0] != null && getParameter(paramName, appName[0]) != null) {
+            getParameters().replace(getAppSpecificParameterName(paramName, appName[0]), newParamValue);
+        } else {
+            getParameters().replace(paramName, newParamValue);
+        }
+    }
+
+    private static String getAppSpecificParameterName(String paramName, String appName) {
+        return paramName + ":" + appName;
     }
 }

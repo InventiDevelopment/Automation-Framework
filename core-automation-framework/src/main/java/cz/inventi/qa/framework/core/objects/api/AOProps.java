@@ -1,7 +1,6 @@
 package cz.inventi.qa.framework.core.objects.api;
 
 import cz.inventi.qa.framework.core.data.enums.api.ApiAuthMethod;
-import cz.inventi.qa.framework.core.objects.framework.AppInstance;
 import cz.inventi.qa.framework.core.objects.framework.Log;
 import cz.inventi.qa.framework.core.objects.parameters.AuthParameters;
 
@@ -17,7 +16,6 @@ import java.util.regex.Pattern;
 public class AOProps {
     private final ApiAppInstance<?> appInstance;
     private final String endpointUrl;
-    private String fullUrl = "";
     private Class<?> returnKlass;
     private boolean parameter;
     private String parameterValue;
@@ -44,14 +42,6 @@ public class AOProps {
             this.returnKlass = parentApiObject.getClass();
         }
         checkIfAOIsParameter(url);
-        composeFullUrl(parentProps);
-    }
-
-    private void composeFullUrl(AOProps parentProps) {
-        fullUrl += endpointUrl;
-        if (parentProps != null) {
-            fullUrl = parentProps.fullUrl + "/" + fullUrl;
-        }
     }
 
     private boolean checkIfAOIsParameter(String url) {
@@ -81,7 +71,9 @@ public class AOProps {
     }
 
     public String getFullUrl() {
-        return fullUrl;
+        String fullUrl = "";
+        if (getParentProps() != null) fullUrl = getParentProps().getFullUrl() + "/" + fullUrl;
+        return fullUrl + endpointUrl;
     }
 
     public String getParameterValue() {
@@ -132,7 +124,6 @@ public class AOProps {
     public String getFullUrlWithParams() {
         StringBuilder fullUrlWithParams = new StringBuilder();
         AOProps currentProps = this;
-
         while (currentProps != null) {
             if (currentProps.isParameter()) {
                 String parameterValue = currentProps.getParameterValue().toLowerCase();
@@ -154,7 +145,6 @@ public class AOProps {
     public Map<String, Object> getPathParams() {
         Map<String, Object> pathParams = new HashMap<>();
         AOProps currentProps = this;
-
         while (currentProps != null) {
             if (currentProps.isParameter()) {
                 String parameterValue = currentProps.getParameterValue();

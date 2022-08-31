@@ -1,11 +1,13 @@
 package cz.inventi.qa.framework.core.objects.api;
 
 import cz.inventi.qa.framework.core.objects.framework.Log;
+import cz.inventi.qa.framework.core.objects.parameters.TestSuiteParameters;
 import cz.inventi.qa.framework.core.objects.variables.api.ApiAppVariables;
 import cz.inventi.qa.framework.core.utils.Utils;
+import io.restassured.filter.Filter;
+import io.restassured.specification.RequestSpecification;
 
 public class Api extends ApiObject {
-    private String baseUrl;
     private ApiAppVariables apiAppVariables;
 
     public Api(AOProps props) {
@@ -13,11 +15,44 @@ public class Api extends ApiObject {
     }
 
     public String getBaseUrl() {
-        return baseUrl;
+        return getProps().getAppUrl();
     }
 
-    public void setBaseUrl(String baseUrl) {
-        this.baseUrl = baseUrl;
+    /**
+     * Changes the environment outside the TestNG XML suite. TestNG
+     * XML suite parameters will be overridden by the new value.
+     * @param environmentName environment name
+     */
+    public void changeEnvironment(String environmentName) {
+        TestSuiteParameters.changeParameter(
+                "environment",
+                environmentName,
+                getProps().getAppInstance().getApplicationName()
+        );
+    }
+
+    /**
+     * Adds filter to Rest Assured calls.
+     * @param filter filter instance
+     * @param <T> type of filter instance
+     */
+    public <T extends Filter> void addRestAssuredFilter(T filter) {
+        RequestSpecification requestSpec = getRestAssuredManager()
+                .getRequestSpecification()
+                .filter(filter);
+        getRestAssuredManager().setRequestSpecification(requestSpec);
+    }
+
+    /**
+     * Removes filter from Rest Assured calls.
+     * @param filter filter class
+     * @param <T> type of filter instance
+     */
+    public <T extends Filter> void removeRestAssuredFilter(Class<T> filter) {
+        RequestSpecification requestSpec = getRestAssuredManager()
+                .getRequestSpecification()
+                .noFiltersOfType(filter);
+        getRestAssuredManager().setRequestSpecification(requestSpec);
     }
 
     public ApiAppInstance<?> getAppInstance() {

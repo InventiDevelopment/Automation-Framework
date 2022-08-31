@@ -33,6 +33,10 @@ public class ApiObjectFactory {
                 assignChildAOField(childField, apiObject, parentProps);
             }
         }
+        /* Initialize also endpoints in case Api class extends another Api class. */
+        if (Api.class.isAssignableFrom(parentEndpointClass.getSuperclass())) {
+            initChildApiObjects((Class<Y>) parentEndpointClass.getSuperclass(), apiObject, parentProps);
+        }
     }
 
     private static boolean isRelatedAOField(Field field) {
@@ -112,24 +116,18 @@ public class ApiObjectFactory {
     }
 
     public static <T extends Api> T initApi(Class<T> apiClass, ApiAppInstance<?> appInstance) {
-        String appUrl = appInstance
-                .getConfigManager()
-                .getCurrentApplicationEnvironmentUrl();
         AOProps aoProps = new AOProps(
-                appUrl,
+                appInstance.getConfigManager().getCurrentApplicationEnvironmentUrl(),
                 null,
                 null,
                 appInstance,
                 getAuthMethod(apiClass)
         );
-        T api = reflectionInitAOClass(apiClass, new Class[] {AOProps.class}, new Object[] {aoProps});
-        api.setBaseUrl(appUrl);
-        return api;
+        return reflectionInitAOClass(apiClass, new Class[] {AOProps.class}, new Object[] {aoProps});
     }
 
     private static <T extends ApiObject> ApiAuthMethod getAuthMethod(Class<T> apiObjectClass) {
         ApiAuth apiAuth = apiObjectClass.getDeclaredAnnotation(ApiAuth.class);
-
         if (apiAuth != null) {
             return apiAuth.authType();
         } else {
@@ -155,7 +153,7 @@ public class ApiObjectFactory {
         }
     }
 
-    public static <T extends ApiObject> T reflectionInitClassWithProps (Class<T> klass, AOProps props) {
+    public static <T extends ApiObject> T reflectionInitClassWithProps(Class<T> klass, AOProps props) {
         return reflectionInitAOClass(klass, new Class[] {AOProps.class}, new Object[] {props});
     }
 }

@@ -56,13 +56,11 @@ public class ConfigManager {
         if (customConfigPath != null) configFileName = customConfigPath;
         String configFileDirPath = "src" + File.separator + "main" + File.separator +
                 appInstance.getApplicationName() + File.separator + CONFIG_FILE_FOLDER;
-        String configFilePath = Path.of(
-                appInstance.getApplicationName(),
-                CONFIG_FILE_FOLDER,
-                configFileName
-        ).toString();
+        String configFilePath = Path
+                .of(appInstance.getApplicationName(), CONFIG_FILE_FOLDER, configFileName)
+                .toString();
         URL absoluteConfigFileUrl = getClass().getClassLoader().getResource(configFilePath);
-         try {
+        try {
             configFiles.put(configFile, mapper.readValue(absoluteConfigFileUrl, configClass));
             Log.debug(configFile + " YAML configuration files successfully loaded");
             Log.debug(configFile + " YAML config content:\n");
@@ -140,22 +138,25 @@ public class ConfigManager {
     }
 
     public String getCurrentApplicationEnvironmentUrl() {
-        String environment = TestSuiteParameters.getParameter(
-                "environment",
-                appInstance.getApplicationName()
+        return getApplicationEnvironmentUrl(
+                TestSuiteParameters.getParameter("environment", appInstance.getApplicationName())
         );
+    }
+
+    public String getApplicationEnvironmentUrl(String environmentName) {
         return getCurrentAppGeneralConfig()
                 .getEnvironments()
                 .entrySet()
                 .stream()
-                .filter(map -> map.getKey().equalsIgnoreCase(environment))
+                .filter(map -> map.getKey().equalsIgnoreCase(environmentName))
                 .map(Map.Entry::getValue)
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException(
-                        "URL of application '" + appInstance.getApplicationName() + "' with env '" +
-                        environment + "' could not be found in " + ConfigFile.APPS_CONFIG + " YAML. Please check " +
-                        "config and test input parameters."
-                    )
+                .orElseThrow(
+                        () -> new RuntimeException(
+                                "URL of application '" + appInstance.getApplicationName() + "' with env '" +
+                                environmentName + "' could not be found in " + ConfigFile.APPS_CONFIG + " YAML. " +
+                                "Please check config and test input parameters."
+                        )
                 );
     }
 }

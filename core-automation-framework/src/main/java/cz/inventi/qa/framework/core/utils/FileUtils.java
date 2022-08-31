@@ -1,5 +1,8 @@
 package cz.inventi.qa.framework.core.utils;
 
+import com.fasterxml.jackson.databind.MappingIterator;
+import com.fasterxml.jackson.dataformat.csv.CsvMapper;
+import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
 
 import java.io.File;
@@ -151,6 +154,33 @@ public class FileUtils {
             return Files.probeContentType(filePath);
         } catch (IOException e) {
             throw new FrameworkException("Could not get file MIME type", e);
+        }
+    }
+
+    /**
+     * Maps a CSV file content to a List of
+     * defined Java DTOs.
+     * @param csvFile CSV file
+     * @param csvDtoClass class to map to
+     * @param withHeader if the CSV file has header
+     * @return Returns List of mapped objects.
+     * @param <T> class to map to
+     */
+    public static <T> List<T> readCsvAsList(
+            File csvFile,
+            Class<T> csvDtoClass,
+            boolean withHeader
+    ) {
+        CsvMapper csvMapper = new CsvMapper();
+        CsvSchema schema = csvMapper.schemaFor(csvDtoClass);
+        if (withHeader) schema = schema.withHeader().withColumnReordering(true);
+        try {
+            MappingIterator<T> it = csvMapper.readerFor(csvDtoClass).with(schema).readValues(csvFile);
+            List<T> resultsList = it.readAll();
+            it.close();
+            return resultsList;
+        } catch (IOException e) {
+            throw new FrameworkException("Could not map CSV file values", e);
         }
     }
 }
