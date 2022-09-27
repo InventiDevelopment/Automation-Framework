@@ -2,7 +2,7 @@
 Boilerplate for easier testing with Java.
 
 ## Documentation
-There is a [documentation available](core-automation-framework/docs/docs.html) ([PDF](core-automation-framework/docs/docs.pdf)) for this framework.
+There is a [documentation available](core-automation-framework/docs/docs.adoc) ([PDF](core-automation-framework/docs/docs.pdf), [HTML](core-automation-framework/docs/docs.html)) for this framework.
 
 ## Predispositions
 All of these parts need to be installed and correctly set in the system/user environment variables list:
