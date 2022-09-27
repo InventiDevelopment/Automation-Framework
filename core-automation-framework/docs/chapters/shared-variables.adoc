@@ -1,0 +1,21 @@
+
+[#_shared_variables]
+===== Shared Variables
+
+The automation framework provides possibilities to store data using Java's Object representation and String as an identifier key. Currently, maintaining the variables is taken care of by the `VariablesManager` (or `AppVariablesManager` respectively) class instance, that can be found on three levels - "global", "test-run" and "application".
+
+====== Global Variables
+
+Representation for the "global variables" can be found in the class of `FrameworkManager`, where you can access `VariablesManager` instance using the method call `getGlobalVariables()`.
+
+Variables manager located at this level allows you to share data between TestNG class runs, as there is always only one instance of `FrameworkManager` running.
+
+====== TestRun Variables
+
+TestRun-specific variables are located in the `TestRun` class instance, available through `getTestRunVariables()` method call. The manager for these variables is the `VariablesManager`.
+
+These variables can be used to share data between multiple applications in the current `TestRun` instance.
+
+====== Application Variables
+
+The application-specific variables can be saved in the `AppVariablesManager` class instance, which can be accessed from the AppInstance of given test run by `getTestVariablesManager()` method call. This variables manager is supposed to hold mainly app-specific variables and parameters, or custom variables, eventually. Therefore, depending on the type of current application, you can access API or web specific variables by retrieving `ApiAppVariables` or `WebAppVaribales` class from the `AppVariablesManager`.

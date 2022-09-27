@@ -1,0 +1,44 @@
+
+[#_create_test_steps]
+==== Create Your First Test Steps Class
+
+===== 1. Create Test Steps Class
+
+Before we create a test steps class, it is recommended to decide, where to keep such classes and how to organize them. It is recommended to locate them either in the test folder in their own package (i.e. _src/test/java/steps/homepage/HomePageSteps.java_), or to store them directly in the main folder beside corresponding objects (i.e. _src/main/webobjects/homepage/HomePageSteps.java_). For the naming convention, it is good to keep the _Steps_ keyword in the class name.
+
+.Sample structure of a test steps class
+[source,java]
+----
+public class SomeSteps extends StepsBase {
+    // Define Application Object Instance
+    private final SomeApi someApi = getApiAppInstanceOf(SomeApi.class);
+    private final SomeWeb someWeb = getApiAppInstanceOf(SomeWeb.class);
+
+    // Define Steps
+    @Step("Step Description ({someInput})")
+    public Post someStep(String someInput) {
+        Post post = someApi
+                .endpoint1
+                .endpoint2
+                .createSomePost(someInput);
+        Assert.assertNotNull(post.getId(), "Post ID is not null.");
+        return post;
+    }
+}
+----
+
+All the steps classes should extend the `StepsBase` class in order to provide functions of the automation framework.
+
+===== 2. Define Application Object Instance
+
+Application object instance stands as a connection between the test and the application under test. It allows you to create an application instance which you can later use to perform calls on it.
+
+You can retrieve an application instance by calling the `getApiInstanceOf(ApiApplicationRootClass.class)` or `getWebInstanceOf(WebApplicationRootClass.class)`.
+
+Mind that only one application instance of the same application can exist in a test run, but you can have multiple different applications instantiated at the same time and access them using the `TestRun` class.
+
+===== 3. Define Steps
+
+Steps are defined using methods with `@Steps` TestNG annotation. They provide you opportunity to group i.e. API calls or web actions like filling a form into one method call, so that you do not have to repeat the calls every time and duplicate the code.
+
+Steps are also a great place where you can put your xref:#_assertions[assertions].

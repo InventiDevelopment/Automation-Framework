@@ -1,9 +1,0 @@
-= RestEndpoint
-
-The `RestEndpoint` is an implementation of RestAssured framework for a REST service. It contains implementation for all REST supported request types in corresponding methods. The `RestEndpoint` is an extension of the `Endpoint` class. All REST API endpoints should extend the `RestEndpoint` class with the generic type of given endpoint.
-
-== RestEndpoint Annotations
-
-- link:../../cheatsheets/annotations.adoc#_endpointspecs[@EndpointSpecs]
-- link:../../cheatsheets/annotations.adoc#_application[@Application]
-- link:../../cheatsheets/annotations.adoc#_apiauth[@ApiAuth]

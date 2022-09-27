@@ -1,0 +1,7 @@
+
+[#_soft_assert_collector]
+====== Soft-Assert Collector
+
+`SoftAssertCollector` class instance collects and holds all the failed soft assertions, so that they can be reported later, when the test ends.
+
+The `SoftAssertCollector` class instance is bound to the `TestRun` instance, that stands for the current test run and can be accessed from there by `getSoftAssertCollector()` method call.

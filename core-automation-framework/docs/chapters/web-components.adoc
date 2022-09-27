@@ -1,0 +1,21 @@
+
+[#_web_components]
+==== Web Component Structure
+
+===== Web Component Structure Diagram
+
+image::web-objects-structure.drawio.png[Web Component Structure - ER Diagram,750,role=text-center]
+
+===== Description of Components
+
+- xref:#_webobject[WebObject]
+- xref:#_webcomponent_structure[WebComponent]
+- xref:#_webcomponentlist_structure[WebComponentList]
+- xref:#_webelement_structure[WebElement]
+- xref:#_webpage_structure[WebPage]
+
+include::webobject-structure.adoc[]
+include::webcomponent-structure.adoc[]
+include::webcomponentlist-structure.adoc[]
+include::webelement-structure.adoc[]
+include::webpage-structure.adoc[]

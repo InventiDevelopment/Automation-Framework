@@ -1,0 +1,27 @@
+
+[#_test_development]
+== Test Development
+
+=== Creating a Test
+
+In order to create a test and have it set up for the next test run, you should create (or update) three of the following items:
+
+. xref:#_create_test_class[Create Test Class]
+. xref:#_create_test_class[Create Test Steps]
+. xref:#_create_test_suite[Create Test Suite]
+
+include::create-test-class.adoc[]
+include::create-test-steps.adoc[]
+include::create-test-suite.adoc[]
+
+After finishing your first test, you can continue to the chapter xref:#_test_execution[about test execution].
+
+=== Features
+
+* xref:#_assertions[Assertions]
+* xref:#_multi_language_support[Multi-Language Support]
+* xref:#_test_execution_parallelization[Test Execution Parallelization]
+
+include::assertions.adoc[]
+include::multilanguage.adoc[]
+include::parallelization.adoc[]

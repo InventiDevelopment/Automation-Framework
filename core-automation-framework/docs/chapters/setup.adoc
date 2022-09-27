@@ -1,0 +1,12 @@
+
+== Setup
+
+Starting test automation with the framework takes two main steps:
+
+. xref:#_installation[Installation]
+. xref:#_project_setup[Project Setup]
+
+include::installation.adoc[]
+include::project-setup.adoc[]
+
+After you finished setting up the project, you can start xref:#_test_development[developing your first tests].

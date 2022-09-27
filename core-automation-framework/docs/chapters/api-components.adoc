@@ -1,0 +1,17 @@
+
+[#_api_components]
+==== API Component Structure
+
+===== API Component Structure Diagram
+
+image::api-objects-structure.drawio.png[API Component Structure - ER Diagram,550,role=text-center]
+
+The API abstraction layer consists of two main elements - the `xref:#_endpoint_structure[Endpoint]` and `xref:#_apiobject_structure[ApiObject]`. With `xref:#_endpoint_structure[Endpoint]` you can define the root of an API depending on the API implementation type (REST, SOAP, etc.). `xref:#_apiobject_structure[ApiObject]` then carries all information to underlying objects.
+
+===== Description of Components
+
+- xref:#_endpoint_structure[Endpoint]
+- xref:#_apiobject_structure[ApiObject]
+
+include::endpoint-structure.adoc[]
+include::apiobject-structure.adoc[]

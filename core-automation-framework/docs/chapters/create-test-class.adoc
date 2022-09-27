@@ -1,0 +1,86 @@
+
+[#_create_test_class]
+==== Create Your First Test Class
+
+===== 1. Create Class
+
+Browse into your application Maven module and navigate to the test packages. Here, you can define your own test classes according to your test structure defined by packages. Name your class according to your needs ... preferred naming convention is to provide a _Test_ (or _Tests_) keyword in each of the class names (i.e. _BasicComponentTests.java_).
+
+Let us create a sample test class. Remember that each of the test classes creates a xref:#_test_run[`TestRun`] instance in the automation framework while being run.
+
+===== 2. Setup Test Class Methods
+
+After you created the Java class itself, it is now time to write methods that will define the test-run structure - the test setup, test methods, and test teardown.
+
+Please bellow provided test class structure sample. The description of each of the parts will be provided in following subchapters.
+
+Note that basic structure methods all use some kind of TestNG's annotations in order to preserve the correct test run behaviour. You can alter these annotations according to your needs (i.e. in case of test class inheritance), however, it is important that the steps classes are initialized before any of the test methods is run (as they provide reach/connection to the application under test).
+
+.Sample structure of a test class
+[source,java]
+----
+@Epic("Epic description")
+@Story("Story description")
+public class SomeTest extends TestBase {
+    private final SomeStepsClass someStepsClass;
+
+    // Steps Class Initialization
+    @BeforeClass
+    @Override
+    public void initSteps() {
+        someStepsClass = new SomeStepsClass();
+    }
+
+    // Class Setup
+    @BeforeClass
+    @Override
+    public void setUp() {
+        // Prepare test data ...
+    }
+
+    // Test Methods in the Test Class
+    @Test(description = "First Test Method")
+    public void firstTestMethod() {
+        someStepsClass
+            .step1()
+            .step2()
+            .assertSomething();
+    }
+
+    @Test(
+            description = "Second Test Method",
+            dependsOnTestMethods = "firstTestMethod"
+    )
+    public void secondTestMethod() {
+        someStepsClass
+            .anotherStep1()
+            .anotherStep2()
+            .assertSomethingElse();
+    }
+
+    // Test Class Teardown Methods
+    @AfterClass(alwaysRun = true)
+    @Override
+    public void tearDown() {
+        // Delete prepared test data ...
+    }
+}
+----
+
+Test class should always extend the xref:#_test_class[`TestBase`] class in order to preserve methods provided by the test framework.
+
+====== Class Setup
+
+The class setup method is supposed to help with actions that need to be done before the test - this can be test data preparation, infrastructure setup, etc. In order to run this method before all the test methods, a `@BeforeClass` annotation has to be provided.
+
+====== Steps Class Initialization
+
+As the test steps class is declared at the beginning of test class, it is necessary to also instantiate it - that is the purpose of the `initSteps()` method.
+
+===== 3. Test Methods in the Test Class
+
+Test classes are annotated with the the TestNG's `@Test` annotation. The `description` value is then used to stand for the test name in Allure Reports.
+
+===== 4. Test Class Teardown Methods
+
+Last piece of the test class is a `tearDown()` method, which can provide actions after all the test methods were finished. It can be test data deletion or any other necessary action. It is important to provide the `@AfterClass` annotation in order for TestNG to execute this method after all the test methods.

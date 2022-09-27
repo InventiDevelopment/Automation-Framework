@@ -1,0 +1,40 @@
+
+[#_assertions]
+==== Assertions
+
+Assertions allow you to compare and validate values. Framework's assertion classes provide you with predefined methods to easily compare various data types in many ways.
+
+If you need to extend provided assertion types even further, you can easily do so by extending bellow mentioned classes.
+
+[#_soft_assertions]
+===== Soft Assertions
+
+Soft assertions allows you to continue the test even when some of these assertion did not pass. The result of assertion is still kept in the test report - for that purpose, the xref:#_soft_assert_collector[`SoftAssertCollector`] was implemented.
+
+include::soft-assert-collector.adoc[]
+
+====== Use of the Soft Assertion
+
+You can use soft assertions by calling the static `SoftAssert` class in your _test_ and _steps_ classes. The class is a child of the `Assert` class, about which you can find more information bellow - `SoftAssert` class provides most of its methods coverage.
+
+.Example use of SoftAssert class call
+[source,java]
+----
+SoftAssert.assertTrue(value1, value2, "Description of the assertion");
+----
+
+Please check the source code to find what assertions you can use with the `SoftAssert` class.
+
+===== Hard Assertions
+
+====== Use of the Hard Assertion
+
+Similarly to the soft assertions call, you can use hard assertions by calling the static `Assert` class. This class overrides the TestNG's default `Assert` class.
+
+.Example use of Assert class call
+[source,java]
+----
+Assert.assertTrue(value1, value2, "Description of the assertion");
+----
+
+Please check the source code to find what assertions you can use with the `Assert` class.

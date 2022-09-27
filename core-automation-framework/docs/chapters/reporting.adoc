@@ -1,0 +1,32 @@
+
+[#_reporting]
+== Reporting
+
+The Inventi Automation Framework uses the link:https://docs.qameta.io/allure/#_about[Allure Framework] for reporting. Such solution provides better options to customize reports and also use annotation supplied by Allure Framework to describe test steps, epics, stories, severity and many other features.
+
+* link:https://docs.qameta.io/allure/#_testng[Alure Java with TestNG docs]
+
+=== Allure Test Results
+
+Test results files are saved by default to the directory `test-results/allure-results` located in the project's root folder. You can change this folder in the global POM configuration file (pom.xml) of the project by editing the value of `allure.results.directory` property in `systemPropertyVariables`.
+
+=== Report Generation
+
+All tests' results are being recorded for Allure report. To display results properly on a local web server, go to the `test-results` folder and type command:
+
+[source,]
+.Command to generate HTML Allure Report
+[source]
+----
+allure serve
+----
+
+=== Masking Sensitive Data in Reports
+
+There is a possibility to mask sensitive data in Allure's results files and Allure reports - by default all TestNG input parameters' values that have name containing _"password"_ or _"secret"_ are masked with `[\\**MASKED**]` string. Their values will be hidden only if `DEBUG` framework run mode is not used. This solution should be reworked in the future to use `@Secret` annotation and AspectJ or Allure native solution.
+
+=== Plugins & Editing Report Templates
+
+You can pass almost any kind of data to the Allure reports, create your own categories and even edit the report's styling. It is also possible to write custom plugins for the Allure Framework.
+
+* link:https://docs.qameta.io/allure/#_allure_plugins_system[Allure Framework Plugin system]

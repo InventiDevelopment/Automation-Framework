@@ -1,0 +1,71 @@
+
+[#_annotations_cheatsheet]
+=== Annotations Cheatsheet
+
+==== Framework Annotations
+
+[#_application_annotations]
+===== @Application
+
+====== Name
+
+Crucial annotation to describe object's assignment to a specific application.It is recommended to use this annotation type in the "root" or "starting point" object of given application.For web front-end application this can be the home page, for API application this could be the root URL endpoint (https://example.com).Because of the inheritance and abstraction layer, all the underlying object's' application assignment is also identified by their ancestors (regardless of the amount of ancestors).
+
+==== API Objects Specific Annotations
+
+[#_apiauth_annotation]
+===== @ApiAuth
+
+====== AuthType
+
+Defines the authentication type for given API endpoint and it's children `Endpoint` objects - to prevent this behaviour, simply define @ApiAuth annotation in given child endpoint.
+
+[#_endpointspecs_annotations]
+===== @EndpointSpecs
+
+====== Url
+
+URL addition to all the URL strings defined in the ancestors' `@Url` annotation of given Java class.
+
+[#_responsespecs_annotations]
+===== @ResponseSpecs
+
+Helps to save information about data that format that will be returned to the HTTP response.
+
+====== PassedDto
+
+A DTO object to be mapped from the response body when the request "passes" (HTTP 100, 200 is returned).
+
+====== FailedDto
+
+A DTO object to be mapped from the response body when the request does not "pass" (HTTP 300, 400, 500 is returned).
+
+====== ResponseType
+
+Helps to determine the additional content, that might be returned with the response, specifically in the response body (i.e. file, object, array of objects - helps with mapping the response body to DTOs using Jackson).
+
+==== Web Objects Specific Annotations
+
+[#_findelement_annotation]
+===== @FindElement
+
+Serves for locating given element on a web page using given type of locator.Currently, only XPath locators are supported.All the locators use by default the tree structure, so they will stack using the all the ancestors' locators.
+
+====== XPath
+
+Contains path using an link:https://www.w3.org/TR/xpath-31/[XPath pattern] to locate an element in the DOM of the browser.
+
+====== Index
+
+Designed specifically to select n-th element, if there are more than one element found using the same XPath.Edits current XPath in the following way:
+
+[source,xpath2]
+[source]
+----
+(<currentXpathValue>)[<indexValue>]
+----
+
+[#_noparent_annotation]
+===== @NoParent
+
+Used either on a WebElement, WebComponent or WebPage, this annotation states that given object should not use the XPath locator defined in its ancestors (using the tree pattern), nor extend it.All the underlying elements and given object will then be located only by XPath defined with that object.

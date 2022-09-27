@@ -1,0 +1,29 @@
+
+[#_webpage_structure]
+====== WebPage
+
+All the `WebComponent` and `WebElement` instances can be aggregated on a `WebPage` class (like menu, sidebar and such). The WebPage is a starting point for a front-end of web application.
+
+.Sample of WebPage class
+[source,java]
+[source]
+----
+@Application(name = "sampleapplication")
+@FindElement(xpath = "//body")
+public class SomePage extends WebPage {
+
+    @FindElement(xpath = "//menu[@id='mainMenu']")
+    WebComponent<SomePage> mainMenu;
+    @FindElement(xpath = "//div[@id='scrollToTopBtn']")
+    WebElement<SomePage> scrollToTopBtn;
+
+    public SomePage(WOProps props) {
+        super(props);
+    }
+}
+----
+
+====== WebPage Annotations
+
+- xref:#_application_annotations[@Application]
+- xref:#_findelement_annotation[@FindElement]

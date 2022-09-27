@@ -1,0 +1,33 @@
+
+[#_create_test_suite]
+==== Create Your First Test Suite
+
+===== 1. Create TestNG Test Suite
+
+Test suites follow the primary TestNG structure with XML files. It is necessary to put these XML test suites into test's resources _testsets_ folder or subfolder (_src/test/resources/testsets_).
+
+====== Link Test Class to the Test Suite
+
+Defining the test suite follows all general rules for TestNG test suite definition. You can find more information in link:https://testng.org/doc[TestNG documentation].
+
+.TestNG Test Suite Sample
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Sample Test Suite" parallel="classes">
+    <parameter name="browser" value="chrome"/>
+    <parameter name="environment" value="test"/>
+    <parameter name="language" value="en"/>
+    <test name="Test Name" thread-count="1">
+        <classes>
+            <class name="cz.inventi.qa.framework.tests.sampletests.SampleTest"/>
+        </classes>
+    </test>
+</suite> <!-- Suite -->
+
+----
+
+====== Test Parallelization
+
+You can also run xref:#_test_execution_parallelization[tests in parallel].

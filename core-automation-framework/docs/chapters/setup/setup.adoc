@@ -1,6 +1,0 @@
-= Setup
-
-Starting test automation with the framework takes two main steps:
-
-. link:./installation.adoc[Installation]
-. link:./project-setup.adoc[Setting-up a Project]

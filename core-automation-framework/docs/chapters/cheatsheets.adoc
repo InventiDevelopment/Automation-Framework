@@ -1,0 +1,9 @@
+
+[#_cheatsheets]
+== Cheatsheets
+
+Hard to remember all the annotations and function calls? Maybe you will find bellow described cheatsheets useful.
+
+* xref:#_annotations_cheatsheet[Annotations]
+
+include::annotations.adoc[]

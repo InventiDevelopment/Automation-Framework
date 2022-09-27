@@ -1,0 +1,18 @@
+
+= Inventi Automation Framework Docs
+Tomas Fenyk <https://git.inventi.cz/qa/development/java/automation-framework>
+:description: Documentation for Inventi Automation Framework - boilerplate for easier testing with Java.
+:page-layout: docs
+:toc: left
+:imagesdir: ./img
+:icons: font
+:keywords: Inventi,automation,framework
+:toclevels: 3
+
+include::chapters/intro.adoc[]
+include::chapters/structure.adoc[]
+include::chapters/setup.adoc[]
+include::chapters/development.adoc[]
+include::chapters/execution.adoc[]
+include::chapters/reporting.adoc[]
+include::chapters/cheatsheets.adoc[]

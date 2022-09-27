@@ -1,7 +1,0 @@
-= ApiObject
-
-`ApiObject` is a central piece for all API related objects. It is used to hold information using mainly the `AOProps`. Similarly to the Page Object pattern in the web front-end testing with their Xpath elements, API testing abstracts endpoints in a similar manner.
-
-== AOProps
-
-Properties object contains information regrading i.e. parent `ApiObject`, current `ApiAppInstance`, endpoint authentication methods, authentication parameters and other aspects, that can be used while making requests calling an endpoint of the API. `AOProps` are present in every `ApiObject` and `ApiObject` is a parent for every object related to API.

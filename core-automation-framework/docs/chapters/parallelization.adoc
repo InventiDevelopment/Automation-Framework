@@ -1,0 +1,13 @@
+
+[#_test_execution_parallelization]
+==== Test Execution Parallelization
+
+You can run tests in parallel by using the standard TestNG attributes. *Please mind that the framework is currently optimized only for running on the TestNG's "classes" level*.
+
+* link:https://testng.org/doc/documentation-main.html#parallel-running[TestNG Parallelism Docs]
+
+===== How to Set up Parallel Test Execution
+
+In your test suite XML file, you should add a `parallel="classes"` attribute to the `<suite>` tag. Moving onto the `<tests>` tag, please add a `thread-count=` attribute with a number of defined test classes (`<test>`) under this tag. Now when the test suite is run, defined test classes will be run in parallel.
+
+If the `thread-count` attribute is set up incorrectly, it can lead to an unexpected behaviour of the automation framework.

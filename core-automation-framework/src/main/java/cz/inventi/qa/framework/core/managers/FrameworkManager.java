@@ -5,8 +5,8 @@ import cz.inventi.qa.framework.core.data.config.ProxySettings;
 import cz.inventi.qa.framework.core.data.enums.ApplicationType;
 import cz.inventi.qa.framework.core.data.enums.ProxyScheme;
 import cz.inventi.qa.framework.core.data.enums.RunMode;
-import cz.inventi.qa.framework.core.objects.api.Endpoint;
 import cz.inventi.qa.framework.core.objects.api.ApiAppInstance;
+import cz.inventi.qa.framework.core.objects.api.Endpoint;
 import cz.inventi.qa.framework.core.objects.framework.FrameworkException;
 import cz.inventi.qa.framework.core.objects.framework.Log;
 import cz.inventi.qa.framework.core.objects.test.TestRun;
@@ -84,7 +84,7 @@ public class FrameworkManager {
 
     public static void quitCurrentTestRun() {
         Log.info("Quitting TestRun (" + Utils.getTestIdentifier() + ")");
-        getCurrentTestRun().quit(Utils.getTestIdentifier());
+        getCurrentTestRun().quit();
         getTestRuns().remove(Utils.getTestIdentifier());
         Log.info("TestRun (" + Utils.getTestIdentifier() + ") successfully quit");
         Log.info(getTestRuns().size() + " TestRun instance(s) left in the stack");
